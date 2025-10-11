@@ -1,7 +1,7 @@
 import React from "react";
 import CategoriesSelect from "../../_components/CategoriesSelect";
 import CategoriesFilter from "../../_components/CategoriesFilter";
-import CategoriContent from "../../_components/CategoriContent";
+import CategoryContent from "../../_components/CategoryContent";
 
 const Page = async ({ params }: { params: { katalog: string } }) => {
   const { katalog } = await params;
@@ -13,7 +13,7 @@ const Page = async ({ params }: { params: { katalog: string } }) => {
           <CategoriesFilter />
           <div className="mt-10 grid grid-cols-[auto_1fr] gap-x-10">
             <CategoriesSelect katalog={katalog} />
-            <CategoriContent katalog={katalog} />
+            <CategoryContent katalog={katalog} />
           </div>
         </div>
       </div>

@@ -1,14 +1,15 @@
 import ImdbHundered from "./ImdbHundered";
+import TheatersMovies from "./TheatersMovies";
 import UpcomingMovies from "./UpcomingMovies";
 
-const CategoriContent = ({ katalog }: { katalog: string }) => {
+const CategoryContent = ({ katalog }: { katalog: string }) => {
   return (
     <div>
-      {katalog === "vizyondakiler" && <div></div>}
+      {katalog === "vizyondakiler" && <TheatersMovies />}
       {katalog === "yakindakiler" && <UpcomingMovies />}
       {katalog === "imdb" && <ImdbHundered />}
     </div>
   );
 };
 
-export default CategoriContent;
+export default CategoryContent;
