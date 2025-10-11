@@ -1,6 +1,5 @@
 import Image from "next/image";
 import { Movie } from "../types";
-import { playwrite } from "../_lib/fonts";
 import { randomDatePrevious30Days } from "../_helper/randomDate";
 
 const TheatersMovie = ({ movie }: { movie: Movie }) => {
@@ -14,16 +13,11 @@ const TheatersMovie = ({ movie }: { movie: Movie }) => {
           className="object-contain opacity-85"
           loading="lazy"
         />
-        <div
-          className={`bg-primary-900 absolute top-0 right-0 rounded-bl-2xl p-3 text-center text-xl ${playwrite.className}`}
-        >
-          #{movie.rank}
-        </div>
       </div>
 
       <h2 className="text-center text-2xl font-semibold">{movie.title}</h2>
-      <div className="text-primary-50 flex flex-col text-center opacity-75">
-        <p>
+      <div className="text-primary-50 flex flex-col text-center">
+        <p className="opacity-75">
           {movie.genre.map((tur, index) => (
             <span key={tur}>
               {index !== 0 && "| "}
@@ -32,7 +26,10 @@ const TheatersMovie = ({ movie }: { movie: Movie }) => {
           ))}
         </p>
         <p className="gap-x-4 text-lg">
-          Vizyon Tarihi: {randomDatePrevious30Days()}
+          <span className="opacity-80">Vizyon Tarihi: </span>
+          <span className="font-bold opacity-90">
+            {randomDatePrevious30Days()}
+          </span>
         </p>
       </div>
     </div>

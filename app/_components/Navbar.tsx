@@ -13,12 +13,6 @@ const Navbar = () => {
             Filmler
           </Link>
           <Link
-            href="/etkinlikler"
-            className="hover:text-primary-200 duration-300"
-          >
-            Etkinlikler
-          </Link>
-          <Link
             href="/kampanyalar"
             className="hover:text-primary-200 duration-300"
           >
