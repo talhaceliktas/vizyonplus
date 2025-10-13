@@ -1,7 +1,6 @@
 @import "tailwindcss";
 
 @theme {
-  /* Primary (Mevcut Mavi/Lacivert) */
   --color-primary-50: #f7f9fd;
   --color-primary-100: #d7e1f5;
   --color-primary-200: #b1c1ea;
@@ -37,7 +36,7 @@ body {
   bottom: 0;
   left: 0;
   width: 0;
-  height: 2px;
+  height: 1px;
   background-color: #4f46e5;
   transition: width 0.3s ease;
 }

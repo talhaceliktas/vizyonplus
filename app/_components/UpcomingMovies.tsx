@@ -13,8 +13,6 @@ const UpcomingMovies = async () => {
 
   const movies = await res.json();
 
-  console.log(movies);
-
   return (
     <div className="bg-primary-700/15 grid grid-cols-3 gap-x-10 gap-y-20 p-10">
       {movies.map((movie: Movie) => (

@@ -7,7 +7,7 @@ const Page = async ({ params }: { params: { katalog: string } }) => {
   const { katalog } = await params;
 
   return (
-    <div className="pt-40">
+    <div className="mt-40">
       <div className="mx-auto w-full max-w-[1360px]">
         <div className="mx-4">
           <CategoriesFilter />

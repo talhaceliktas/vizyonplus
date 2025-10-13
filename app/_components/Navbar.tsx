@@ -3,7 +3,7 @@ import { FaCircleUser } from "react-icons/fa6";
 
 const Navbar = () => {
   return (
-    <div className="bg-primary-900/30 fixed z-10 w-full">
+    <div className="bg-primary-900/30 fixed top-0 z-10 w-full">
       <div className="flex items-center justify-between p-4 md:justify-around">
         <Link href="/" className="text-4xl font-bold">
           Biletcim
