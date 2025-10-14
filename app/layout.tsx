@@ -17,7 +17,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`from-primary-700 via-primary-800 to-primary-700 min-h-screen bg-gradient-to-l antialiased ${poppins.className}`}
+        className={`from-primary-900 via-primary-800 to-primary-900 min-h-screen bg-gradient-to-l antialiased ${poppins.className}`}
       >
         <Navbar />
         {children}

@@ -47,9 +47,11 @@ const Intro = () => {
             anları, etkileyici görsel efektleri ve unutulmaz sahneleriyle
             izleyicileri büyülüyor.
           </p>
-          <button className="bg-primary-600 hover:bg-primary-500 mt-5 flex transform cursor-pointer items-center gap-x-2 rounded-4xl px-7 py-3 duration-300 hover:scale-x-[1.15] hover:scale-y-[1.15] hover:gap-x-4">
-            Filme Git
-            <HiArrowNarrowRight />
+          <button className="from-primary-600 via-primary-700 to-primary-800 mt-5 flex transform cursor-pointer items-center gap-x-2 rounded-4xl bg-gradient-to-l px-7 py-3 duration-300 hover:scale-x-[1.15] hover:scale-y-[1.15] hover:gap-x-4">
+            <p className="from-secondary-1 via-secondary-2 to-secondary-1 bg-gradient-to-l bg-clip-text text-transparent">
+              Filme Git
+            </p>
+            <HiArrowNarrowRight className="fill-secondary-2" />
           </button>
         </div>
       </div>

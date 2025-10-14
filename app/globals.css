@@ -8,9 +8,9 @@
   --color-primary-400: #858585;
   --color-primary-500: #666666;
   --color-primary-600: #444444;
-  --color-primary-700: #121212;
+  --color-primary-700: #2a2a2a;
   --color-primary-800: #1c1c1c;
-  --color-primary-900: #2a2a2a;
+  --color-primary-900: #121212;
   --color-primary-950: #0a0a0a;
 
   --color-secondary-1: #ffd700;
@@ -63,4 +63,8 @@ body {
     border-left-style: solid;
     border-top-style: dashed;
   }
+}
+
+.test {
+  clip-path: ellipse(50% 50% at 50% 50%);
 }
