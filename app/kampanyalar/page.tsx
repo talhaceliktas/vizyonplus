@@ -8,7 +8,7 @@ const Page = () => {
           <option value="">Test</option>
           <option value="">Test</option>
         </select>
-        <div className="mt-10 grid grid-cols-2 gap-x-5 gap-y-14 p-4">
+        <div className="mt-10 grid grid-cols-1 gap-x-5 gap-y-14 p-4 lg:grid-cols-2">
           <Kampanya
             kampanyaDetaylari={{ fotograf: "/kampanyalar/Kampanya1.jpeg" }}
           />

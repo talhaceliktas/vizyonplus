@@ -9,7 +9,7 @@ export const playwrite = Playwrite_DE_SAS({
   weight: "300",
 });
 
-export const diplomata = Macondo({
+export const macondo = Macondo({
   weight: "400",
   subsets: ["latin"],
 });

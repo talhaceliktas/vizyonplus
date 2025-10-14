@@ -44,3 +44,15 @@ body {
 .categori-button:hover::before {
   width: 100%;
 }
+
+.cinema-box {
+  border-left-style: dashed;
+  border-top-style: solid;
+}
+
+@media screen and (max-width: 640px) {
+  .cinema-box {
+    border-left-style: solid;
+    border-top-style: dashed;
+  }
+}
