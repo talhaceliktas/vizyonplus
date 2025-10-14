@@ -5,7 +5,10 @@ const Navbar = () => {
   return (
     <div className="bg-primary-900/30 fixed top-0 z-10 w-full">
       <div className="flex items-center justify-between p-4 md:justify-around">
-        <Link href="/" className="text-4xl font-bold">
+        <Link
+          href="/"
+          className="bg-gradient-to-l from-[#9e8704] via-[#cbac05] to-[#FFD700] bg-clip-text text-4xl font-bold text-transparent"
+        >
           Biletcim
         </Link>
         <div className="hidden items-center gap-x-5 font-semibold md:flex">
