@@ -47,7 +47,7 @@ const Navbar = () => {
             placeholder="Ara..."
           />
         </div>
-        <Link href="/profil" className="cursor-pointer">
+        <Link href="/giris" className="cursor-pointer">
           <FaCircleUser className="text-3xl" />
         </Link>
       </div>
