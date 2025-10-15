@@ -15,7 +15,7 @@ const ImdbMovie = ({ movie }: { movie: Movie }) => {
           loading="lazy"
         />
         <div
-          className={`bg-primary-900 absolute top-0 right-0 rounded-bl-2xl p-3 text-center text-xl text-secondary-1 ${playwrite.className}`}
+          className={`bg-primary-900 absolute top-0 right-0 rounded-bl-2xl p-3 text-center text-xl ${playwrite.className}`}
         >
           #{movie.rank}
         </div>
