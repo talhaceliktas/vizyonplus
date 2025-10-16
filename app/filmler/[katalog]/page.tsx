@@ -6,6 +6,14 @@ import Loading from "../../loading";
 import MovieLoading from "../../_components/MovieLoading";
 import Footer from "../../_components/Footer";
 
+export async function generateStaticParams() {
+  return [
+    { katalog: "vizyondakiler" },
+    { katalog: "yakindakiler" },
+    { katalog: "imdb" },
+  ];
+}
+
 const Page = async ({ params }: { params: { katalog: string } }) => {
   const { katalog } = await params;
 
