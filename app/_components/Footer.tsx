@@ -4,8 +4,8 @@ import biletcimLogo from "../../public/logo.png";
 const Footer = () => {
   return (
     <div className="p-20 pb-6">
-      <div className="mt-40 grid grid-cols-7 gap-x-4">
-        <div className="col-start-1 col-end-3 flex aspect-[4/1] flex-col gap-y-4">
+      <div className="mt-40 grid grid-cols-7 gap-x-4 gap-y-10 md:gap-y-0">
+        <div className="col-start-1 col-end-8 md:col-end-3 flex flex-col gap-y-4">
           <div className="aspect-[4/1] w-40">
             <Image src={biletcimLogo} alt="Biletcim Logosu" />
           </div>
@@ -17,7 +17,7 @@ const Footer = () => {
             hızlı ve keyifli bir deneyim sunar.
           </p>
         </div>
-        <div className="col-start-6 flex h-full w-full flex-col gap-y-2">
+        <div className="md:col-start-6 col-start-1 flex h-full w-full flex-col gap-y-2">
           <h3 className="mb-1 font-bold">Kurumsal</h3>
           <p className="cursor-pointer text-sm hover:underline">Hakkımızda</p>
           <p className="cursor-pointer text-sm hover:underline">Bize Ulaş</p>
@@ -26,7 +26,7 @@ const Footer = () => {
           </p>
           <p className="cursor-pointer text-sm hover:underline">KVKK</p>
         </div>
-        <div className="col-start-7 flex h-full w-full flex-col gap-y-2">
+        <div className=" col-end-8 col-start-5 md:col-start-7 flex h-full w-full flex-col gap-y-2">
           <h3 className="mb-1 font-bold">İletişim</h3>
           <a
             className="cursor-pointer text-sm hover:underline"
