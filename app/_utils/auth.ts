@@ -1,13 +1,7 @@
+import { redirect } from "next/navigation";
 import supabase from "./supabase";
 
 export async function signUp(gelenEmail: string, gelenSifre: string) {
-  if (gelenSifre.length < 8) {
-    return {
-      durum: "basarisiz",
-      message: "Girilen şifre 8 karakterden az olamaz",
-    };
-  }
-
   const { data, error } = await supabase.auth.signUp({
     email: gelenEmail,
     password: gelenSifre,
@@ -33,4 +27,18 @@ export async function signUp(gelenEmail: string, gelenSifre: string) {
       message: data.user?.email || "HATA",
     };
   }
+}
+
+export async function signIn(email: string, password: string) {
+  const { data, error } = await supabase.auth.signInWithPassword({
+    email: email,
+    password: password,
+  });
+
+  if (error) {
+    console.log(error);
+    return;
+  }
+
+  redirect("/profile");
 }

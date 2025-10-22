@@ -1,16 +1,39 @@
+"use client";
+
 import Link from "next/link";
 import { openSans } from "../../_lib/fontlar";
 import { FaLock } from "react-icons/fa";
 import { FcGoogle } from "react-icons/fc";
 import { IoMdMail } from "react-icons/io";
+import { useForm } from "react-hook-form";
+import { signIn } from "../../_utils/auth";
 
 const GirisYap = () => {
+  const {
+    formState: { errors },
+    register,
+    handleSubmit,
+  } = useForm();
+
+  function girisYap(data: { email: string; password: string }) {
+    const { email, password } = data;
+
+    signIn(email, password);
+  }
+
+  function hataVar() {
+    console.log(errors);
+  }
+
   return (
     <div
       className={`flex h-full w-full flex-col items-center justify-center gap-y-3 bg-cover bg-center p-5 ${openSans.className} `}
       style={{ backgroundImage: "url('/loginBG.webp')" }}
     >
-      <div className="border-primary-800/50 backd bg-primary-700/70 flex flex-col items-center gap-y-6 rounded-2xl border-[1px] p-8 shadow-2xl backdrop-blur-sm">
+      <form
+        className="border-primary-800/50 backd bg-primary-700/70 flex flex-col items-center gap-y-6 rounded-2xl border-[1px] p-8 shadow-2xl backdrop-blur-sm"
+        onSubmit={handleSubmit(girisYap, hataVar)}
+      >
         <h3 className="text-3xl font-semibold">Giriş Yap</h3>
         <p className="text-primary-50 opacity-75">
           Hoşgeldiniz! Lütfen gerekli alanları doldurunuz.
@@ -21,6 +44,7 @@ const GirisYap = () => {
               type="email"
               placeholder="johndoe@gmail.com"
               className="peer placeholder:text-primary-50/50 border-primary-500/80 w-full border-b-[3px] bg-transparent py-2 transition-all duration-300 outline-none focus:border-gray-600"
+              {...register("email", { required: "Email gerekli" })}
             />
             <IoMdMail className="peer-focus:fill-primary-50 fill-primary-300 absolute top-1/2 right-2 -translate-y-1/2 text-xl duration-300" />
             <span className="bg-primary-50/85 absolute bottom-0 left-0 h-[2px] w-0 transition-all duration-300 peer-focus:w-full"></span>
@@ -30,6 +54,7 @@ const GirisYap = () => {
               type="password"
               placeholder="Şifre"
               className="peer placeholder:text-primary-50/50 border-primary-500/80 w-full border-b-[3px] bg-transparent py-2 transition-all duration-300 outline-none focus:border-gray-600"
+              {...register("password", { required: "Sifre gerekli" })}
             />
             <FaLock className="peer-focus:fill-primary-50 fill-primary-300 absolute top-1/2 right-2 -translate-y-1/2 text-xl duration-300" />
             <span className="bg-primary-50/85 absolute bottom-0 left-0 h-[2px] w-0 transition-all duration-300 peer-focus:w-full"></span>
@@ -62,7 +87,7 @@ const GirisYap = () => {
             <Link href="/kayitol">Hemen Kayıt Ol</Link>
           </button>
         </div>
-      </div>
+      </form>
     </div>
   );
 };

@@ -15,6 +15,7 @@ const KayitOl = ({ setGonderilenEmail, setKayitTamamlandi }) => {
     register,
     handleSubmit,
     formState: { errors },
+    getValues,
   } = useForm();
 
   // hata yoksa bu fonksiyon calisir
@@ -24,11 +25,6 @@ const KayitOl = ({ setGonderilenEmail, setKayitTamamlandi }) => {
     parola2: string;
   }) {
     const { email, parola1, parola2 } = data;
-
-    if (parola1 !== parola2) {
-      toast.error("Girilen parolalar aynı değil!");
-      return;
-    }
 
     const veri = await signUp(email, parola1);
 
@@ -40,8 +36,11 @@ const KayitOl = ({ setGonderilenEmail, setKayitTamamlandi }) => {
     }
   }
 
-  // hataVar fonksiyonu tamamlanicak
-  function hataVar() {}
+  function hataVar(data) {
+    if (data?.email) toast.error(data?.email.message);
+    if (data?.parola1) toast.error(data?.parola1.message);
+    if (data?.parola2) toast.error(data?.parola2.message);
+  }
 
   const [parola1Gizli, setParola1Gizli] = useState(true);
   const [parola2Gizli, setParola2Gizli] = useState(true);
@@ -70,18 +69,28 @@ const KayitOl = ({ setGonderilenEmail, setKayitTamamlandi }) => {
           <input
             type="email"
             placeholder="johndoe@gmail.com"
-            className="peer placeholder:text-primary-50/50 border-primary-500/80 w-full border-b-[3px] bg-transparent py-2 transition-all duration-300 outline-none focus:border-gray-600"
-            {...register("email", { required: "Email gerekli" })}
+            className={`peer placeholder:text-primary-50/50 w-full border-b-[3px] bg-transparent py-2 transition-all duration-300 outline-none ${errors?.email ? "border-red-600/80 focus:border-red-500/80" : "border-primary-500/80 focus:border-gray-600"}`}
+            {...register("email", {
+              required: "Emaıl boş bırakılamaz",
+            })}
           />
           <IoMdMail className="peer-focus:fill-primary-50 fill-primary-300 absolute top-1/2 right-2 -translate-y-1/2 text-xl duration-300" />
-          <span className="bg-primary-50/85 absolute bottom-0 left-0 h-[2px] w-0 transition-all duration-300 peer-focus:w-full"></span>
+          <span
+            className={`absolute bottom-0 left-0 h-[2px] w-0 transition-all duration-300 peer-focus:w-full ${errors?.email ? "bg-red-500/80" : "bg-primary-50/85"}`}
+          ></span>
         </div>
         <div className="relative w-full">
           <input
             type={parola1Gizli ? "password" : "text"}
             placeholder="Şifre"
             className="peer placeholder:text-primary-50/50 border-primary-500/80 w-full border-b-[3px] bg-transparent py-2 transition-all duration-300 outline-none focus:border-gray-600"
-            {...register("parola1", { required: "Parola gerekli" })}
+            {...register("parola1", {
+              required: "Parola boş bırakılamaz!",
+              minLength: {
+                value: 8,
+                message: "Girilen şifre 8 karakterden az olamaz",
+              },
+            })}
           />
           <button
             className="cursor-pointer"
@@ -102,7 +111,19 @@ const KayitOl = ({ setGonderilenEmail, setKayitTamamlandi }) => {
             type={parola2Gizli ? "password" : "text"}
             placeholder="Şifreyi doğrula"
             className="peer placeholder:text-primary-50/50 border-primary-500/80 w-full border-b-[3px] bg-transparent py-2 transition-all duration-300 outline-none focus:border-gray-600"
-            {...register("parola2", { required: "Parola gerekli" })}
+            {...register("parola2", {
+              required: "Parola doğrulama boş bırakılamaz",
+              minLength: {
+                value: 8,
+                message: "Girilen şifre 8 karakterden az olamaz",
+              },
+              validate: (value) => {
+                return (
+                  value === getValues("parola1") ||
+                  "Girilen şifreler aynı olmalı!"
+                );
+              },
+            })}
           />
           <button
             className="cursor-pointer"

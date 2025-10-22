@@ -14,8 +14,6 @@ const Navbar = () => {
       setIsTop(window.scrollY === 0);
     };
 
-    console.log(isTop);
-
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, [isTop]);
