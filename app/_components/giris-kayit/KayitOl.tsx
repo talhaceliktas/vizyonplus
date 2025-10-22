@@ -1,7 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import { openSans } from "../../_lib/fontlar";
 import { FaUser } from "react-icons/fa";
 import { FcGoogle } from "react-icons/fc";
 import { IoMdMail } from "react-icons/io";
@@ -11,7 +10,7 @@ import { useForm } from "react-hook-form";
 import { signUp } from "../../_utils/auth";
 import toast from "react-hot-toast";
 
-const KayitOl = () => {
+const KayitOl = ({ setGonderilenEmail, setKayitTamamlandi }) => {
   const {
     register,
     handleSubmit,
@@ -19,8 +18,26 @@ const KayitOl = () => {
   } = useForm();
 
   // hata yoksa bu fonksiyon calisir
-  function kayitOl(data: any) {
-    signUp(data.email, data.parola1);
+  async function kayitOl(data: {
+    email: string;
+    parola1: string;
+    parola2: string;
+  }) {
+    const { email, parola1, parola2 } = data;
+
+    if (parola1 !== parola2) {
+      toast.error("Girilen parolalar aynı değil!");
+      return;
+    }
+
+    const veri = await signUp(email, parola1);
+
+    if (veri?.durum === "basarisiz") {
+      toast.error(veri.message);
+    } else {
+      setGonderilenEmail(veri?.message);
+      setKayitTamamlandi(true);
+    }
   }
 
   // hataVar fonksiyonu tamamlanicak
@@ -69,6 +86,7 @@ const KayitOl = () => {
           <button
             className="cursor-pointer"
             onClick={() => setParola1Gizli((durum) => !durum)}
+            type="button"
           >
             {parola1Gizli ? (
               <FaEyeSlash className="peer-focus:fill-primary-50 fill-primary-300 absolute top-1/2 right-2 -translate-y-1/2 text-xl duration-300 hover:fill-amber-100" />
@@ -89,6 +107,7 @@ const KayitOl = () => {
           <button
             className="cursor-pointer"
             onClick={() => setParola2Gizli((durum) => !durum)}
+            type="button"
           >
             {parola2Gizli ? (
               <FaEyeSlash className="peer-focus:fill-primary-50 fill-primary-300 absolute top-1/2 right-2 -translate-y-1/2 text-xl duration-300 hover:fill-amber-100" />

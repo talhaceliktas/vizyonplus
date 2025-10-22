@@ -1,19 +1,36 @@
 import supabase from "./supabase";
 
 export async function signUp(gelenEmail: string, gelenSifre: string) {
-  try {
-    const { data, error } = await supabase.auth.signUp({
-      email: gelenEmail,
-      password: gelenSifre,
-    });
+  if (gelenSifre.length < 8) {
+    return {
+      durum: "basarisiz",
+      message: "Girilen şifre 8 karakterden az olamaz",
+    };
+  }
 
-    if (error) {
-      console.log(error);
-      throw new Error("Hata olustu!");
-    }
-  } catch (err) {
-    console.log(err);
+  const { data, error } = await supabase.auth.signUp({
+    email: gelenEmail,
+    password: gelenSifre,
+  });
 
-    throw new Error("Hata olustu!");
+  if (error?.status === 429) {
+    return {
+      durum: "basarisiz",
+      message: "Çok sayıda istekte bulundunuz! Bir süre bekleyin.",
+    };
+  }
+
+  if (error) {
+    return {
+      durum: "basarisiz",
+      message: "Bilinmeyen bir hata oluştu!",
+    };
+  }
+
+  if (data) {
+    return {
+      durum: "basarili",
+      message: data.user?.email || "HATA",
+    };
   }
 }

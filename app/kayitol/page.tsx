@@ -6,7 +6,8 @@ import KayitTamamlandi from "../_components/giris-kayit/KayitTamamlandi";
 import { openSans } from "../_lib/fontlar";
 
 const Page = () => {
-  const [kayitTamamlandi, setKayitTamamlandi] = useState(true);
+  const [kayitTamamlandi, setKayitTamamlandi] = useState(false);
+  const [gonderilenEmail, setGonderilenEmail] = useState("");
 
   return (
     <div className="h-screen w-full">
@@ -15,7 +16,14 @@ const Page = () => {
           className={`flex h-full w-full flex-col items-center justify-center gap-y-3 bg-cover bg-center p-5 ${openSans.className} `}
           style={{ backgroundImage: "url('/loginBG.webp')" }}
         >
-          {kayitTamamlandi ? <KayitTamamlandi /> : <KayitOl />}
+          {kayitTamamlandi ? (
+            <KayitTamamlandi gonderilenEmail={gonderilenEmail} />
+          ) : (
+            <KayitOl
+              setKayitTamamlandi={setKayitTamamlandi}
+              setGonderilenEmail={setGonderilenEmail}
+            />
+          )}
         </div>
       </div>
     </div>

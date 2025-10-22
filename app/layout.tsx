@@ -22,10 +22,7 @@ export default function RootLayout({
       >
         <Navbar />
         {children}
-        <Toaster
-          position="bottom-center"
-          toastOptions={{ style: { fontSize: "1.25rem" } }}
-        />
+        <Toaster position="bottom-center" />
       </body>
     </html>
   );
