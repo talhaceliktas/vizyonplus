@@ -12,3 +12,14 @@ export interface Movie {
   title: string;
   year: number;
 }
+
+export interface FilmTipi {
+  aciklama: string;
+  fotograf: string;
+  id: number;
+  isim: string;
+  olusturulma_zamani: string;
+  sure: number;
+  tur: string;
+  yayinlanma_tarihi: string;
+}

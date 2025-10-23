@@ -11,7 +11,7 @@ const nextConfig: NextConfig = {
     ];
   },
   images: {
-    domains: ["m.media-amazon.com"],
+    domains: ["m.media-amazon.com", "egkrjlxptyomswdanwbw.supabase.co"],
   },
 };
 
