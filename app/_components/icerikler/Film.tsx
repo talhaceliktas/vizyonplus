@@ -1,9 +1,13 @@
 import Image from "next/image";
 import { FilmTipi } from "../../types";
+import Link from "next/link";
 
 const Film = ({ film }: { film: FilmTipi }) => {
   return (
-    <div className="flex flex-col gap-y-2 overflow-hidden rounded-lg">
+    <Link
+      className="flex flex-col gap-y-2 overflow-hidden rounded-lg grayscale-25 duration-300 hover:scale-110 hover:grayscale-0"
+      href={`/icerikler/filmler/${film.id}`}
+    >
       <div className="relative aspect-[619/919] w-full">
         <Image
           src={film.fotograf}
@@ -25,7 +29,7 @@ const Film = ({ film }: { film: FilmTipi }) => {
         </p>
       </div>
       <h2 className="text-center text-xl font-semibold">{film.isim}</h2>
-    </div>
+    </Link>
   );
 };
 

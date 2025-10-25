@@ -21,5 +21,6 @@ export interface FilmTipi {
   olusturulma_zamani: string;
   sure: number;
   turler: string[];
+  yonetmen: string;
   yayinlanma_tarihi: string;
 }
