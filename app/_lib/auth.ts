@@ -1,10 +1,19 @@
 import { redirect } from "next/navigation";
 import supabase from "./supabase";
 
-export async function signUp(gelenEmail: string, gelenSifre: string) {
+export async function signUp(
+  gelenIsim: string,
+  gelenEmail: string,
+  gelenSifre: string,
+) {
   const { data, error } = await supabase.auth.signUp({
     email: gelenEmail,
     password: gelenSifre,
+    options: {
+      data: {
+        display_name: gelenIsim,
+      },
+    },
   });
 
   if (error?.status === 429) {

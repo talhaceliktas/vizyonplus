@@ -20,13 +20,14 @@ const KayitOl = ({ setGonderilenEmail, setKayitTamamlandi }) => {
 
   // hata yoksa bu fonksiyon calisir
   async function kayitOl(data: {
+    isim: string;
     email: string;
     parola1: string;
     parola2: string;
   }) {
-    const { email, parola1, parola2 } = data;
+    const { isim, email, parola1 } = data;
 
-    const veri = await signUp(email, parola1);
+    const veri = await signUp(isim, email, parola1);
 
     if (veri?.durum === "basarisiz") {
       toast.error(veri.message);
@@ -61,6 +62,9 @@ const KayitOl = ({ setGonderilenEmail, setKayitTamamlandi }) => {
             type="text"
             placeholder="John Doe"
             className="peer placeholder:text-primary-50/50 border-primary-500/80 w-full border-b-[3px] bg-transparent py-2 transition-all duration-300 outline-none focus:border-gray-600"
+            {...register("isim", {
+              required: "İsim boş bırakılamaz",
+            })}
           />
           <FaUser className="peer-focus:fill-primary-50 fill-primary-300 absolute top-1/2 right-2 -translate-y-1/2 text-xl duration-300" />
           <span className="bg-primary-50/85 absolute bottom-0 left-0 h-[2px] w-0 transition-all duration-300 peer-focus:w-full"></span>
