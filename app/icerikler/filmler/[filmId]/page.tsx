@@ -4,6 +4,8 @@ import { FilmTipi } from "../../../types";
 import Loading from "../../../loading";
 import Image from "next/image";
 import Footer from "../../../_components/Footer";
+import { MdDateRange } from "react-icons/md";
+import { LuTimer } from "react-icons/lu";
 
 const Page = async ({ params }) => {
   const { filmId } = await params;
@@ -23,9 +25,25 @@ const Page = async ({ params }) => {
             />
           </div>
           <div className="flex flex-col gap-y-6">
-            <h1 className="text-6xl">{film.isim}</h1>
+            <div className="flex items-center justify-between">
+              <h1 className="text-6xl">
+                {film.isim}{" "}
+                <span className="text-2xl italic opacity-50">
+                  / {film.yonetmen}
+                </span>
+              </h1>
+            </div>
             <div className="flex justify-between text-xl opacity-75">
-              <h3 className="italic">Yönetmen: {film.yonetmen}</h3>
+              <div className="flex items-center gap-x-10">
+                <h3 className="flex items-center gap-x-2">
+                  <MdDateRange className="h-[30px] w-[30px]" />
+                  {film.yayinlanma_tarihi}
+                </h3>
+                <h3 className="flex items-center gap-x-2">
+                  <LuTimer className="h-[28px] w-[28px]" />
+                  {Math.floor(film.sure / 60)}s {film.sure % 60}dk
+                </h3>
+              </div>
               <h3>
                 {film.turler.map((tur, index) => (
                   <span key={tur}>
