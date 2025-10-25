@@ -1,6 +1,6 @@
 import React, { Suspense } from "react";
 import KategoriSecim from "../../_components/icerikler/KategoriSecim";
-import KategoriFiltre from "../../_components/icerikler/KategoriFiltre";
+import KategoriSiralama from "../../_components/icerikler/KategoriSiralama";
 import KategoriIcerik from "../../_components/icerikler/KategoriIcerik";
 import Loading from "../../loading";
 import Yukleniyor from "../../_components/icerikler/Yukleniyor";
@@ -23,7 +23,7 @@ const Page = async ({ params }: { params: { katalog: string } }) => {
       <div className="mt-40">
         <div className="mx-auto w-full max-w-[1360px]">
           <div className="mx-4">
-            <KategoriFiltre />
+            <KategoriSiralama />
             <div className="mt-10 grid grid-cols-[auto_1fr] gap-x-10">
               <KategoriSecim katalog={katalog} />
               <Suspense fallback={<Yukleniyor />}>
