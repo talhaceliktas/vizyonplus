@@ -20,6 +20,6 @@ export interface FilmTipi {
   isim: string;
   olusturulma_zamani: string;
   sure: number;
-  tur: string;
+  turler: string[];
   yayinlanma_tarihi: string;
 }

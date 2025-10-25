@@ -2,7 +2,7 @@ import React from "react";
 import Link from "next/link";
 import { useAuth } from "../_context/AuthContext";
 import { ImExit } from "react-icons/im";
-import { FaRegUser, FaUser } from "react-icons/fa6";
+import { FaUser } from "react-icons/fa6";
 import { MdPayments } from "react-icons/md";
 import { VscSignIn } from "react-icons/vsc";
 
@@ -26,7 +26,7 @@ const AsagiAcilirMenu = () => {
           <MenuLink href="/profil" icon={<FaUser />}>
             <b>Profilim</b>
           </MenuLink>
-          <MenuLink href="/giris" icon={<MdPayments />}>
+          <MenuLink href="/abonelikler" icon={<MdPayments />}>
             Abonelikler
           </MenuLink>
           <div className="bg-primary-700 my-1 h-px" /> {/* Ayıraç */}

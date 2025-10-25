@@ -15,6 +15,7 @@ const nextConfig: NextConfig = {
       "m.media-amazon.com",
       "egkrjlxptyomswdanwbw.supabase.co",
       "avatar.iran.liara.run",
+      "yts.mx",
     ],
   },
 };

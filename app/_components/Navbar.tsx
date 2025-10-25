@@ -45,7 +45,6 @@ const Navbar = () => {
     };
   }, []); // Bu effect sadece bir kez çalışmalı
 
-  console.log(user);
   return (
     <div
       className={`fixed top-0 z-10 w-full duration-300 ${
