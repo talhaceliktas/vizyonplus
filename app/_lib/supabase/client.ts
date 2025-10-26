@@ -3,7 +3,9 @@
 import { createBrowserClient } from "@supabase/ssr";
 
 // Tarayıcıda çalışacak bir Supabase istemcisi oluştur
-export default createBrowserClient(
+const supabaseBrowserClient = createBrowserClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
   process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
 );
+
+export default supabaseBrowserClient;

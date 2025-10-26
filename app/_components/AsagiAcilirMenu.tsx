@@ -4,6 +4,7 @@ import { ImExit } from "react-icons/im";
 import { FaUser } from "react-icons/fa6";
 import { MdPayments } from "react-icons/md";
 import { VscSignIn } from "react-icons/vsc";
+import CikisYapButton from "./ui/CikisYapButton";
 
 const AsagiAcilirMenu = () => {
   const { user } = { user: "sdfasd" };
@@ -37,15 +38,13 @@ const AsagiAcilirMenu = () => {
             Abonelikler
           </MenuLink>
           <div className="bg-primary-700 my-1 h-px" /> {/* Ayıraç */}
-          <Link
+          <CikisYapButton
+            icon={<ImExit />}
             className="text-primary-100 hover:bg-primary-700 flex w-full items-center justify-between px-4 py-2 text-base"
-            href="/giris"
+            href="/"
           >
-            <span>Çıkış Yap</span>
-            <span className="text-xl">
-              <ImExit />
-            </span>
-          </Link>
+            Çıkış Yap
+          </CikisYapButton>
         </>
       ) : (
         <>
@@ -54,7 +53,6 @@ const AsagiAcilirMenu = () => {
           </MenuLink>
           <Link
             className="text-primary-100 hover:bg-primary-700 flex w-full items-center justify-between px-4 py-2 text-base"
-            onClick={signOut}
             href="/kayitol"
           >
             <span>Kayıt Ol</span>

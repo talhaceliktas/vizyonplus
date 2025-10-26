@@ -1,6 +1,9 @@
-import supabase from "./supabase/client";
+import supabaseClient from "./supabase/client";
+import supabaseServer from "./supabase/server";
 
 export async function filmleriGetir() {
+  const supabase = await supabaseServer();
+
   const { data: filmler, error } = await supabase
     .from("icerikler")
     .select("isim, fotograf, turler, id")
@@ -16,6 +19,8 @@ export async function filmleriGetir() {
 }
 
 export async function filmiGetir(filmId: number) {
+  const supabase = await supabaseServer();
+
   const { data: filmler, error } = await supabase
     .from("icerikler")
     .select("*")

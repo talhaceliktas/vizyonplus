@@ -16,8 +16,6 @@ export async function middleware(request: NextRequest) {
       cookies: {
         // 'get' fonksiyonunuz zaten doğruydu
         get(name) {
-          console.log(request.cookies.getAll());
-
           return request.cookies.get(name)?.value;
         },
         // 'set' fonksiyonu SADECE 'response' nesnesini değiştirmeli

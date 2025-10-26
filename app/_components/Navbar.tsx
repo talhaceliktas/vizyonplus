@@ -1,7 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import { FaCircleUser, FaUser } from "react-icons/fa6";
 import { useEffect, useState, useRef } from "react";
 import biletcimLogo from "../../public/logo.png";
 import Image from "next/image";
@@ -9,14 +8,20 @@ import AsagiAcilirMenu from "./AsagiAcilirMenu";
 import { FaUserCircle } from "react-icons/fa";
 
 const Navbar = () => {
-  const { user } = { user: "sdfasd" };
+  const { user } = {
+    user: {
+      user_metadata: {
+        display_name: "Test Verisi Duzelt!!!!",
+      },
+    },
+  };
 
   const [isTop, setIsTop] = useState(true);
   // 1. Dropdown menünün durumunu tutmak için state
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
   // 2. Dışarıya tıklamayı algılamak için ref
-  const dropdownRef = useRef(null);
+  const dropdownRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -29,9 +34,12 @@ const Navbar = () => {
 
   // 3. Dışarıya tıklanınca menüyü kapatan useEffect
   useEffect(() => {
-    const handleClickOutside = (event) => {
+    const handleClickOutside = (event: MouseEvent) => {
       // Eğer tıklanan yer dropdownRef'in (menü ve ikonun) dışındaysa
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target as Node)
+      ) {
         setIsDropdownOpen(false); // Menüyü kapat
       }
     };
