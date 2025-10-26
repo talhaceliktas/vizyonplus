@@ -6,7 +6,6 @@ import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import { Movie } from "../../types";
 import Link from "next/link";
-import ProgressBar from "../ProgressBar";
 
 interface TheatersSliderProps {
   movies: Movie[];

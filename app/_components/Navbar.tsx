@@ -6,11 +6,10 @@ import { useEffect, useState, useRef } from "react";
 import biletcimLogo from "../../public/logo.png";
 import Image from "next/image";
 import AsagiAcilirMenu from "./AsagiAcilirMenu";
-import { useAuth } from "../_context/AuthContext";
 import { FaUserCircle } from "react-icons/fa";
 
 const Navbar = () => {
-  const { user } = useAuth();
+  const { user } = { user: "sdfasd" };
 
   const [isTop, setIsTop] = useState(true);
   // 1. Dropdown menünün durumunu tutmak için state

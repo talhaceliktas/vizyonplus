@@ -21,11 +21,9 @@ export default function RootLayout({
       <body
         className={`from-primary-900 via-primary-800 to-primary-900 min-h-screen bg-gradient-to-l antialiased ${poppins.className}`}
       >
-        <AuthProvider>
-          <Navbar />
-          {children}
-          <Toaster position="bottom-right" />
-        </AuthProvider>
+        <Navbar />
+        {children}
+        <Toaster position="bottom-right" />
       </body>
     </html>
   );

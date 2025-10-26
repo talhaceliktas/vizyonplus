@@ -1,13 +1,12 @@
 import React from "react";
 import Link from "next/link";
-import { useAuth } from "../_context/AuthContext";
 import { ImExit } from "react-icons/im";
 import { FaUser } from "react-icons/fa6";
 import { MdPayments } from "react-icons/md";
 import { VscSignIn } from "react-icons/vsc";
 
 const AsagiAcilirMenu = () => {
-  const { user, signOut } = useAuth();
+  const { user } = { user: "sdfasd" };
 
   const MenuLink = ({ href, children, icon }) => (
     <Link
@@ -32,7 +31,6 @@ const AsagiAcilirMenu = () => {
           <div className="bg-primary-700 my-1 h-px" /> {/* Ayıraç */}
           <Link
             className="text-primary-100 hover:bg-primary-700 flex w-full items-center justify-between px-4 py-2 text-base"
-            onClick={signOut}
             href="/giris"
           >
             <span>Çıkış Yap</span>
