@@ -26,9 +26,11 @@ const Page = async ({ params }: { params: { katalog: string } }) => {
           <div className="mx-4">
             <KategoriSiralama />
             <div className="mt-10 grid grid-cols-[auto_1fr] gap-x-10">
-              <div>
-                <KategoriSecim katalog={katalog} />
-                <IcerikTurFiltre />
+              <div className="relative">
+                <div className="sticky top-40 flex flex-col gap-y-10">
+                  <KategoriSecim katalog={katalog} />
+                  <IcerikTurFiltre />
+                </div>
               </div>
               <Suspense fallback={<Yukleniyor />}>
                 <KategoriIcerik katalog={katalog} />

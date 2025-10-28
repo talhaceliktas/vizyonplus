@@ -2,8 +2,8 @@ import Link from "next/link";
 
 const KategoriSecim = ({ katalog }: { katalog: string }) => {
   return (
-    <div className="relative">
-      <div className="sticky top-50 flex flex-col gap-y-5 text-2xl">
+    <div>
+      <div className="top-50 flex flex-col gap-y-5 text-2xl">
         <Link
           href="/icerikler/diziler"
           className={`w-fit duration-300 ${katalog === "diziler" ? "text-primary-50 underline" : "text-primary-200 categori-button opacity-50 hover:opacity-75"}`}

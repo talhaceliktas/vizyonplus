@@ -83,3 +83,16 @@ body {
 .login-input:focus::before {
   width: 100%;
 }
+
+.custom-scrollbar::-webkit-scrollbar {
+  width: 6px;
+  border-radius: 4px;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background-color: var(--color-secondary-1); /* gri tik */
+  border-radius: 4px;
+}
+.custom-scrollbar::-webkit-scrollbar-track {
+  background-color: var(--color-secondary-3); /* track rengi */
+  border-radius: 4px;
+}
