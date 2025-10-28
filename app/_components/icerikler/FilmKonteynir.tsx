@@ -4,6 +4,7 @@ import { useSearchParams } from "next/navigation";
 import { FilmDetay } from "../../types";
 import Film from "./Film";
 import { useEffect, useState } from "react";
+import filmleriSiralaVeFiltrele from "../../_helper/filmleriSiralaVeFiltrele";
 
 const FilmKonteynir = ({ filmler }: { filmler: FilmDetay[] }) => {
   const [filtreler, setFiltreler] = useState([]);
@@ -24,46 +25,15 @@ const FilmKonteynir = ({ filmler }: { filmler: FilmDetay[] }) => {
     setSiralama(siralamaParam);
   }, [searchParams]);
 
-  let ayarlanmisFilmler = filmler;
-
-  if (filtreler && filtreler.length > 0) {
-    ayarlanmisFilmler = filmler.filter((film: FilmDetay) =>
-      film.turler.some((filmTuru) => filtreler.includes(filmTuru)),
-    );
-  }
-
-  if (siralama === "alfabetikAZ") {
-    ayarlanmisFilmler.sort((a, b) => a.isim.localeCompare(b.isim));
-  } else if (siralama === "alfabetikZA") {
-    ayarlanmisFilmler.sort((a, b) => b.isim.localeCompare(a.isim));
-  } else if (siralama === "fiyataGoreArtan") {
-    ayarlanmisFilmler.sort(
-      (
-        a,
-        b, // 100  - 20
-      ) =>
-        (a.film_ucretleri[0].satin_alma_ucreti *
-          (100 - a.film_ucretleri[0].indirim_orani)) /
-          100 -
-        (b.film_ucretleri[0].satin_alma_ucreti *
-          (100 - b.film_ucretleri[0].indirim_orani)) /
-          100,
-    );
-  } else if (siralama === "fiyataGoreAzalan") {
-    ayarlanmisFilmler.sort(
-      (a, b) =>
-        (b.film_ucretleri[0].satin_alma_ucreti *
-          (100 - b.film_ucretleri[0].indirim_orani)) /
-          100 -
-        (a.film_ucretleri[0].satin_alma_ucreti *
-          (100 - a.film_ucretleri[0].indirim_orani)) /
-          100,
-    );
-  }
+  const gosterilecekFilmler = filmleriSiralaVeFiltrele(
+    filtreler,
+    filmler,
+    siralama,
+  );
 
   return (
     <div className="bg-primary-700/15 grid grid-cols-3 gap-x-10 gap-y-20 p-10">
-      {ayarlanmisFilmler.map((film: FilmDetay) => (
+      {gosterilecekFilmler.map((film: FilmDetay) => (
         <Film film={film} key={film.id} />
       ))}
     </div>
