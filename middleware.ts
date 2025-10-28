@@ -40,7 +40,11 @@ export async function middleware(request: NextRequest) {
     return NextResponse.redirect(new URL("/giris", request.url));
   }
 
-  if (user && request.nextUrl.pathname.startsWith("/giris")) {
+  if (
+    user &&
+    (request.nextUrl.pathname.startsWith("/giris") ||
+      request.nextUrl.pathname.startsWith("/kayitol"))
+  ) {
     return NextResponse.redirect(new URL("/profil", request.url));
   }
 
@@ -49,5 +53,5 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/profil", "/giris"],
+  matcher: ["/profil", "/giris", "/kayitol"],
 };

@@ -6,15 +6,23 @@ import biletcimLogo from "../../public/logo.png";
 import Image from "next/image";
 import AsagiAcilirMenu from "./AsagiAcilirMenu";
 import { FaUserCircle } from "react-icons/fa";
+import supabaseBrowserClient from "../_lib/supabase/client";
 
 const Navbar = () => {
-  const { user } = {
-    user: {
-      user_metadata: {
-        display_name: "Test Verisi Duzelt!!!!",
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    const { data: authListener } = supabaseBrowserClient.auth.onAuthStateChange(
+      async (event, session) => {
+        setUser(session?.user ?? null);
       },
-    },
-  };
+    );
+
+    // cleanup
+    return () => {
+      authListener.subscription.unsubscribe();
+    };
+  }, []);
 
   const [isTop, setIsTop] = useState(true);
   // 1. Dropdown menünün durumunu tutmak için state

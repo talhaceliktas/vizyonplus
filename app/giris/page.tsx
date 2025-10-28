@@ -1,6 +1,3 @@
-"use client";
-
-import { redirect } from "next/navigation";
 import GirisYap from "../_components/giris-kayit/GirisYap";
 
 const Page = () => {

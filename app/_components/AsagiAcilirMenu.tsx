@@ -41,7 +41,7 @@ const AsagiAcilirMenu = () => {
           <CikisYapButton
             icon={<ImExit />}
             className="text-primary-100 hover:bg-primary-700 flex w-full items-center justify-between px-4 py-2 text-base"
-            href="/"
+            href="/giris"
           >
             Çıkış Yap
           </CikisYapButton>
