@@ -6,9 +6,7 @@ import { MdPayments } from "react-icons/md";
 import { VscSignIn } from "react-icons/vsc";
 import CikisYapButton from "./ui/CikisYapButton";
 
-const AsagiAcilirMenu = () => {
-  const { user } = { user: "sdfasd" };
-
+const AsagiAcilirMenu = ({ user }) => {
   const MenuLink = ({
     href,
     children,

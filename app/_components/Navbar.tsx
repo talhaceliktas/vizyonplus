@@ -15,6 +15,7 @@ const Navbar = () => {
     const { data: authListener } = supabaseBrowserClient.auth.onAuthStateChange(
       async (event, session) => {
         setUser(session?.user ?? null);
+        if (!user) setIsDropdownOpen(false);
       },
     );
 
@@ -22,7 +23,7 @@ const Navbar = () => {
     return () => {
       authListener.subscription.unsubscribe();
     };
-  }, []);
+  }, [user]);
 
   const [isTop, setIsTop] = useState(true);
   // 1. Dropdown menünün durumunu tutmak için state
@@ -129,7 +130,7 @@ const Navbar = () => {
             </button>
 
             {/* State true ise menüyü göster */}
-            {isDropdownOpen && <AsagiAcilirMenu />}
+            {isDropdownOpen && <AsagiAcilirMenu user={user} />}
           </div>
         </div>
       </div>
