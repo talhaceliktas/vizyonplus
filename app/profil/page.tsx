@@ -1,13 +1,12 @@
-import supabaseServerClient from "../_lib/supabase/server";
+import ProfilYanMenu from "../_components/profil/ProfilYanMenu";
 
 const Page = async () => {
-  const supabase = await supabaseServerClient();
-
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
-  return <div>Profil {user?.user_metadata.display_name}</div>;
+  return (
+    <div>
+      <ProfilYanMenu routeHref="/profil" />
+      <div></div>
+    </div>
+  );
 };
 
 export default Page;
