@@ -1,3 +1,5 @@
+"use server";
+
 import { FilmDetay } from "../types";
 import supabaseServer from "./supabase/server";
 
