@@ -8,11 +8,17 @@ import { MdDateRange } from "react-icons/md";
 import { LuTimer } from "react-icons/lu";
 import FavorilereEkleButton from "../../../_components/ui/FavorilereEkleButton";
 import DahaSonraIzleButton from "../../../_components/ui/DahaSonraIzleButton";
+import supabaseServerClient from "../../../_lib/supabase/server";
+import Link from "next/link";
 
 const Page = async ({ params }) => {
   const { filmId } = await params;
 
   const film: FilmTipi = await filmiGetir(filmId);
+
+  const supabase = await supabaseServerClient();
+
+  const user = await (await supabase.auth.getUser()).data.user;
 
   return (
     <Suspense fallback={<Loading />}>
@@ -56,9 +62,20 @@ const Page = async ({ params }) => {
               </h3>
             </div>
             <p className="text-lg">{film.aciklama}</p>
-            <div className="flex justify-end">
-              <FavorilereEkleButton icerik_id={film.id} />
-              <DahaSonraIzleButton icerik_id={film.id} />
+            <div className="flex justify-end gap-x-2">
+              {user ? (
+                <>
+                  <FavorilereEkleButton icerik_id={film.id} />
+                  <DahaSonraIzleButton icerik_id={film.id} />
+                </>
+              ) : (
+                <Link
+                  href="/giris"
+                  className="text-secondary-3 hover:text-secondary-2 text-lg duration-300"
+                >
+                  Favorilere eklemek için giriş yap!
+                </Link>
+              )}
             </div>
           </div>
         </div>
