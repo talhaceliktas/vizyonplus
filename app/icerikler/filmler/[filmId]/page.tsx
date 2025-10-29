@@ -6,6 +6,7 @@ import Image from "next/image";
 import Footer from "../../../_components/Footer";
 import { MdDateRange } from "react-icons/md";
 import { LuTimer } from "react-icons/lu";
+import FavorilereEkleButton from "../../../_components/ui/FavorilereEkleButton";
 
 const Page = async ({ params }) => {
   const { filmId } = await params;
@@ -54,6 +55,9 @@ const Page = async ({ params }) => {
               </h3>
             </div>
             <p className="text-lg">{film.aciklama}</p>
+            <div className="flex justify-end">
+              <FavorilereEkleButton icerik_id={film.id} />
+            </div>
           </div>
         </div>
       </div>
