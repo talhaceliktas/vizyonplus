@@ -5,8 +5,6 @@ export default function filmleriSiralaVeFiltrele(
   filmler: FilmDetay[],
   siralama: string,
 ) {
-  console.log(siralama);
-
   let ayarlanmisFilmler = [...filmler];
 
   if (filtreler && filtreler.length > 0) {

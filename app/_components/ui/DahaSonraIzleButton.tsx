@@ -8,7 +8,7 @@ import {
 import { useEffect, useState } from "react";
 import MiniYukleniyor from "./MiniYukleniyor";
 
-const DahaSonraIzleButton = ({ icerik_id }) => {
+const DahaSonraIzleButton = ({ icerik_id }: { icerik_id: string }) => {
   const [isaretliMi, setIsaretliMi] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -22,7 +22,7 @@ const DahaSonraIzleButton = ({ icerik_id }) => {
     isaretliMiKontrol();
   }, [icerik_id]);
 
-  async function favoriyeEkleTiklandi(e) {
+  async function favoriyeEkleTiklandi(e: React.MouseEvent<HTMLButtonElement>) {
     e.preventDefault();
     setIsLoading(true);
     await dahaSonraIzleEkle(icerik_id);

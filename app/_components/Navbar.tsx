@@ -7,20 +7,21 @@ import Image from "next/image";
 import AsagiAcilirMenu from "./AsagiAcilirMenu";
 import { FaUserCircle } from "react-icons/fa";
 import supabaseBrowserClient from "../_lib/supabase/client";
+import { User } from "@supabase/supabase-js";
 
 const Navbar = () => {
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState<User | null>(null);
 
   useEffect(() => {
     const { data: authListener } = supabaseBrowserClient.auth.onAuthStateChange(
-      async (event, session) => {
-        setUser(session?.user ?? null);
+      async (_event, session) => {
+        const currentUser = session?.user ?? null;
+        setUser(currentUser);
 
-        if (!user) setIsDropdownOpen(false);
+        if (!currentUser) setIsDropdownOpen(false);
       },
     );
 
-    // cleanup
     return () => {
       authListener.subscription.unsubscribe();
     };

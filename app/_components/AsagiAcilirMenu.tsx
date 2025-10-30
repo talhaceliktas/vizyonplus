@@ -5,8 +5,9 @@ import { FaUser } from "react-icons/fa6";
 import { MdPayments } from "react-icons/md";
 import { VscSignIn } from "react-icons/vsc";
 import CikisYapButton from "./ui/CikisYapButton";
+import { User } from "@supabase/supabase-js";
 
-const AsagiAcilirMenu = ({ user }) => {
+const AsagiAcilirMenu = ({ user }: { user: User }) => {
   const MenuLink = ({
     href,
     children,

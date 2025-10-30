@@ -10,7 +10,7 @@ export async function turleriGetir() {
 
 // Favoriye ekleme islevleri
 
-export async function favoriIsaretliMi(gelenIceriklerId: string) {
+export async function favoriIsaretliMi(gelenIceriklerId: number) {
   const {
     data: { user },
   } = await supabaseClient.auth.getUser();
@@ -33,7 +33,7 @@ export async function favoriIsaretliMi(gelenIceriklerId: string) {
   return Boolean(favoriFilm?.length);
 }
 
-export async function favorilereEkle(gelenIceriklerId: string) {
+export async function favorilereEkle(gelenIceriklerId: number) {
   const isaretliMi = await favoriIsaretliMi(gelenIceriklerId);
   let error = null;
 
