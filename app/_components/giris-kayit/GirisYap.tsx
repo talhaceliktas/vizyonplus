@@ -9,12 +9,17 @@ import { useForm } from "react-hook-form";
 import { signIn } from "../../_lib/auth";
 import toast from "react-hot-toast";
 
+interface GirisFormu {
+  email: string;
+  password: string;
+}
+
 const GirisYap = () => {
   const {
     formState: { errors },
     register,
     handleSubmit,
-  } = useForm();
+  } = useForm<GirisFormu>();
 
   async function girisYap(data: { email: string; password: string }) {
     const { email, password } = data;

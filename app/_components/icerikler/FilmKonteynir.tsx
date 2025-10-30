@@ -7,7 +7,7 @@ import { useEffect, useState } from "react";
 import filmleriSiralaVeFiltrele from "../../_helper/filmleriSiralaVeFiltrele";
 
 const FilmKonteynir = ({ filmler }: { filmler: FilmDetay[] }) => {
-  const [filtreler, setFiltreler] = useState([]);
+  const [filtreler, setFiltreler] = useState<string[]>([]);
   const [siralama, setSiralama] = useState("");
 
   const searchParams = useSearchParams();
@@ -15,14 +15,14 @@ const FilmKonteynir = ({ filmler }: { filmler: FilmDetay[] }) => {
   useEffect(() => {
     const turParams = searchParams.get("tur");
     const siralamaParam = searchParams.get("siralama");
-    let turler = [];
+    let turler: string[] = [];
 
     if (turParams) {
       turler = turParams.split(",");
     }
 
     setFiltreler(turler);
-    setSiralama(siralamaParam);
+    setSiralama(siralamaParam || "alfabetikAZ");
   }, [searchParams]);
 
   const gosterilecekFilmler = filmleriSiralaVeFiltrele(

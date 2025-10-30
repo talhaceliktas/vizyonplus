@@ -7,7 +7,7 @@ import { VscSignIn } from "react-icons/vsc";
 import CikisYapButton from "./ui/CikisYapButton";
 import { User } from "@supabase/supabase-js";
 
-const AsagiAcilirMenu = ({ user }: { user: User }) => {
+const AsagiAcilirMenu = ({ user }: { user: User | null }) => {
   const MenuLink = ({
     href,
     children,

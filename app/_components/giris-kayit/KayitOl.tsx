@@ -6,17 +6,29 @@ import { FcGoogle } from "react-icons/fc";
 import { IoMdMail } from "react-icons/io";
 import { FaEye, FaEyeSlash } from "react-icons/fa6";
 import { useState } from "react";
-import { useForm } from "react-hook-form";
+import { FieldErrors, SubmitErrorHandler, useForm } from "react-hook-form";
 import { signUp } from "../../_lib/auth";
 import toast from "react-hot-toast";
 
-const KayitOl = ({ setGonderilenEmail, setKayitTamamlandi }) => {
+type KayitOlProps = {
+  setGonderilenEmail: React.Dispatch<React.SetStateAction<string>>;
+  setKayitTamamlandi: React.Dispatch<React.SetStateAction<boolean>>;
+};
+
+interface KayitFormu {
+  isim: string;
+  email: string;
+  parola1: string;
+  parola2: string;
+}
+
+const KayitOl = ({ setGonderilenEmail, setKayitTamamlandi }: KayitOlProps) => {
   const {
     register,
     handleSubmit,
     formState: { errors },
     getValues,
-  } = useForm();
+  } = useForm<KayitFormu>();
 
   // hata yoksa bu fonksiyon calisir
   async function kayitOl(data: {
@@ -32,16 +44,23 @@ const KayitOl = ({ setGonderilenEmail, setKayitTamamlandi }) => {
     if (veri?.durum === "basarisiz") {
       toast.error(veri.message);
     } else {
-      setGonderilenEmail(veri?.message);
+      setGonderilenEmail(veri?.message ?? "");
       setKayitTamamlandi(true);
     }
   }
 
-  function hataVar(data) {
-    if (data?.email) toast.error(data?.email.message);
-    if (data?.parola1) toast.error(data?.parola1.message);
-    if (data?.parola2) toast.error(data?.parola2.message);
-  }
+  const hataVar: SubmitErrorHandler<KayitFormu> = (
+    errors: FieldErrors<KayitFormu>,
+  ) => {
+    if (errors.email)
+      toast.error(errors.email.message ?? "Bilinmeyen bir hata oluştu");
+    if (errors.isim)
+      toast.error(errors.isim.message ?? "Bilinmeyen bir hata oluştu");
+    if (errors.parola1)
+      toast.error(errors.parola1.message ?? "Bilinmeyen bir hata oluştu");
+    if (errors.parola2)
+      toast.error(errors.parola2.message ?? "Bilinmeyen bir hata oluştu");
+  };
 
   const [parola1Gizli, setParola1Gizli] = useState(true);
   const [parola2Gizli, setParola2Gizli] = useState(true);
