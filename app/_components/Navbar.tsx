@@ -8,6 +8,7 @@ import AsagiAcilirMenu from "./AsagiAcilirMenu";
 import { FaUserCircle } from "react-icons/fa";
 import supabaseBrowserClient from "../_lib/supabase/client";
 import { User } from "@supabase/supabase-js";
+import useDisariTiklamaAlgila from "../hooks/useDisariTiklamaAlgila";
 
 const Navbar = () => {
   const [user, setUser] = useState<User | null>(null);
@@ -29,10 +30,12 @@ const Navbar = () => {
 
   const [isTop, setIsTop] = useState(true);
   // 1. Dropdown menünün durumunu tutmak için state
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
   // 2. Dışarıya tıklamayı algılamak için ref
   const dropdownRef = useRef<HTMLDivElement>(null);
+
+  const { isOpen: isDropdownOpen, setIsOpen: setIsDropdownOpen } =
+    useDisariTiklamaAlgila(dropdownRef);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -42,26 +45,6 @@ const Navbar = () => {
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []); // isTop bağımlılığını kaldırdım, gereksiz yeniden render'ı önler
-
-  // 3. Dışarıya tıklanınca menüyü kapatan useEffect
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      // Eğer tıklanan yer dropdownRef'in (menü ve ikonun) dışındaysa
-      if (
-        dropdownRef.current &&
-        !dropdownRef.current.contains(event.target as Node)
-      ) {
-        setIsDropdownOpen(false); // Menüyü kapat
-      }
-    };
-
-    // Event listener'ı ekle
-    document.addEventListener("mousedown", handleClickOutside);
-    // Component kaldırıldığında listener'ı temizle
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, []); // Bu effect sadece bir kez çalışmalı
 
   return (
     <div

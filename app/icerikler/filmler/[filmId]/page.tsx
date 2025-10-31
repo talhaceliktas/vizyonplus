@@ -7,6 +7,7 @@ import Footer from "../../../_components/Footer";
 import supabaseServerClient from "../../../_lib/supabase/server";
 import FilmButonlari from "../../../_components/icerikler/film-sayfasi/FilmButonlari";
 import FilmIcerigi from "../../../_components/icerikler/film-sayfasi/FilmIcerigi";
+import Yorumlar from "../../../_components/icerikler/film-sayfasi/Yorumlar";
 
 const Page = async ({ params }: { params: { filmId: number } }) => {
   const { filmId } = await params;
@@ -21,20 +22,24 @@ const Page = async ({ params }: { params: { filmId: number } }) => {
 
   return (
     <Suspense fallback={<Loading />}>
-      <div className="h-screen px-4 pt-40 pb-20">
-        <div className="mx-auto flex h-full w-full max-w-[1360px] gap-x-10">
-          <div className="relative aspect-[9/16] h-full">
-            <Image
-              alt={`${isim} filmi kapağı`}
-              src={fotograf}
-              className="object-cover"
-              fill
-            />
+      <div className="px-4 pt-40 pb-20">
+        <div className="mx-auto flex h-full w-full max-w-[1360px] flex-col gap-y-20">
+          <div className="flex gap-x-10 gap-y-10">
+            <div className="relative aspect-[9/16] w-full max-w-[400px]">
+              <Image
+                alt={`${isim} filmi kapağı`}
+                src={fotograf}
+                className="rounded-xl object-cover"
+                fill
+              />
+            </div>
+
+            <div className="flex w-full flex-col gap-y-6">
+              <FilmIcerigi film={film} />
+              <FilmButonlari id={id} user={user} />
+            </div>
           </div>
-          <div className="flex flex-col gap-y-6">
-            <FilmIcerigi film={film} />
-            <FilmButonlari id={id} user={user} />
-          </div>
+          <Yorumlar />
         </div>
       </div>
       <Footer />
