@@ -101,3 +101,20 @@ export async function icerikYorumlariniGetir(icerikId: number) {
 
   return yorumlar || [];
 }
+
+export async function profilFotografiniGetir(kullaniciId: string) {
+  const supabase = await supabaseServer();
+
+  const { data, error } = await supabase
+    .from("profiller")
+    .select("profil_fotografi")
+    .eq("id", kullaniciId)
+    .single();
+
+  if (error) {
+    return "";
+  }
+
+  // data null olursa boş string döndür
+  return data?.profil_fotografi ?? "";
+}

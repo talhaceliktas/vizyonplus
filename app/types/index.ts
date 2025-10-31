@@ -1,3 +1,9 @@
+declare module "@supabase/supabase-js" {
+  interface User {
+    display_name?: string;
+  }
+}
+
 export interface Movie {
   big_image: string;
   description: string;

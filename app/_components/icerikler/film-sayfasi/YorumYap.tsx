@@ -67,7 +67,8 @@ const YorumYap = ({ icerikId }: { icerikId: number }) => {
         </div>
         <button
           onClick={yorumYapBasildi}
-          className={`px-3 py-2 text-black duration-300 ${!yorum ? "bg-primary-400 cursor-not-allowed" : "bg-secondary-1 cursor-pointer"}`}
+          disabled={yorum.length <= 3}
+          className={`px-3 py-2 text-black duration-300 ${yorum.length <= 3 ? "bg-primary-400 cursor-not-allowed" : "bg-secondary-1 cursor-pointer"}`}
         >
           Yorum Yap
         </button>
