@@ -31,12 +31,13 @@ const YorumYap = ({ icerikId }: { icerikId: number }) => {
   }
 
   return (
-    <div className="border-primary-600 relative flex flex-col border-b-2 p-2">
+    <div className="border-primary-600 relative flex flex-col border-b-2 p-2 pb-10">
       <textarea
         value={yorum}
         onChange={(e) => setYorum(e.target.value)}
         className="border-primary-600 mt-4 w-full rounded-md border-2 bg-transparent p-2"
         placeholder="Lütfen yorumunuzu giriniz..."
+        rows={10}
       />
       <button
         onClick={() => setIsOpen((prev) => !prev)}

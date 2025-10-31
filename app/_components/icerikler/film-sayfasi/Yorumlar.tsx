@@ -3,6 +3,7 @@ import YorumYap from "./YorumYap";
 import { icerikYorumlariniGetir } from "../../../_lib/data-service-server";
 import type { YorumTipi } from "../../../types";
 import Yorum from "./Yorum";
+import SpoilerYorum from "./SpoilerYorum";
 
 const Yorumlar = async ({ icerikId }: { icerikId: number }) => {
   const yorumlar = await icerikYorumlariniGetir(icerikId);
@@ -18,10 +19,14 @@ const Yorumlar = async ({ icerikId }: { icerikId: number }) => {
         <h2>Yorumlar</h2>
       </div>
       <YorumYap icerikId={icerikId} />
-      <div className="divide-primary-600/30 my-4 flex flex-col gap-y-4 divide-y-2">
-        {yorumlar.map((yorum: YorumTipi) => (
-          <Yorum key={yorum.id} yorum={yorum} />
-        ))}
+      <div className="divide-primary-600/30 mt-8 flex flex-col gap-y-4 divide-y-2">
+        {yorumlar.map((yorum: YorumTipi) =>
+          yorum.spoiler_mi ? (
+            <SpoilerYorum key={yorum.id} yorum={yorum} />
+          ) : (
+            <Yorum key={yorum.id} yorum={yorum} />
+          ),
+        )}
       </div>
     </div>
   );

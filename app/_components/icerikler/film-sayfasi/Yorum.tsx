@@ -18,10 +18,12 @@ const Yorum = ({ yorum }: { yorum: YorumTipi }) => {
         </h2>
         <p className="text-primary-100">{yorum.yorum}</p>
         <p className="w-full text-end">
-          {new Date(yorum.olusturulma_zamani).toLocaleDateString("tr-TR", {
-            hour: "2-digit",
-            minute: "2-digit",
-          })}
+          {new Date(yorum.olusturulma_zamani)
+            .toLocaleDateString("tr-TR", {
+              hour: "2-digit",
+              minute: "2-digit",
+            })
+            .replaceAll(".", "/")}
         </p>
       </div>
     </div>
