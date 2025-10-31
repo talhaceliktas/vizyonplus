@@ -117,5 +117,8 @@ export async function yorumYap(
 
   if (error) {
     console.error("Daha Sonra İzle işlemi hatası:", error.message || error);
+    return false;
   }
+
+  return true;
 }

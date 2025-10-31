@@ -5,6 +5,7 @@ import { useRef, useState } from "react";
 import useDisariTiklamaAlgila from "../../../hooks/useDisariTiklamaAlgila";
 import { RiEmojiStickerFill } from "react-icons/ri";
 import { yorumYap } from "../../../_lib/data-service-client";
+import toast from "react-hot-toast";
 
 const YorumYap = ({ icerikId }: { icerikId: number }) => {
   const [yorum, setYorum] = useState("");
@@ -19,7 +20,14 @@ const YorumYap = ({ icerikId }: { icerikId: number }) => {
   };
 
   async function yorumYapBasildi() {
-    await yorumYap(icerikId, yorum, spoilerVar);
+    const durum = await yorumYap(icerikId, yorum, spoilerVar);
+    if (!durum) {
+      toast.error("Bir sorun oluştu!");
+    } else {
+      setYorum("");
+      setSpoilerVar(false);
+      toast.success("Yorumunuz başarıyla gönderildi.");
+    }
   }
 
   return (
