@@ -123,15 +123,20 @@ export async function yorumYap(
   return true;
 }
 
-export async function aramaYap(arama: string) {
+export async function aramaYap(arama: string, signal: AbortSignal) {
   const { data: icerikler, error } = await supabaseClient
     .from("icerikler")
     .select("id, isim, fotograf, tur, aciklama")
     .ilike("isim", `%${arama}%`)
+    .abortSignal(signal) // <-- Supabase'e sinyali burada iletiyoruz
     .limit(6);
 
   if (error) {
-    console.error("Arama işlemi hatası:", error.message || error);
+    // İptal hatasıysa, data service katmanında da bunu
+    // normal bir hata gibi loglamamak iyi bir pratiktir.
+    if (error.name !== "AbortError") {
+      console.error("Arama işlemi hatası:", error.message || error);
+    }
   }
 
   return icerikler;

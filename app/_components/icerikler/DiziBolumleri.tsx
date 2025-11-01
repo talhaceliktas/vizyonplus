@@ -5,8 +5,6 @@ const DiziBolumleri = ({ diziSezonBilgileri, seciliSezon }) => {
     (s) => s.sezon_numarasi === seciliSezon,
   );
 
-  console.log(diziSezonBilgileri);
-
   return (
     <div className="flex flex-1 flex-col px-8 py-2">
       <table className="table-auto border-separate border-spacing-y-4">

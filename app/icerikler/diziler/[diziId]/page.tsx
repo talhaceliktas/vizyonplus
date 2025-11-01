@@ -21,8 +21,6 @@ const Page = async ({ params }: { params: { diziId: number } }) => {
 
   const { id, isim, fotograf } = dizi;
 
-  console.log(dizi.dizi);
-
   return (
     <Suspense fallback={<Loading />}>
       <div className="px-4 pt-40 pb-20">

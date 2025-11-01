@@ -21,23 +21,39 @@ const Arama = () => {
   const { isOpen, setIsOpen } = useDisariTiklamaAlgila(aramaRef);
 
   useEffect(() => {
+    // 1. Her effect çalıştığında yeni bir AbortController oluştur
+    const controller = new AbortController();
+    const signal = controller.signal;
+
     if (arama.length >= 2) {
       const aramaYapiliyor = async () => {
         try {
-          const gelenVeriler = await aramaYap(arama);
-          // array değilse boş array ata
+          // 2. 'signal'i data-service fonksiyonuna parametre olarak geç
+          const gelenVeriler = await aramaYap(arama, signal);
           setVeriler(Array.isArray(gelenVeriler) ? gelenVeriler : []);
-          console.log(gelenVeriler);
         } catch (err) {
-          console.error("Arama hatası:", err);
-          setVeriler([]);
+          // 3. İptal hatasını yakala ve konsola yazdırma
+          // (İsteği bilerek iptal ettiğimiz için bu bir "hata" değil)
+          if (err.name === "AbortError") {
+          } else {
+            // Diğer hataları konsola yazdır
+            setVeriler([]);
+          }
         }
       };
       aramaYapiliyor();
     } else {
       setVeriler([]);
     }
-  }, [arama]);
+
+    // 4. useEffect'in temizleme fonksiyonu
+    // 'arama' state'i her değiştiğinde, bu effect yeniden çalışmadan
+    // BİR ÖNCEKİ effect'in temizleme fonksiyonu çalışır.
+    // Bu da bir önceki 'controller'ı iptal eder.
+    return () => {
+      controller.abort();
+    };
+  }, [arama]); // Bağımlılık 'arama' olarak kalır
 
   return (
     <div className="relative">
