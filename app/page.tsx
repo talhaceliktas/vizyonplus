@@ -4,10 +4,10 @@ import TheatersBox from "./_components/anasayfa/TheatersBox";
 
 export default function Home() {
   return (
-    <main>
+    <div>
       <Giris />
       <TheatersBox />
       <Footer />
-    </main>
+    </div>
   );
 }

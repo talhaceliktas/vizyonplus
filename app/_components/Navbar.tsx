@@ -11,6 +11,7 @@ import { User } from "@supabase/supabase-js";
 import useDisariTiklamaAlgila from "../hooks/useDisariTiklamaAlgila";
 import supabase from "../_lib/supabase/client";
 import Arama from "./Arama";
+import { ThemeSwitcher } from "../_lib/next-theme/ThemeSwitcher";
 
 const Navbar = () => {
   const [user, setUser] = useState<User | null>(null);
@@ -133,7 +134,8 @@ const Navbar = () => {
         {/* Konumlandırma için bir container ve ref ataması */}
         <div className="relative" ref={dropdownRef}>
           {/* İkonu bir butona çeviriyoruz. Tıklanınca state'i değiştirir. */}
-          <div className="flex">
+          <div className="flex items-center gap-x-10">
+            <ThemeSwitcher />
             <button
               onClick={() => setIsDropdownOpen(!isDropdownOpen)} // Tıklanınca durumu tersine çevir
               className="cursor-pointer"
@@ -160,7 +162,6 @@ const Navbar = () => {
                 )}
               </div>
             </button>
-
             {/* State true ise menüyü göster */}
             {isDropdownOpen && (
               <AsagiAcilirMenu
