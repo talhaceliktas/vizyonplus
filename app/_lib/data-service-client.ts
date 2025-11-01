@@ -116,9 +116,23 @@ export async function yorumYap(
     .insert([{ icerik_id: icerikId, yorum, spoiler_mi: spoilerVar }]);
 
   if (error) {
-    console.error("Daha Sonra İzle işlemi hatası:", error.message || error);
+    console.error("Yorum işlemi hatası:", error.message || error);
     return false;
   }
 
   return true;
+}
+
+export async function aramaYap(arama: string) {
+  const { data: icerikler, error } = await supabaseClient
+    .from("icerikler")
+    .select("id, isim, fotograf, tur, aciklama")
+    .ilike("isim", `%${arama}%`)
+    .limit(6);
+
+  if (error) {
+    console.error("Arama işlemi hatası:", error.message || error);
+  }
+
+  return icerikler;
 }

@@ -18,7 +18,9 @@ const Film = ({ film }: { film: FilmDetay }) => {
           sizes="100%"
         />
       </div>
-      <h2 className="text-center text-xl font-semibold">{film.isim}</h2>
+      <h2 className="text-secondary-1-2 text-center text-xl font-semibold">
+        {film.isim}
+      </h2>
       <div className="text-primary-50 flex flex-col text-center">
         <p className="opacity-75">
           {film.turler.map((tur, index) => (

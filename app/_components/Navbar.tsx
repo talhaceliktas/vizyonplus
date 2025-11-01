@@ -10,6 +10,7 @@ import supabaseBrowserClient from "../_lib/supabase/client";
 import { User } from "@supabase/supabase-js";
 import useDisariTiklamaAlgila from "../hooks/useDisariTiklamaAlgila";
 import supabase from "../_lib/supabase/client";
+import Arama from "./Arama";
 
 const Navbar = () => {
   const [user, setUser] = useState<User | null>(null);
@@ -126,11 +127,7 @@ const Navbar = () => {
           >
             Kampanyalar
           </Link>
-          <input
-            type="text"
-            className="bg-primary-50 placeholder:text-primary-500 text-primary-900 w-[15rem] rounded-full p-1 pl-3 duration-300 focus:w-[20rem]"
-            placeholder="Ara..."
-          />
+          <Arama />
         </div>
 
         {/* Konumlandırma için bir container ve ref ataması */}
