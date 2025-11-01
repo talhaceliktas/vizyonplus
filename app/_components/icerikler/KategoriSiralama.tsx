@@ -19,7 +19,10 @@ const KategoriSiralama = ({ katalog }: { katalog: string }) => {
 
   const Secenek = ({ value, label }: { value: string; label: string }) => {
     return (
-      <option value={value} className="text-primary-800">
+      <option
+        value={value}
+        className="dark:text-secondary-1-2 text-secondary-1 bg-primary-800"
+      >
         {label}
       </option>
     );
@@ -28,7 +31,7 @@ const KategoriSiralama = ({ katalog }: { katalog: string }) => {
   return (
     <select
       name="Filtre"
-      className="text-primary-50 ml-auto block"
+      className="dark:text-secondary-1-2 text-secondary-1 ml-auto block"
       onChange={(e) => handleFilter(e.target.value)}
       value={siralama}
     >

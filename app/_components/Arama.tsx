@@ -59,7 +59,7 @@ const Arama = () => {
     <div className="relative">
       <input
         type="text"
-        className="bg-primary-50 placeholder:text-primary-500 text-primary-900 w-[15rem] rounded-full p-1 pl-3 duration-300 focus:w-[20rem]"
+        className="dark:bg-primary-50 bg-primary-200 dark:placeholder:text-primary-500 placeholder:text-primary-950 text-primary-900 w-[15rem] rounded-full p-1 pl-3 duration-300 focus:w-[20rem]"
         placeholder="Ara..."
         onChange={(e) => setArama(e.target.value)}
         value={arama}

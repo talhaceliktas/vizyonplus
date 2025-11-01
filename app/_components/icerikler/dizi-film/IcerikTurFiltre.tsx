@@ -57,7 +57,7 @@ const IcerikTurFiltre = () => {
 
   return (
     <div>
-      <div className="custom-scrollbar h-64 w-full overflow-y-auto">
+      <div className="custom-scrollbar text-primary-50 h-64 w-full overflow-y-auto">
         <table>
           <tbody>
             {icerikTurleri &&
@@ -81,7 +81,7 @@ const IcerikTurFiltre = () => {
         </table>
       </div>
       <p
-        className="hover:text-secondary-1 text-secondary-2 mt-6 cursor-pointer duration-300"
+        className="dark:hover:text-secondary-1 dark:text-secondary-2 text-secondary-1 hover:text-secondary-1-2 mt-6 cursor-pointer duration-300"
         onClick={filtreleriTemizle}
       >
         Filtreleri Temizle

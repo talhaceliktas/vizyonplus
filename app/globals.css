@@ -1,22 +1,45 @@
 @import "tailwindcss";
 
-@theme {
-  --color-primary-50: #f5f5f5;
-  --color-primary-100: #e0e0e0;
-  --color-primary-200: #c2c2c2;
-  --color-primary-300: #a3a3a3;
-  --color-primary-400: #858585;
-  --color-primary-500: #666666;
-  --color-primary-600: #444444;
-  --color-primary-700: #2a2a2a;
-  --color-primary-800: #1c1c1c;
-  --color-primary-900: #121212;
-  --color-primary-950: #0a0a0a;
+@custom-variant dark (&:where(.dark, .dark *));
 
-  --color-secondary-1: #ffd700;
-  --color-secondary-1-2: #e5c203;
-  --color-secondary-2: #cbac05;
-  --color-secondary-3: #9e8704;
+@theme {
+  --color-primary-50: #0a0a0a; /* Koyu moddaki 950'nin değeri */
+  --color-primary-100: #121212; /* Koyu moddaki 900'ün değeri */
+  --color-primary-200: #1c1c1c; /* Koyu moddaki 800'ün değeri */
+  --color-primary-300: #2a2a2a; /* Koyu moddaki 700'ün değeri */
+  --color-primary-400: #444444; /* Koyu moddaki 600'ün değeri */
+  --color-primary-500: #666666; /* Orta nokta, aynı kalabilir */
+  --color-primary-600: #858585; /* Koyu moddaki 400'ün değeri */
+  --color-primary-700: #a3a3a3; /* Koyu moddaki 300'ün değeri */
+  --color-primary-800: #c2c2c2; /* Koyu moddaki 200'ün değeri */
+  --color-primary-900: #e0e0e0; /* Koyu moddaki 100'ün değeri */
+  --color-primary-950: #f5f5f5; /* Koyu moddaki 50'nin değeri (En açık) */
+
+  --color-secondary-1: #9e8704;
+  --color-secondary-1-2: #cbac05;
+  --color-secondary-2: #e5c203;
+  --color-secondary-3: #ffd700;
+}
+
+@layer theme {
+  .dark {
+    --color-primary-50: #f5f5f5;
+    --color-primary-100: #e0e0e0;
+    --color-primary-200: #c2c2c2;
+    --color-primary-300: #a3a3a3;
+    --color-primary-400: #858585;
+    --color-primary-500: #666666;
+    --color-primary-600: #444444;
+    --color-primary-700: #2a2a2a;
+    --color-primary-800: #1c1c1c;
+    --color-primary-900: #121212;
+    --color-primary-950: #0a0a0a;
+
+    --color-secondary-1: #ffd700;
+    --color-secondary-1-2: #e5c203;
+    --color-secondary-2: #cbac05;
+    --color-secondary-3: #9e8704;
+  }
 }
 
 @media (prefers-color-scheme: dark) {

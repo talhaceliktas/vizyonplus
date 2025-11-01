@@ -115,16 +115,16 @@ const Navbar = () => {
             className="w-32 sm:w-38"
           />
         </Link>
-        <div className="hidden items-center gap-x-5 font-semibold md:flex">
+        <div className="dark:text-primary-50 hidden items-center gap-x-5 font-semibold md:flex">
           <Link
             href="/icerikler"
-            className="hover:text-primary-200 duration-300"
+            className="dark:hover:text-primary-200 dark:text-primary-50 text-primary-200 hover:text-primary-400 duration-300"
           >
             Dijital İçerikler
           </Link>
           <Link
             href="/kampanyalar"
-            className="hover:text-primary-200 duration-300"
+            className="dark:hover:text-primary-200 dark:text-primary-50 text-primary-200 hover:text-primary-400 duration-300"
           >
             Kampanyalar
           </Link>

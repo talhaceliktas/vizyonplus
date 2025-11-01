@@ -5,7 +5,7 @@ import Link from "next/link";
 const Dizi = ({ dizi }: { dizi: DiziDetay }) => {
   return (
     <Link
-      className="flex flex-col gap-y-2 overflow-hidden rounded-lg grayscale-25 duration-300 hover:scale-110 hover:grayscale-0"
+      className="flex flex-col gap-y-2 overflow-hidden rounded-lg duration-300 hover:scale-110 hover:grayscale-0 dark:grayscale-25"
       href={`/icerikler/diziler/${dizi.id}`}
     >
       <div className="relative aspect-[619/919] w-full">
@@ -18,7 +18,7 @@ const Dizi = ({ dizi }: { dizi: DiziDetay }) => {
           sizes="100%"
         />
       </div>
-      <h2 className="text-secondary-1-2 text-center text-xl font-semibold">
+      <h2 className="dark:text-secondary-1-2 text-secondary-1 text-center text-xl font-semibold">
         {dizi.isim}
       </h2>
       <div className="text-primary-50 flex flex-col text-center">
