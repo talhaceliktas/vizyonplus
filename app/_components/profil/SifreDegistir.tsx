@@ -1,9 +1,11 @@
 import { User } from "@supabase/supabase-js";
+import { TiWarningOutline } from "react-icons/ti";
 
 const SifreDegistir = ({ user }: { user: User }) => {
   return (
     <div className="w-full max-w-lg py-10 text-lg md:text-xl">
-      <div className="grid grid-cols-[150px_1fr] items-center gap-x-6 gap-y-4">
+      <p className="text-sm text-red-800 flex items-center justify-center gap-2 py-2"> <TiWarningOutline className="text-6xl"/> Lütfen mevcut şifrenizi girin ve yeni bir şifre belirleyin. Güvenliğiniz için şifreniz en az 8 karakter olmalı.</p>
+      <div className="grid grid-cols-[150px_1fr] items-center gap-x-6 gap-y-4">        
         <label htmlFor="adSoyad" className="text-gray-300">
           Mevcut Parola:
         </label>

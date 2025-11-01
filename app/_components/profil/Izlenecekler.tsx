@@ -20,7 +20,7 @@ const Izlenecekler = async () => {
           Daha Sonra İzle listende henüz film yok
         </h2>
         <p className="text-secondary-3 text-sm flex items-center justify-center gap-1">
-          İzlemek istediğin filmleri <FaRegBookmark className="text-xl inline-block" /> ikonuna tıklayarak buraya ekleyebilirsin.
+          İzlemek istediğin filmleri <FaRegBookmark className="text-xl" /> ikonuna tıklayarak buraya ekleyebilirsin.
         </p>
       </div>
     );
