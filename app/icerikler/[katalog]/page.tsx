@@ -25,7 +25,7 @@ const Page = async ({ params }: { params: { katalog: string } }) => {
         <div className="mx-auto w-full max-w-[1360px]">
           <div className="mx-4">
             <KategoriSiralama katalog={katalog} />
-            <div className="mt-10 grid grid-cols-[auto_1fr] gap-x-10">
+            <div className="mt-10 grid grid-cols-[12.5rem_1fr] gap-x-10">
               <div className="relative">
                 <div className="sticky top-40 flex flex-col gap-y-10">
                   <KategoriSecim katalog={katalog} />

@@ -18,15 +18,9 @@ const KategoriSecim = ({ katalog }: { katalog: string }) => {
         </Link>
         <Link
           href="/icerikler/yakindakiler"
-          className={`w-fit duration-300 ${katalog === "yakindakiler" ? "text-primary-50 underline" : "text-primary-200 categori-button opacity-50 hover:opacity-75"}`}
+          className={`w-fit duration-300 ${katalog === "yakindakiler" ? "text-secondary-1 underline" : "text-secondary-2 categori-button categori-button-imdb opacity-50 hover:opacity-75"}`}
         >
           Çok Yakında
-        </Link>
-        <Link
-          href="/icerikler/begenilenler"
-          className={`w-fit duration-300 ${katalog === "begenilenler" ? "text-secondary-1 underline" : "text-secondary-2 categori-button categori-button-imdb opacity-50 hover:opacity-75"}`}
-        >
-          En çok beğenilenler
         </Link>
       </div>
     </div>
