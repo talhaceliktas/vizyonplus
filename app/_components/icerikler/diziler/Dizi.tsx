@@ -6,7 +6,7 @@ const Dizi = ({ dizi }: { dizi: DiziDetay }) => {
   return (
     <Link
       className="flex flex-col gap-y-2 overflow-hidden rounded-lg grayscale-25 duration-300 hover:scale-110 hover:grayscale-0"
-      href={`/icerikler/diziler/${dizi.id}?sezon=1`}
+      href={`/icerikler/diziler/${dizi.id}`}
     >
       <div className="relative aspect-[619/919] w-full">
         <Image

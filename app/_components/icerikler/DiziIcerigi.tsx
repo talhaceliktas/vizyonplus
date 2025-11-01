@@ -22,7 +22,9 @@ const DiziIcerigi = ({ dizi }: { dizi: DiziDetay }) => {
           </h3>
           <h3 className="flex items-center gap-x-2">
             <LuTimer className="h-[28px] w-[28px]" />
-            {Math.floor(sure / 60)}s {sure % 60}dk
+            Ortalama Bölüm Süresi: &nbsp;
+            {Math.floor(sure / 60) !== 0 && `${Math.floor(sure / 60)}s`}{" "}
+            {sure % 60}dk
           </h3>
         </div>
         <h3>

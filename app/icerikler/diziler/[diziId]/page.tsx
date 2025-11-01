@@ -1,6 +1,6 @@
 import { Suspense } from "react";
 import { diziyiGetir } from "../../../_lib/data-service-server";
-import { DiziDetay, DiziSezon } from "../../../types";
+import { DiziSezon } from "../../../types";
 import Loading from "../../../loading";
 import Image from "next/image";
 import Footer from "../../../_components/Footer";
@@ -8,8 +8,7 @@ import supabaseServerClient from "../../../_lib/supabase/server";
 import IcerikButonlari from "../../../_components/icerikler/dizi-film/IcerikButonlari";
 import Yorumlar from "../../../_components/icerikler/dizi-film/Yorumlar";
 import DiziIcerigi from "../../../_components/icerikler/DiziIcerigi";
-import DiziSezonlari from "../../../_components/icerikler/DiziSezonlari";
-import DiziBolumleri from "../../../_components/icerikler/DiziBolumleri";
+import DiziSezonKonteynir from "../../../_components/icerikler/DiziSezonKonteynir";
 
 const Page = async ({ params }: { params: { diziId: number } }) => {
   const { diziId } = await params;
@@ -40,11 +39,7 @@ const Page = async ({ params }: { params: { diziId: number } }) => {
             <div className="flex w-full flex-col gap-y-6">
               <DiziIcerigi dizi={dizi} />
               <IcerikButonlari id={id} user={user} />
-              <div className="divide-primary-500 border-primary-600 flex border-[1px]">
-                <DiziSezonlari diziSezonBilgileri={dizi.dizi} diziId={diziId} />
-                <span className="bg-primary-600 h-full w-[1px]"></span>
-                <DiziBolumleri diziSezonBilgileri={dizi.dizi} />
-              </div>
+              <DiziSezonKonteynir dizi={dizi} />
             </div>
           </div>
           <Yorumlar icerikId={id} />
