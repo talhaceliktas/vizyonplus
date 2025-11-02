@@ -15,11 +15,13 @@ const Footer = () => {
             />
           </Link>
           <p>
-            Vizyon+, sinema keyfini kolay ve hızlı yaşamanız için tasarlanmış
-            modern bir bilet platformudur. Türkiye genelindeki salonları tek
-            çatı altında toplar, seansları keşfetmenizi ve yerinizi anında
-            ayırtmanızı sağlar. Kullanıcı dostu arayüzüyle her cihazdan güvenli,
-            hızlı ve keyifli bir deneyim sunar.
+            🎬 Vizyon+, film ve dizi tutkunları için tasarlanmış modern bir
+            dijital platformdur. Favori yapımlarınızı kolayca keşfedebilir,
+            dilediğiniz zaman yüksek kaliteyle izleyebilirsiniz. Kullanıcı dostu
+            arayüzüyle her cihazda hızlı, akıcı ve keyifli bir izleme deneyimi
+            sunar. Tüm içerikler yalnızca eğitim ve demo amaçlı hazırlanmıştır;
+            ticari bir faaliyet içermez. © 2025 Vizyon+ – Yazılım geliştirme
+            sürecinde öğrenme ve deneme projesidir.
           </p>
         </div>
 
@@ -56,11 +58,11 @@ const Footer = () => {
       </div>
       <hr className="mt-10" />
       <p className="mt-2 text-center">
-        🎬 Vizyon+, tamamen deneysel amaçla geliştirilmiş bir sinema rezervasyon
-        projesidir. Gerçek bilet satışı veya ticari bir faaliyet
-        yürütmemektedir. Tüm içerikler, kullanıcı arayüzü ve veriler yalnızca
-        eğitim ve demo amaçlı hazırlanmıştır. © 2025 Vizyon+ – Bu proje,
-        yazılım geliştirme sürecinde öğrenme ve deneme çalışmasıdır.
+        🎬 Vizyon+, film ve dizilerin keyifle izlenebileceği modern bir dijital
+        platformdur. Tüm içerikler yalnızca eğitim, tanıtım ve demo amaçlı
+        hazırlanmıştır. Gerçek yayın, telifli içerik veya ticari bir faaliyet
+        bulunmamaktadır. © 2025 Vizyon+ – Bu proje, yazılım geliştirme
+        sürecinde öğrenme ve deneme çalışmasıdır.
       </p>
     </div>
   );
