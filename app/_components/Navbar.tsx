@@ -5,7 +5,7 @@ import { useEffect, useState, useRef } from "react";
 import vizyonPLusLogo from "../../public/logo.png";
 import Image from "next/image";
 import AsagiAcilirMenu from "./AsagiAcilirMenu";
-import { FaUserCircle } from "react-icons/fa";
+import { FaUserCircle, FaBars, FaTimes } from "react-icons/fa";
 import supabaseBrowserClient from "../_lib/supabase/client";
 import { User } from "@supabase/supabase-js";
 import useDisariTiklamaAlgila from "../hooks/useDisariTiklamaAlgila";
@@ -14,48 +14,41 @@ import Arama from "./Arama";
 
 const Navbar = () => {
   const [user, setUser] = useState<User | null>(null);
+  const [profilFoto, setProfilFoto] = useState<string | null>(null);
+  const [isTop, setIsTop] = useState(true);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+  const { isOpen: isDropdownOpen, setIsOpen: setIsDropdownOpen } =
+    useDisariTiklamaAlgila(dropdownRef);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false); // --- Auth, Profil Foto ve Scroll Effect'leri (Değişiklik yok) ---
 
   useEffect(() => {
     const { data: authListener } = supabaseBrowserClient.auth.onAuthStateChange(
       async (_event, session) => {
         const currentUser = session?.user ?? null;
         setUser(currentUser);
-
         if (!currentUser) setIsDropdownOpen(false);
       },
     );
-
-    return () => {
-      authListener.subscription.unsubscribe();
-    };
+    return () => authListener.subscription.unsubscribe();
   }, []);
-
-  const [profilFoto, setProfilFoto] = useState<string | null>(null);
 
   useEffect(() => {
     if (!user) return;
-
     const fetchProfilePhoto = async () => {
       const { data, error } = await supabase
         .from("profiller")
         .select("profil_fotografi")
         .eq("id", user.id)
         .single();
-
       if (error) {
         console.error("Profil fotoğrafı alınamadı:", error.message);
         return;
       }
-
       if (data?.profil_fotografi) {
-        // Cache kırmak için zaman etiketi ekle
         setProfilFoto(`${data.profil_fotografi}?t=${Date.now()}`);
       }
     };
-
     fetchProfilePhoto();
-
-    // Realtime güncelleme dinleyicisi (isteğe bağlı)
     const channel = supabase
       .channel("profiller-changes")
       .on(
@@ -72,48 +65,60 @@ const Navbar = () => {
         },
       )
       .subscribe();
-
     return () => {
       supabase.removeChannel(channel);
     };
   }, [user]);
 
-  const [isTop, setIsTop] = useState(true);
-  // 1. Dropdown menünün durumunu tutmak için state
-
-  // 2. Dışarıya tıklamayı algılamak için ref
-  const dropdownRef = useRef<HTMLDivElement>(null);
-
-  const { isOpen: isDropdownOpen, setIsOpen: setIsDropdownOpen } =
-    useDisariTiklamaAlgila(dropdownRef);
-
   useEffect(() => {
-    const handleScroll = () => {
-      setIsTop(window.scrollY === 0);
-    };
-
+    const handleScroll = () => setIsTop(window.scrollY === 0);
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
-  }, []); // isTop bağımlılığını kaldırdım, gereksiz yeniden render'ı önler
+  }, []);
+
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth >= 768) {
+        setIsMobileMenuOpen(false);
+      }
+    };
+    window.addEventListener("resize", handleResize);
+    if (isMobileMenuOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "auto";
+    }
+    return () => {
+      window.removeEventListener("resize", handleResize);
+      document.body.style.overflow = "auto";
+    };
+  }, [isMobileMenuOpen]);
+
+  const handleMobileLinkClick = () => {
+    setIsMobileMenuOpen(false);
+  };
 
   return (
-    <div
-      className={`fixed top-0 z-10 w-full duration-300 ${
+    <nav
+      className={`fixed top-0 z-30 w-full duration-300 ${
         isTop ? "" : "dark:bg-primary-950/35 bg-primary-800/25 backdrop-blur-xl"
       }`}
     >
+      {/* Üst Bar: Logo, Desktop Linkler, Ikonlar */}
       <div
-        className={`flex items-center justify-between px-4 duration-300 md:justify-around ${
-          isTop ? "py-6" : "py-4"
+        className={`relative z-40 flex items-center justify-between px-4 duration-300 md:justify-around ${
+          // --- 1. PADDING AZALTILDI ---
+          isTop ? "py-4" : "py-3" // <-- py-6 -> py-4 | py-4 -> py-3
         }`}
       >
-        <Link href="/">
+        <Link href="/" onClick={handleMobileLinkClick}>
           <Image
             alt="Vizyon Plus Logosu"
             src={vizyonPLusLogo}
             className="w-32 sm:w-38"
           />
         </Link>
+        {/* Desktop Linkleri */}
         <div className="dark:text-primary-50 hidden items-center gap-x-5 font-semibold md:flex">
           <Link
             href="/icerikler"
@@ -121,6 +126,7 @@ const Navbar = () => {
           >
             Dijital İçerikler
           </Link>
+
           <Link
             href="/kampanyalar"
             className="dark:hover:text-primary-200 dark:text-primary-50 text-primary-200 hover:text-primary-400 duration-300"
@@ -129,51 +135,78 @@ const Navbar = () => {
           </Link>
           <Arama />
         </div>
-
-        {/* Konumlandırma için bir container ve ref ataması */}
-        <div className="relative" ref={dropdownRef}>
-          {/* İkonu bir butona çeviriyoruz. Tıklanınca state'i değiştirir. */}
-          <div className="flex items-center gap-x-10">
-            <button
-              onClick={() => setIsDropdownOpen(!isDropdownOpen)} // Tıklanınca durumu tersine çevir
-              className="cursor-pointer"
-            >
-              <div
-                className={
-                  user?.user_metadata?.display_name &&
-                  "flex items-center gap-x-2"
-                }
+        {/* Sağ Taraf Ikon Grubu (Profil + Hamburger) */}
+        <div className="flex items-center gap-x-4">
+          {/* Profil Dropdown */}
+          <div className="relative" ref={dropdownRef}>
+            <div className="flex items-center gap-x-10">
+              <button
+                onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                className="cursor-pointer"
               >
-                {user?.user_metadata?.display_name ? (
-                  <>
-                    <Image
-                      src={profilFoto || "/default-user.jpg"}
-                      alt=""
-                      width={40}
-                      height={40}
-                      className="rounded-full"
-                    />
-                    <p className="text-primary-200 font-semibold dark:text-white">
-                      {user?.user_metadata?.display_name}
-                    </p>
-                  </>
-                ) : (
-                  <FaUserCircle className="dark:fill-primary-50 fill-primary-750 h-8 w-8" />
-                )}
-              </div>
-            </button>
-            {/* State true ise menüyü göster */}
-            {isDropdownOpen && (
-              <AsagiAcilirMenu
-                user={user}
-                profilFoto={profilFoto}
-                setIsDropdownOpen={setIsDropdownOpen}
-              />
-            )}
+                <div
+                  className={
+                    user?.user_metadata?.display_name
+                      ? "flex items-center gap-x-2"
+                      : ""
+                  }
+                >
+                  {user?.user_metadata?.display_name ? (
+                    <>
+                      <Image
+                        src={profilFoto || "/default-user.jpg"}
+                        alt=""
+                        width={40}
+                        height={40}
+                        className="rounded-full"
+                      />
+
+                      <p className="text-primary-200 font-semibold dark:text-white">
+                        {user?.user_metadata?.display_name}
+                      </p>
+                    </>
+                  ) : (
+                    <FaUserCircle className="dark:fill-primary-50 fill-primary-750 h-8 w-8" />
+                  )}
+                </div>
+              </button>
+
+              {isDropdownOpen && (
+                <AsagiAcilirMenu
+                  user={user}
+                  profilFoto={profilFoto}
+                  setIsDropdownOpen={setIsDropdownOpen}
+                />
+              )}
+            </div>
           </div>
+          {/* Hamburger Menü Butonu */}
+          <button
+            className="dark:text-primary-50 text-primary-750 md:hidden"
+            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+            aria-label="Menüyü aç/kapat"
+          >
+            {isMobileMenuOpen ? (
+              <FaTimes className="h-6 w-6" />
+            ) : (
+              <FaBars className="h-6 w-6" />
+            )}
+          </button>
         </div>
       </div>
-    </div>
+      <div
+        className={`bg-primary-900/95 dark:bg-primary-950/95 text-primary-50 absolute top-0 left-0 z-30 flex h-screen w-full flex-col items-center justify-center text-2xl font-semibold backdrop-blur-lg transition-transform duration-300 ease-in-out md:hidden ${isMobileMenuOpen ? "translate-x-0" : "-translate-x-full"} ${"gap-y-6"}`}
+      >
+        <Link href="/icerikler" onClick={handleMobileLinkClick}>
+          Dijital İçerikler
+        </Link>
+
+        <Link href="/kampanyalar" onClick={handleMobileLinkClick}>
+          Kampanyalar
+        </Link>
+        <Arama />
+      </div>
+    </nav>
   );
 };
 

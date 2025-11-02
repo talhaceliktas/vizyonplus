@@ -22,7 +22,7 @@ const Page = async ({ params }: { params: { filmId: number } }) => {
 
   return (
     <Suspense fallback={<Loading />}>
-      <div className="px-4 pt-40 pb-20">
+      <div className="text-primary-50 px-4 pt-40 pb-20">
         <div className="mx-auto flex h-full w-full max-w-[1360px] flex-col gap-y-20">
           <div className="flex gap-x-10 gap-y-10">
             <div className="relative aspect-[9/16] w-full max-w-[400px]">

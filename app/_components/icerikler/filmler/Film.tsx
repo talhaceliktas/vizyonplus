@@ -32,7 +32,7 @@ const Film = ({ film }: { film: FilmDetay }) => {
         </p>
       </div>
       {film.film_ucretleri[0].indirim_orani ? (
-        <div className="flex justify-center gap-x-6 opacity-90">
+        <div className="text-primary-50 flex justify-center gap-x-6 opacity-90">
           <span className="line-through opacity-70">
             {film.film_ucretleri[0].satin_alma_ucreti} TL
           </span>
