@@ -24,7 +24,7 @@ const KayitliFilm = async ({
 
   return (
     <Link
-      className="bg-primary-700 relative flex aspect-[16/9] w-full gap-x-2 overflow-hidden rounded-xl"
+      className="dark:bg-primary-700 bg-primary-800/40 text-primary-50 relative flex aspect-[16/9] w-full gap-x-2 overflow-hidden rounded-xl duration-300"
       href={
         tur === "film" ? `/icerikler/filmler/${id}` : `/icerikler/diziler/${id}`
       }

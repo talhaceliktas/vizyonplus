@@ -22,7 +22,7 @@ export default function RootLayout({
       <body>
         <Providers>
           <main
-            className={`from-primary-950 via-primary-800/40 to-primary-950 dark:from-primary-900 dark:via-primary-800 dark:to-primary-900 min-h-screen bg-gradient-to-l antialiased ${poppins.className} `}
+            className={`from-primary-950 via-primary-800/40 to-primary-950 dark:from-primary-900 dark:via-primary-800 dark:to-primary-900 min-h-screen bg-gradient-to-l antialiased transition-colors duration-300 ${poppins.className}`}
           >
             <Navbar />
             {children}

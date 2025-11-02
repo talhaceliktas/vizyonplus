@@ -34,7 +34,7 @@ const Ayarlar = async () => {
             />
           </div>
         </div>
-        <h2 className="absolute top-0 left-10 flex -translate-y-1/2 items-center gap-x-4 bg-[#191919] px-4">
+        <h2 className="text-primary-50 absolute top-0 left-10 flex -translate-y-1/2 items-center gap-x-4 bg-[#eaeaea] px-4 dark:bg-[#191919]">
           <FaRegAddressCard className="text-4xl" />
           <p className="text-xl">Kullanıcı Bilgilerim</p>
         </h2>
@@ -42,7 +42,7 @@ const Ayarlar = async () => {
       </div>
       <div className="border-primary-700 relative flex justify-center border-2">
         <SifreDegistir user={user} />
-        <h2 className="absolute top-0 left-10 flex -translate-y-1/2 items-center gap-x-4 bg-[#191919] px-4">
+        <h2 className="text-primary-50 absolute top-0 left-10 flex -translate-y-1/2 items-center gap-x-4 bg-[#eaeaea] px-4 dark:bg-[#191919]">
           <IoMdUnlock className="text-4xl" />
           <p className="text-xl">Şifre Değiştir</p>
         </h2>

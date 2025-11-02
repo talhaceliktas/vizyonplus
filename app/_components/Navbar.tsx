@@ -158,7 +158,7 @@ const Navbar = () => {
                     </p>
                   </>
                 ) : (
-                  <FaUserCircle className="h-8 w-8" />
+                  <FaUserCircle className="dark:fill-primary-50 fill-primary-950 h-8 w-8" />
                 )}
               </div>
             </button>

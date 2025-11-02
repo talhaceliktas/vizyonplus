@@ -26,7 +26,7 @@ const ProfilYanMenu = ({ routeHref }: { routeHref: string }) => {
   };
 
   return (
-    <div className="flex flex-col gap-y-6 text-2xl">
+    <div className="text-primary-50 flex flex-col gap-y-6 text-2xl duration-300">
       <LayoutElement icon={<IoHomeOutline />} href="/profil">
         Anasayfa
       </LayoutElement>
