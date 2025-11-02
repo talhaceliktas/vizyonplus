@@ -37,15 +37,15 @@ const GirisYap = () => {
 
   return (
     <div
-      className={`flex h-full w-full flex-col items-center justify-center gap-y-3 bg-cover bg-center p-5 ${openSans.className} `}
+      className={`text-primary-50 flex h-full w-full flex-col items-center justify-center gap-y-3 bg-cover bg-center p-5 duration-300 ${openSans.className} `}
       style={{ backgroundImage: "url('/loginBG.webp')" }}
     >
       <form
-        className="border-primary-800/50 backd bg-primary-700/70 flex flex-col items-center gap-y-6 rounded-2xl border-[1px] p-8 shadow-2xl backdrop-blur-sm"
+        className="border-primary-800/50 dark:bg-primary-700/70 bg-primary-900/70 flex flex-col items-center gap-y-6 rounded-2xl border-[1px] p-8 shadow-2xl backdrop-blur-sm"
         onSubmit={handleSubmit(girisYap, hataVar)}
       >
         <h3 className="text-3xl font-semibold">Giriş Yap</h3>
-        <p className="text-primary-50 opacity-75">
+        <p className="opacity-75">
           Hoşgeldiniz! Lütfen gerekli alanları doldurunuz.
         </p>
         <div className="mt-4 mb-8 flex w-full flex-col gap-5">
@@ -84,16 +84,14 @@ const GirisYap = () => {
         </div>
 
         <div className="w-full text-center">
-          <button className="bg-primary-500 hover:bg-primary-600 mb-4 w-full cursor-pointer rounded-2xl py-2 font-bold duration-300">
+          <button className="dark:bg-primary-500 bg-primary-600 hover:bg-primary-500 dark:hover:bg-primary-400 mb-4 w-full cursor-pointer rounded-2xl py-2 font-bold duration-300">
             Giriş Yap
           </button>
-          <button className="bg-primary-50 mb-4 flex w-full cursor-pointer items-center justify-center gap-x-2 rounded-2xl py-2 duration-300">
+          <button className="bg-primary-900 text-primary-100 hover:bg-primary-800 mb-4 flex w-full cursor-pointer items-center justify-center gap-x-2 rounded-2xl py-2 duration-300">
             <FcGoogle className="text-2xl" />
-            <span className="text-primary-700 font-bold">
-              Google ile Giriş Yap
-            </span>
+            <span className="font-bold">Google ile Giriş Yap</span>
           </button>
-          <button className="hover:text-secondary-1 cursor-pointer text-xs duration-300">
+          <button className="dark:hover:text-secondary-1 hover:text-secondary-2/80 text-primary-100 cursor-pointer text-base duration-300">
             <Link href="/kayitol">Hemen Kayıt Ol</Link>
           </button>
         </div>
