@@ -67,15 +67,15 @@ const KayitOl = ({ setGonderilenEmail, setKayitTamamlandi }: KayitOlProps) => {
 
   return (
     <form
-      className="border-primary-800/50 dark:bg-primary-700/70 bg-primary-900/70 text-primary-100 flex flex-col items-center gap-y-6 rounded-2xl border-[1px] p-8 shadow-2xl backdrop-blur-sm duration-300"
+      className="border-primary-800/50 dark:bg-primary-700/70 bg-primary-900/70 text-primary-100 flex flex-col items-center gap-y-4 rounded-2xl border-[1px] p-8 shadow-2xl backdrop-blur-sm duration-300 md:gap-y-6"
       onSubmit={handleSubmit(kayitOl, hataVar)}
     >
-      <h3 className="text-3xl font-semibold">Kayıt Ol</h3>
+      <h3 className="text-2xl font-semibold md:text-3xl">Kayıt Ol</h3>
       <p className="text-primary-50 opacity-75">
         Hoşgeldiniz! Lütfen gerekli alanları doldurunuz.
       </p>
 
-      <div className="mt-4 mb-8 flex w-full flex-col gap-5">
+      <div className="mt-4 mb-4 flex w-full flex-col gap-5 md:mb-8">
         <div className="relative w-full">
           <input
             type="text"
@@ -161,7 +161,7 @@ const KayitOl = ({ setGonderilenEmail, setKayitTamamlandi }: KayitOlProps) => {
           </button>
           <span className="bg-primary-50/85 absolute bottom-0 left-0 h-[2px] w-0 transition-all duration-300 peer-focus:w-full"></span>
         </div>
-        <div className="flex w-full flex-col items-center justify-between gap-y-2 sm:flex-row sm:gap-y-0">
+        <div className="flex w-full flex-row items-center justify-between">
           <div className="flex gap-x-2">
             <input type="checkbox" className="block" id="beniHatirla" />
             <label htmlFor="beniHatirla">Beni Hatırla</label>

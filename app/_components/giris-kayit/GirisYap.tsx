@@ -37,15 +37,15 @@ const GirisYap = () => {
 
   return (
     <div
-      className={`text-primary-50 flex h-full w-full flex-col items-center justify-center gap-y-3 bg-cover bg-center p-5 duration-300 ${openSans.className} `}
+      className={`text-primary-50 flex h-full w-full flex-col items-center justify-center gap-y-3 bg-cover bg-center p-2 duration-300 md:p-5 ${openSans.className} `}
       style={{ backgroundImage: "url('/loginBG.webp')" }}
     >
       <form
-        className="border-primary-800/50 dark:bg-primary-700/70 bg-primary-900/70 flex flex-col items-center gap-y-6 rounded-2xl border-[1px] p-8 shadow-2xl backdrop-blur-sm"
+        className="border-primary-800/50 dark:bg-primary-700/70 bg-primary-900/70 flex flex-col items-center gap-y-2 rounded-2xl border-[1px] px-4 py-6 shadow-2xl backdrop-blur-sm md:gap-y-6 md:p-8"
         onSubmit={handleSubmit(girisYap, hataVar)}
       >
-        <h3 className="text-3xl font-semibold">Giriş Yap</h3>
-        <p className="opacity-75">
+        <h3 className="text-2xl font-semibold md:text-3xl">Giriş Yap</h3>
+        <p className="text-center text-sm opacity-75 md:text-base">
           Hoşgeldiniz! Lütfen gerekli alanları doldurunuz.
         </p>
         <div className="mt-4 mb-8 flex w-full flex-col gap-5">
@@ -69,7 +69,7 @@ const GirisYap = () => {
             <FaLock className="peer-focus:fill-primary-50 fill-primary-300 absolute top-1/2 right-2 -translate-y-1/2 text-xl duration-300" />
             <span className="bg-primary-50/85 absolute bottom-0 left-0 h-[2px] w-0 transition-all duration-300 peer-focus:w-full"></span>
           </div>
-          <div className="flex w-full flex-col items-center justify-between gap-y-2 sm:flex-row sm:gap-y-0">
+          <div className="flex w-full flex-row items-center justify-between">
             <div className="flex gap-x-2">
               <input type="checkbox" className="block" id="beniHatirla" />
               <label htmlFor="beniHatirla">Beni Hatırla</label>
