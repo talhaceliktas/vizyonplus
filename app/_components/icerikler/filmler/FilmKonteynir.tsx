@@ -32,7 +32,7 @@ const FilmKonteynir = ({ filmler }: { filmler: FilmDetay[] }) => {
   );
 
   return (
-    <div className="bg-primary-700/15 grid grid-cols-3 gap-x-10 gap-y-20 p-10">
+    <div className="dark:bg-primary-700/15 bg-primary-800/50 grid grid-cols-3 gap-x-10 gap-y-20 rounded-xl p-10">
       {gosterilecekFilmler.map((film: FilmDetay) => (
         <Film film={film} key={film.id} />
       ))}

@@ -44,15 +44,17 @@ const TheatersSlider = ({ movies }: TheatersSliderProps) => {
   return (
     <div className="w-full p-10">
       <div className="mb-4 flex justify-between">
-        <h3 className="text-2xl">Vizyondaki Filmler</h3>
+        <h3 className="text-primary-50 text-2xl duration-300">
+          Vizyondaki Filmler
+        </h3>
         <Link
-          className="hover:text-secondary-1 text-lg duration-300"
+          className="hover:text-secondary-1 text-primary-50 text-lg duration-300"
           href="/icerikler/filmler"
         >
           Tümünü Gör
         </Link>
       </div>
-      <Slider {...settings}>
+      <Slider {...settings} className="text-primary-100">
         {movies.map((movie) => (
           <div key={movie.id} className="p-2">
             <div className="relative aspect-[619/919] w-full">

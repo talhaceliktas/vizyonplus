@@ -20,7 +20,7 @@ const Page = async ({ params }: { params: { katalog: string } }) => {
 
   return (
     <Suspense fallback={<Loading />}>
-      <div className="mt-40">
+      <div className="pt-48">
         <div className="mx-auto w-full max-w-[1360px]">
           <div className="mx-4">
             <KategoriSiralama katalog={katalog} />

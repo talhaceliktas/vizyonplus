@@ -3,7 +3,7 @@ import vizyonPlusLogo from "../../public/logo.png";
 
 const Footer = () => {
   return (
-    <div className="p-20 pb-6">
+    <div className="text-primary-50 p-20 pb-6 duration-300">
       <div className="mt-40 grid grid-cols-7 gap-x-4 gap-y-10 md:gap-y-0">
         <div className="col-start-1 col-end-8 flex flex-col gap-y-4 md:col-end-3">
           <div className="aspect-[4/1] w-40">

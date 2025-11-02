@@ -11,7 +11,6 @@ import { User } from "@supabase/supabase-js";
 import useDisariTiklamaAlgila from "../hooks/useDisariTiklamaAlgila";
 import supabase from "../_lib/supabase/client";
 import Arama from "./Arama";
-import { ThemeSwitcher } from "../_lib/next-theme/ThemeSwitcher";
 
 const Navbar = () => {
   const [user, setUser] = useState<User | null>(null);
@@ -100,7 +99,7 @@ const Navbar = () => {
   return (
     <div
       className={`fixed top-0 z-10 w-full duration-300 ${
-        isTop ? "" : "bg-primary-950/35 backdrop-blur-xl"
+        isTop ? "" : "dark:bg-primary-950/35 bg-primary-800/25 backdrop-blur-xl"
       }`}
     >
       <div
@@ -135,7 +134,6 @@ const Navbar = () => {
         <div className="relative" ref={dropdownRef}>
           {/* İkonu bir butona çeviriyoruz. Tıklanınca state'i değiştirir. */}
           <div className="flex items-center gap-x-10">
-            <ThemeSwitcher />
             <button
               onClick={() => setIsDropdownOpen(!isDropdownOpen)} // Tıklanınca durumu tersine çevir
               className="cursor-pointer"
@@ -155,7 +153,9 @@ const Navbar = () => {
                       height={40}
                       className="rounded-full"
                     />
-                    <p>{user?.user_metadata?.display_name}</p>
+                    <p className="text-primary-200 font-semibold dark:text-white">
+                      {user?.user_metadata?.display_name}
+                    </p>
                   </>
                 ) : (
                   <FaUserCircle className="h-8 w-8" />

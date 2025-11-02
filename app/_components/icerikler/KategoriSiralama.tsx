@@ -21,7 +21,7 @@ const KategoriSiralama = ({ katalog }: { katalog: string }) => {
     return (
       <option
         value={value}
-        className="dark:text-secondary-1-2 text-secondary-1 bg-primary-800"
+        className="dark:text-secondary-1-2 text-secondary-1 dark:bg-primary-800 bg-primary-900"
       >
         {label}
       </option>

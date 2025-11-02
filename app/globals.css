@@ -52,6 +52,8 @@
 body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
+  --foreground: #0a0a0a;
+  --background: #ededed;
 }
 
 .categori-button {
@@ -119,4 +121,16 @@ body {
 .custom-scrollbar::-webkit-scrollbar-track {
   background-color: var(--color-secondary-3); /* track rengi */
   border-radius: 4px;
+}
+
+.slick-dots li button:before {
+  content: "•";
+  opacity: 0.25;
+  color: var(--color-primary-100) !important;
+}
+
+.slick-next:before,
+.slick-prev:before {
+  content: "→";
+  color: var(--color-primary-50) !important;
 }
