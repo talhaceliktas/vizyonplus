@@ -3,9 +3,10 @@
 import { useState } from "react";
 import DiziBolumleri from "./DiziBolumleri";
 import DiziSezonlari from "./DiziSezonlari";
+import { DiziDetay } from "../../types";
 
-const DiziSezonKonteynir = ({ dizi }) => {
-  const [seciliSezon, setSeciliSezon] = useState(1);
+const DiziSezonKonteynir = ({ dizi }: { dizi: DiziDetay }) => {
+  const [seciliSezon, setSeciliSezon] = useState<number>(1);
 
   return (
     <div className="divide-primary-500 border-primary-600 flex flex-col border-[1px] md:flex-row">

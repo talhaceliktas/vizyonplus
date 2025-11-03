@@ -45,7 +45,7 @@ const Arama = () => {
           const gelenVeriler = await aramaYap(arama, signal);
           setVeriler(Array.isArray(gelenVeriler) ? gelenVeriler : []);
         } catch (err) {
-          if (err.name === "AbortError") {
+          if (err instanceof DOMException && err.name === "AbortError") {
             // İptal edildi, bir şey yapma
           } else {
             setVeriler([]);
@@ -153,7 +153,7 @@ const Arama = () => {
                         : "text-sm font-normal opacity-70"
                     }
                   >
-                    {veri.aciklama.slice(0, 75)}...
+                    {veri.aciklama?.slice(0, 75)}...
                   </p>
                 </div>
                 <p

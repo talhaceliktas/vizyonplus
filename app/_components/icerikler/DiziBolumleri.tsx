@@ -1,6 +1,14 @@
 "use client";
 
-const DiziBolumleri = ({ diziSezonBilgileri, seciliSezon }) => {
+import { DiziDetay } from "../../types";
+
+const DiziBolumleri = ({
+  diziSezonBilgileri,
+  seciliSezon,
+}: {
+  diziSezonBilgileri: DiziDetay["dizi"];
+  seciliSezon: number;
+}) => {
   const seciliSezonBolumleri = diziSezonBilgileri?.find(
     (s) => s.sezon_numarasi === seciliSezon,
   );
@@ -9,7 +17,7 @@ const DiziBolumleri = ({ diziSezonBilgileri, seciliSezon }) => {
     <div className="flex flex-1 flex-col">
       <table className="table-auto border-collapse">
         <thead>
-          {seciliSezonBolumleri.bolumler.map((bolum) => (
+          {seciliSezonBolumleri?.bolumler.map((bolum) => (
             <tr
               key={bolum.id}
               className="hover:bg-primary-800 dark:hover:bg-primary-700 cursor-pointer duration-300"

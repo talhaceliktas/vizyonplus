@@ -1,7 +1,19 @@
 "use client";
 
-const DiziSezonlari = ({ diziSezonBilgileri, seciliSezon, setSeciliSezon }) => {
+import { DiziDetay } from "../../types";
+
+const DiziSezonlari = ({
+  diziSezonBilgileri,
+  seciliSezon,
+  setSeciliSezon,
+}: {
+  diziSezonBilgileri: DiziDetay["dizi"];
+  seciliSezon: number;
+  setSeciliSezon: React.Dispatch<React.SetStateAction<number>>;
+}) => {
   if (!diziSezonBilgileri || diziSezonBilgileri.length === 0) return null;
+
+  console.log(seciliSezon);
 
   return (
     <div className="flex flex-col">
