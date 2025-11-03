@@ -8,8 +8,21 @@ import { Providers } from "./_lib/next-theme/Providers";
 import { ThemeSwitcher } from "./_lib/next-theme/ThemeSwitcher";
 
 export const metadata: Metadata = {
-  title: "Vizyon+",
-  description: "Sinema rezervasyon sistemi",
+  title: "Vizyon+ | Modern Dizi & Film Platformu",
+  description:
+    "Vizyon+, Next.js, Supabase ve Tailwind CSS kullanılarak geliştirilmiş, Netflix benzeri modern bir dizi ve film izleme platformudur. Kullanıcılar içerikleri keşfedebilir, filtreleyebilir, favorilerine ekleyebilir ve yorum yapabilir.",
+  keywords: [
+    "Vizyon+",
+    "dizi izle",
+    "film platformu",
+    "Next.js",
+    "Supabase",
+    "Tailwind CSS",
+    "React",
+    "Netflix klonu",
+    "film izleme sitesi",
+    "modern web uygulaması",
+  ],
 };
 
 export default function RootLayout({

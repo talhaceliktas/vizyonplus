@@ -2,6 +2,11 @@ import { Suspense } from "react";
 import Kampanya from "../_components/Kampanya";
 import Loading from "../loading";
 import Footer from "../_components/Footer";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Vizyon+ | Kampanyalar",
+};
 
 const Page = () => {
   return (

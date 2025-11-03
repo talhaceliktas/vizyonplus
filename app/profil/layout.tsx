@@ -1,5 +1,10 @@
 import { ReactNode, Suspense } from "react";
 import Yukleniyor from "../_components/ui/Yukleniyor";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Vizyon+ | Profilim",
+};
 
 const Layout = ({ children }: { children: ReactNode }) => {
   return (
