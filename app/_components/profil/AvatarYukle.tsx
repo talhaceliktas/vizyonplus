@@ -22,8 +22,6 @@ export default function AvatarYukle({
 
   async function resizeAndCropImage(file: File, size = 512): Promise<Blob> {
     return new Promise((resolve, reject) => {
-      // DEĞİŞİKLİK 2: Artık 'new Image()' tarayıcının doğru fonksiyonunu
-      // güvenle çağırabilir, çünkü isim çakışması çözüldü.
       const img = new Image();
       const reader = new FileReader();
 
@@ -114,20 +112,23 @@ export default function AvatarYukle({
   }
   return (
     <div className="flex flex-col items-center gap-2">
-      <div className="border-primary-600 group relative h-52 w-52 shrink-0 overflow-hidden rounded-full border-4">
+      <div className="border-primary-600 group relative h-36 w-36 shrink-0 overflow-hidden rounded-full border-4 md:h-52 md:w-52">
         <NextImage
           alt={`${displayName || "Kullanıcı"} fotoğrafı`}
           src={src || "/default-user.jpg"}
           fill
           className="object-cover"
+          sizes="(max-width: 768px) 144px, 208px"
         />
 
         <label
           htmlFor="avatar-upload"
           className="absolute inset-0 z-10 flex cursor-pointer flex-col items-center justify-center gap-2 bg-black/60 text-white opacity-0 transition-opacity group-hover:opacity-100"
         >
-          <FaPencilAlt className="text-3xl" />
-          <span className="text-sm font-medium">Avatarı Değiştir</span>
+          <FaPencilAlt className="text-2xl md:text-3xl" />
+          <span className="text-xs font-medium md:text-sm">
+            Avatarı Değiştir
+          </span>
         </label>
 
         <input
@@ -140,7 +141,9 @@ export default function AvatarYukle({
         />
       </div>
 
-      {uploading && <p className="text-sm text-gray-500">Yükleniyor...</p>}
+      {uploading && (
+        <p className="animate-pulse text-sm text-gray-500">Yükleniyor...</p>
+      )}
     </div>
   );
 }

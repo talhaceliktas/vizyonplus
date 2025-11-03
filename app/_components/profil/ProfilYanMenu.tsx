@@ -17,20 +17,18 @@ const ProfilYanMenu = ({ routeHref }: { routeHref: string }) => {
     return (
       <Link
         href={href}
-        className={`flex items-center gap-x-2 ${routeHref === href ? "" : "opacity-60"}`}
+        className={`flex flex-col items-center gap-y-1 text-center transition-opacity duration-300 md:flex-row md:items-center md:gap-x-2 md:text-left ${
+          routeHref === href ? "opacity-100" : "opacity-60 hover:opacity-100"
+        }`}
       >
-        <span className="text-3xl">{icon}</span>
-        {children}
+        <span className="text-2xl md:text-3xl">{icon}</span>
+        <span className="text-xs font-medium md:text-2xl">{children}</span>
       </Link>
     );
   };
 
   return (
-    <div className="text-primary-50 flex flex-col gap-y-6 text-2xl duration-300">
-      {/* Anasayfa eklenene kadar tasarimdan kaldirildi! */}
-      {/* <LayoutElement icon={<IoHomeOutline />} href="/profil">
-        Anasayfa
-      </LayoutElement> */}
+    <div className="text-primary-50 bg-primary-800/50 flex flex-row items-start justify-around gap-x-2 rounded-lg p-4 shadow-lg ring-1 ring-black/5 backdrop-blur-sm md:flex-col md:items-start md:justify-start md:gap-y-6 md:rounded-none md:bg-transparent md:p-0 md:shadow-none md:ring-0 md:backdrop-blur-none">
       <LayoutElement icon={<FaRegHeart />} href="/profil/favoriler">
         Favoriler
       </LayoutElement>
@@ -42,10 +40,10 @@ const ProfilYanMenu = ({ routeHref }: { routeHref: string }) => {
       </LayoutElement>
       <CikisYapButton
         href="/"
-        icon={<ImExit />}
-        className={`ml-1 flex flex-row-reverse items-center justify-end gap-x-2 text-3xl opacity-60 duration-300 hover:opacity-100`}
+        icon={<ImExit className="text-2xl md:text-3xl" />}
+        className={`flex flex-col-reverse items-center gap-y-1 text-center opacity-60 transition-opacity duration-300 hover:opacity-100 md:ml-1 md:flex-row-reverse md:items-center md:gap-x-2 md:text-left`}
       >
-        <p className="text-2xl">Çıkış Yap</p>
+        <p className="text-xs font-medium md:text-2xl">Çıkış Yap</p>
       </CikisYapButton>
     </div>
   );
