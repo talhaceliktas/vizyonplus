@@ -21,11 +21,11 @@ const SpoilerYorum = ({ yorum }: { yorum: YorumTipi }) => {
           />
         </div>
         <div className="w-full">
-          <h2 className="text-secondary-1 text-xl font-semibold">
+          <h2 className="text-secondary-1 text-base font-semibold sm:text-xl">
             {yorum.profiller.isim}
           </h2>
-          <p className="text-primary-100">{yorum.yorum}</p>
-          <p className="w-full text-end">
+          <p className="text-primary-100 text-sm sm:text-base">{yorum.yorum}</p>
+          <p className="mt-5 w-full text-end text-xs sm:mt-0 sm:text-base">
             {new Date(yorum.olusturulma_zamani)
               .toLocaleDateString("tr-TR", {
                 hour: "2-digit",

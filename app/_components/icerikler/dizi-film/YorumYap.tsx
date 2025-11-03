@@ -51,7 +51,7 @@ const YorumYap = ({ icerikId }: { icerikId: number }) => {
         </div>
       )}
 
-      <div className="relative mt-2 flex justify-between">
+      <div className="relative mt-2 flex flex-col justify-between gap-y-3 sm:gap-y-0 md:flex-row">
         <div className="flex items-center gap-x-10">
           <div className="flex items-center gap-x-2 text-xl">
             <input
@@ -69,7 +69,7 @@ const YorumYap = ({ icerikId }: { icerikId: number }) => {
         <button
           onClick={yorumYapBasildi}
           disabled={yorum.length <= 3}
-          className={`px-3 py-2 text-white duration-300 dark:text-black ${yorum.length <= 3 ? "bg-primary-400 cursor-not-allowed" : "bg-secondary-1-2 cursor-pointer"}`}
+          className={`px-1 py-1 text-sm text-white duration-300 sm:px-3 sm:py-2 sm:text-base dark:text-black ${yorum.length <= 3 ? "bg-primary-400 cursor-not-allowed" : "bg-secondary-1-2 cursor-pointer"}`}
         >
           Yorum Yap
         </button>
