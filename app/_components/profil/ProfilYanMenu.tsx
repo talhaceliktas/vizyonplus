@@ -28,9 +28,10 @@ const ProfilYanMenu = ({ routeHref }: { routeHref: string }) => {
 
   return (
     <div className="text-primary-50 flex flex-col gap-y-6 text-2xl duration-300">
-      <LayoutElement icon={<IoHomeOutline />} href="/profil">
+      {/* Anasayfa eklenene kadar tasarimdan kaldirildi! */}
+      {/* <LayoutElement icon={<IoHomeOutline />} href="/profil">
         Anasayfa
-      </LayoutElement>
+      </LayoutElement> */}
       <LayoutElement icon={<FaRegHeart />} href="/profil/favoriler">
         Favoriler
       </LayoutElement>
