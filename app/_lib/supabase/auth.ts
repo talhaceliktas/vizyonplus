@@ -1,7 +1,7 @@
 import { redirect } from "next/navigation";
-import supabase from "./supabase/client";
+import supabase from "./client";
 
-export async function signUp(
+export async function kayitOl(
   gelenIsim: string,
   gelenEmail: string,
   gelenSifre: string,

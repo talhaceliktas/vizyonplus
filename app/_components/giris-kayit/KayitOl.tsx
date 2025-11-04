@@ -7,7 +7,7 @@ import { IoMdMail } from "react-icons/io";
 import { FaEye, FaEyeSlash } from "react-icons/fa6";
 import { useState } from "react";
 import { FieldErrors, SubmitErrorHandler, useForm } from "react-hook-form";
-import { signUp } from "../../_lib/auth";
+import { kayitOl as KayitEt } from "../../_lib/supabase/auth";
 import toast from "react-hot-toast";
 
 type KayitOlProps = {
@@ -39,7 +39,7 @@ const KayitOl = ({ setGonderilenEmail, setKayitTamamlandi }: KayitOlProps) => {
   }) {
     const { isim, email, parola1 } = data;
 
-    const veri = await signUp(isim, email, parola1);
+    const veri = await KayitEt(isim, email, parola1);
 
     if (veri?.durum === "basarisiz") {
       toast.error(veri.message);

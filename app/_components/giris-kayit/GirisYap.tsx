@@ -6,7 +6,7 @@ import { FaLock } from "react-icons/fa";
 import { FcGoogle } from "react-icons/fc";
 import { IoMdMail } from "react-icons/io";
 import { useForm } from "react-hook-form";
-import { signIn } from "../../_lib/auth";
+import { signIn } from "../../_lib/supabase/auth";
 import toast from "react-hot-toast";
 
 interface GirisFormu {

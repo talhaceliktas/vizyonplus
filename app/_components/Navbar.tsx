@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useState, useRef } from "react";
+import supabase from "../_lib/supabase/client";
 import vizyonPLusLogo from "../../public/logo.png";
 import Image from "next/image";
 import AsagiAcilirMenu from "./AsagiAcilirMenu";
@@ -9,7 +10,6 @@ import { FaUserCircle, FaBars, FaTimes } from "react-icons/fa";
 import supabaseBrowserClient from "../_lib/supabase/client";
 import { User } from "@supabase/supabase-js";
 import useDisariTiklamaAlgila from "../hooks/useDisariTiklamaAlgila";
-import supabase from "../_lib/supabase/client";
 import Arama from "./Arama";
 
 const Navbar = () => {
@@ -19,7 +19,7 @@ const Navbar = () => {
   const dropdownRef = useRef<HTMLDivElement>(null);
   const { isOpen: isDropdownOpen, setIsOpen: setIsDropdownOpen } =
     useDisariTiklamaAlgila(dropdownRef);
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false); // --- Auth, Profil Foto ve Scroll Effect'leri (Değişiklik yok) ---
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   useEffect(() => {
     const { data: authListener } = supabaseBrowserClient.auth.onAuthStateChange(
