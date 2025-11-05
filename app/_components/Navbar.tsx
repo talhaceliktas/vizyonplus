@@ -133,6 +133,7 @@ const Navbar = () => {
           >
             Kampanyalar
           </Link>
+
           <Arama />
         </div>
         {/* Sağ Taraf Ikon Grubu (Profil + Hamburger) */}
