@@ -21,8 +21,8 @@ const IcerikSlider = ({
   return (
     <div className="w-full p-2 md:p-10">
       <div className="mb-4 flex justify-between">
-        <h3 className="text-primary-50 text-lg duration-300 md:text-2xl">
-          Vizyondaki Filmler
+        <h3 className="text-secondary-1-2 text-lg duration-300 md:text-2xl">
+          {kategori} {icerikler[0].tur === "film" ? "Filmleri" : "Dizileri"}
         </h3>
         <Link
           className="hover:text-secondary-1 text-primary-50 text-lg duration-300"
@@ -61,13 +61,17 @@ const IcerikSlider = ({
         {icerikler.map((film) => (
           <SwiperSlide key={film.id}>
             <div className="relative aspect-[619/919] w-full overflow-hidden rounded-md">
-              <Image
-                src={film.fotograf}
-                alt={`${film.isim} filmi`}
-                fill
-                className="object-cover"
-                sizes="100%"
-              />
+              <Link
+                href={`/icerikler/${icerikler[0].tur === "film" ? `filmler` : `diziler`}/${film.id}`}
+              >
+                <Image
+                  src={film.fotograf}
+                  alt={`${film.isim} filmi`}
+                  fill
+                  className="object-cover grayscale-25 duration-300 hover:scale-125 hover:grayscale-0"
+                  sizes="100%"
+                />
+              </Link>
               <div className="absolute right-0 bottom-0 left-0 bg-gradient-to-t from-black/80 to-transparent p-3">
                 <h3 className="text-sm font-semibold text-white sm:text-base md:text-lg">
                   {film.isim}

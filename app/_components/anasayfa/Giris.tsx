@@ -47,11 +47,11 @@ const Giris = () => {
             <div className="text-primary-300 flex gap-x-5 duration-100">
               <p className="flex items-center gap-x-2 font-bold">
                 <MdOutlineDateRange />
-                2018
+                2019
               </p>
               <p className="flex items-center gap-x-2 font-bold">
                 <FaRegClock />
-                2s 23dk
+                3s 2dk
               </p>
             </div>
           </div>
@@ -67,9 +67,10 @@ const Giris = () => {
             izleyicileri büyülüyor.
           </p>
 
+          {/* Linkte tekrar bakilacak */}
           <Link
             className="mt-4 flex items-center justify-end gap-x-2 pr-2 duration-300 hover:scale-x-[1.05] hover:scale-y-[1.15] hover:gap-x-4"
-            href=""
+            href="/icerikler/filmler/447"
           >
             <p className="dark:from-secondary-1 dark:via-secondary-2 dark:to-secondary-1 from-secondary-3 via-secondary-2 to-secondary-3 bg-gradient-to-l bg-clip-text font-bold text-transparent duration-100">
               Filme Git

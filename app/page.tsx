@@ -7,7 +7,9 @@ export default function Home() {
     <div>
       <Giris />
       <IcerikKutusu tur="film" kategori="Suç" />
+      <IcerikKutusu tur="dizi" kategori="Drama" />
       <IcerikKutusu tur="film" kategori="Aksiyon" />
+      <IcerikKutusu tur="dizi" kategori="Aksiyon" />
       <Footer />
     </div>
   );
