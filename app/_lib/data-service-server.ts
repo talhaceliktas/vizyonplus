@@ -2,18 +2,22 @@
 
 import supabaseServer from "./supabase/server";
 
-export async function icerikleriGetir(tur: string) {
+export async function icerikleriGetir(tur: string, turFiltresi?: string) {
   const supabase = await supabaseServer();
 
   const selectQuery =
     tur === "film"
-      ? "isim, fotograf, turler, id, film_ucretleri(satin_alma_ucreti, indirim_orani, ogrenci_indirim_orani)"
-      : "isim, fotograf, turler, id, dizi(sezon_numarasi)";
+      ? "isim, fotograf, tur, turler, id, film_ucretleri(satin_alma_ucreti, indirim_orani, ogrenci_indirim_orani)"
+      : "isim, fotograf, tur, turler, id, dizi(sezon_numarasi)";
 
-  const { data: icerikler, error } = await supabase
-    .from("icerikler")
-    .select(selectQuery)
-    .eq("tur", tur);
+  // Temel sorguyu bir değişkene atıyoruz. .eq("tur", tur) filtresi her zaman uygulanacak.
+  let query = supabase.from("icerikler").select(selectQuery).eq("tur", tur);
+
+  if (turFiltresi) {
+    query = query.contains("turler", [turFiltresi]);
+  }
+
+  const { data: icerikler, error } = await query;
 
   if (error) {
     // not-found sayfasi eklenecek

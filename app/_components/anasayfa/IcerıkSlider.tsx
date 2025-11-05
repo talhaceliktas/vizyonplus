@@ -2,20 +2,22 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { Movie } from "../../types";
 
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Pagination, Autoplay } from "swiper/modules";
+import { IcerikTipi } from "../../types";
 
 import "swiper/css";
 import "swiper/css/pagination";
 import "swiper/css/autoplay";
 
-interface TheatersSliderProps {
-  movies: Movie[];
-}
-
-const TheatersSlider = ({ movies }: TheatersSliderProps) => {
+const IcerikSlider = ({
+  icerikler,
+  kategori,
+}: {
+  icerikler: IcerikTipi[];
+  kategori: string;
+}) => {
   return (
     <div className="w-full p-2 md:p-10">
       <div className="mb-4 flex justify-between">
@@ -24,7 +26,7 @@ const TheatersSlider = ({ movies }: TheatersSliderProps) => {
         </h3>
         <Link
           className="hover:text-secondary-1 text-primary-50 text-lg duration-300"
-          href="/icerikler/filmler"
+          href={`/icerikler/${icerikler[0].tur === "film" ? `filmler` : `diziler`}?tur=${kategori}`}
         >
           Tümünü Gör
         </Link>
@@ -56,21 +58,19 @@ const TheatersSlider = ({ movies }: TheatersSliderProps) => {
         className="[&_.swiper-pagination-bullet]:bg-primary-200/50 [&_.swiper-pagination-bullet-active]:bg-primary-200"
         style={{ paddingBottom: "2.5rem" }}
       >
-        {movies.map((movie) => (
-          <SwiperSlide key={movie.id}>
-            {/* Yazıyı ve gradient'i içeren ana resim kutusu */}
+        {icerikler.map((film) => (
+          <SwiperSlide key={film.id}>
             <div className="relative aspect-[619/919] w-full overflow-hidden rounded-md">
               <Image
-                src={movie.big_image}
-                alt={`${movie.title} filmi`}
+                src={film.fotograf}
+                alt={`${film.isim} filmi`}
                 fill
                 className="object-cover"
                 sizes="100%"
               />
-              {/* Yazı ve Gradient Alanı */}
               <div className="absolute right-0 bottom-0 left-0 bg-gradient-to-t from-black/80 to-transparent p-3">
                 <h3 className="text-sm font-semibold text-white sm:text-base md:text-lg">
-                  {movie.title}
+                  {film.isim}
                 </h3>
               </div>
             </div>
@@ -81,4 +81,4 @@ const TheatersSlider = ({ movies }: TheatersSliderProps) => {
   );
 };
 
-export default TheatersSlider;
+export default IcerikSlider;
