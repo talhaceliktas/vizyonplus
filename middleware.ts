@@ -52,7 +52,7 @@ export async function middleware(request: NextRequest) {
     request.nextUrl.pathname.startsWith("/admin") &&
     user?.app_metadata?.role !== "admin"
   ) {
-    return NextResponse.redirect(new URL("/", request.url));
+    return NextResponse.redirect(new URL("/yetkisizErisim", request.url));
   }
 
   // 4. Değiştirilmiş (veya değiştirilmemiş) yanıtı döndür
@@ -60,5 +60,5 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/profil/:path*", "/giris", "/kayitol", "/admin"],
+  matcher: ["/profil/:path*", "/giris", "/kayitol", "/admin", "/admin/:islem"],
 };
