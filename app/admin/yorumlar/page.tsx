@@ -1,5 +1,5 @@
 const Page = () => {
-  return <div>Icerik Ekle</div>;
+  return <div>Yorumlar</div>;
 };
 
 export default Page;
