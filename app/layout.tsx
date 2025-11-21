@@ -6,6 +6,7 @@ import Navbar from "./_components/Navbar";
 import { Toaster } from "react-hot-toast";
 import { Providers } from "./_lib/next-theme/Providers";
 import { ThemeSwitcher } from "./_lib/next-theme/ThemeSwitcher";
+import NavbarCheck from "./_components/NavbarCheck";
 
 export const metadata: Metadata = {
   title: "Vizyon+ | Modern Dizi & Film Platformu",
@@ -37,7 +38,7 @@ export default function RootLayout({
           <main
             className={`from-primary-950 via-primary-800/40 to-primary-950 dark:from-primary-900 dark:via-primary-800 dark:to-primary-900 min-h-screen bg-gradient-to-l antialiased transition-colors duration-300 ${poppins.className}`}
           >
-            <Navbar />
+            <NavbarCheck />
             {children}
             <Toaster position="bottom-right" />
             <ThemeSwitcher />
