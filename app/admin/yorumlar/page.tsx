@@ -80,7 +80,7 @@ export default function Page() {
           >
             <div>
               <div className="mb-1 flex items-center gap-2">
-                <span className="font-bold text-green-400">
+                <span className="text-secondary-1-2 font-bold">
                   {yorum.kullanici_adi}
                 </span>
                 <span className="text-sm text-gray-400">
