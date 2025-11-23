@@ -128,12 +128,10 @@ export async function aramaYap(arama: string, signal: AbortSignal) {
     .from("icerikler")
     .select("id, isim, fotograf, tur, aciklama")
     .ilike("isim", `%${arama}%`)
-    .abortSignal(signal) // <-- Supabase'e sinyali burada iletiyoruz
+    .abortSignal(signal)
     .limit(6);
 
   if (error) {
-    // İptal hatasıysa, data service katmanında da bunu
-    // normal bir hata gibi loglamamak iyi bir pratiktir.
     if (error.name !== "AbortError") {
       console.error("Arama işlemi hatası:", error.message || error);
     }
@@ -141,3 +139,28 @@ export async function aramaYap(arama: string, signal: AbortSignal) {
 
   return icerikler;
 }
+
+export const yorumlariCekAdmin = async () => {
+  const { data, error } = await supabaseClient
+    .from("admin_yorum_listesi")
+    .select("*");
+
+  if (error) {
+    console.error("Hata:", error);
+    return { data: [], durum: "basarisiz" };
+  }
+  return { data, durum: "basarili" };
+};
+
+export const yorumuSilAdmin = async (id: number) => {
+  if (!confirm("Bu yorumu silmek istediğine emin misin?")) return;
+
+  const { error } = await supabaseClient.from("yorumlar").delete().eq("id", id);
+
+  if (error) {
+    console.error("Silinemedi: " + error.message);
+    return { durum: "basarisiz" };
+  } else {
+    return { durum: "basarili" };
+  }
+};

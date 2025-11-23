@@ -6,12 +6,12 @@ const NotFound = () => {
   return (
     <div className="flex h-screen w-screen items-center justify-center">
       <div className="text-center">
-        <p>Bu sayfa bulunamadi!</p>
+        <p className="text-primary-300">Bu sayfa bulunamadı!</p>
         <Link
           href="/"
-          className="text-primary-400 hover:text-primary-500 w-full underline"
+          className="text-primary-50 hover:text-primary-500 w-full underline"
         >
-          Ana Sayfaya don.
+          Ana Sayfaya dön.
         </Link>
       </div>
     </div>

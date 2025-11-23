@@ -126,9 +126,6 @@ const NavbarAdmin = () => {
               <p className="text-xs text-neutral-500">Admin</p>
             </div>
           </button>
-
-          {/* Dropdown Menü İçeriği Buraya Gelecek */}
-          {/* {isDropdownOpen && <AsagiAcilirMenu ... />} */}
         </div>
       </div>
     </header>
