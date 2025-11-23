@@ -8,6 +8,7 @@ import {
   kullaniciBanDurumuDegistir,
 } from "../../../app/_lib/data-service-client";
 import Image from "next/image";
+import Yukleniyor from "../../_components/ui/Yukleniyor";
 
 const PAGE_SIZE = 10;
 
@@ -71,7 +72,7 @@ export default function KullanicilarPage() {
     }
   };
 
-  if (loading) return <div className="p-4 text-gray-400">Yükleniyor...</div>;
+  if (loading) return <Yukleniyor />;
 
   const maxPage = Math.ceil(totalCount / PAGE_SIZE);
 

@@ -56,12 +56,7 @@ export default function Page() {
     }
   }
 
-  if (loading)
-    return (
-      <div className="p-4 text-gray-400">
-        <Yukleniyor />
-      </div>
-    );
+  if (loading) return <Yukleniyor />;
 
   const maxPage = Math.ceil(totalCount / PAGE_SIZE);
 

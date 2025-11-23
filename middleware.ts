@@ -2,7 +2,6 @@ import { createServerClient } from "@supabase/ssr";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function middleware(request: NextRequest) {
-  // 1. Yanıtı en başta BİR KEZ oluşturun
   const response = NextResponse.next({
     request: {
       headers: request.headers,
@@ -14,15 +13,12 @@ export async function middleware(request: NextRequest) {
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
     {
       cookies: {
-        // 'get' fonksiyonunuz zaten doğruydu
         get(name) {
           return request.cookies.get(name)?.value;
         },
-        // 'set' fonksiyonu SADECE 'response' nesnesini değiştirmeli
         set(name, value, options) {
           response.cookies.set({ name, value, ...options });
         },
-        // 'remove' fonksiyonu SADECE 'response' nesnesini değiştirmeli
         remove(name, options) {
           response.cookies.set({ name, value: "", ...options });
         },
@@ -35,7 +31,6 @@ export async function middleware(request: NextRequest) {
     data: { user },
   } = await supabase.auth.getUser();
 
-  // Yönlendirme mantığı (bu kısım doğruydu)
   if (!user && request.nextUrl.pathname.startsWith("/profil")) {
     return NextResponse.redirect(new URL("/giris", request.url));
   }
@@ -55,7 +50,6 @@ export async function middleware(request: NextRequest) {
     return NextResponse.redirect(new URL("/", request.url));
   }
 
-  // 4. Değiştirilmiş (veya değiştirilmemiş) yanıtı döndür
   return response;
 }
 
