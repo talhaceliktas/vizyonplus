@@ -140,27 +140,29 @@ export async function aramaYap(arama: string, signal: AbortSignal) {
   return icerikler;
 }
 
-export const yorumlariCekAdmin = async () => {
-  const { data, error } = await supabaseClient
+export const yorumlariCekAdmin = async (page: number, limit: number) => {
+  const from = (page - 1) * limit;
+  const to = from + limit - 1;
+
+  const { data, error, count } = await supabaseClient
     .from("admin_yorum_listesi")
-    .select("*");
+    .select("*", { count: "exact" })
+    .order("olusturulma_zamani", { ascending: false })
+    .range(from, to);
 
   if (error) {
-    console.error("Hata:", error);
-    return { data: [], durum: "basarisiz" };
+    console.error(error);
+    return { data: [], count: 0, durum: "basarisiz" };
   }
-  return { data, durum: "basarili" };
+  return { data, count, durum: "basarili" };
 };
 
 export const yorumuSilAdmin = async (id: number) => {
-  if (!confirm("Bu yorumu silmek istediğine emin misin?")) return;
-
   const { error } = await supabaseClient.from("yorumlar").delete().eq("id", id);
 
   if (error) {
-    console.error("Silinemedi: " + error.message);
+    console.error(error);
     return { durum: "basarisiz" };
-  } else {
-    return { durum: "basarili" };
   }
+  return { durum: "basarili" };
 };
