@@ -47,9 +47,11 @@ export default function KullanicilarPage() {
 
     const { durum } = await kullaniciBanDurumuDegistir(id, suankiDurum);
     if (durum === "basarili") {
-      setKullanicilar((users) =>
-        users.map((u) =>
-          u.id === id ? { ...u, yasakli_mi: !suankiDurum } : u,
+      setKullanicilar((kullanici) =>
+        kullanici.map((kullaniciBilgi) =>
+          kullaniciBilgi.id === id
+            ? { ...kullaniciBilgi, yasakli_mi: !suankiDurum }
+            : kullaniciBilgi,
         ),
       );
     }
