@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { usePathname } from "next/navigation";
+import { redirect, usePathname } from "next/navigation";
 import vizyonPLusLogo from "../../../../public/logo.png";
 import {
   FaHome,
@@ -13,6 +13,7 @@ import {
   FaCog,
   FaSignOutAlt,
 } from "react-icons/fa";
+import supabaseBrowserClient from "../../../_lib/supabase/client";
 
 const Sidebar = () => {
   const pathname = usePathname();
@@ -83,7 +84,13 @@ const Sidebar = () => {
       </nav>
 
       <div className="border-t border-neutral-800 p-4">
-        <button className="flex w-full items-center gap-x-3 rounded-lg px-4 py-3 text-sm font-medium text-red-500 transition-colors hover:bg-red-500/10">
+        <button
+          className="flex w-full cursor-pointer items-center gap-x-3 rounded-lg px-4 py-3 text-sm font-medium text-red-500 transition-colors hover:bg-red-500/10"
+          onClick={() => {
+            supabaseBrowserClient.auth.signOut();
+            redirect("giris");
+          }}
+        >
           <FaSignOutAlt className="h-5 w-5" />
           <span>Güvenli Çıkış</span>
         </button>
