@@ -11,8 +11,10 @@ import supabaseBrowserClient from "../_lib/supabase/client";
 import { User } from "@supabase/supabase-js";
 import useDisariTiklamaAlgila from "../hooks/useDisariTiklamaAlgila";
 import Arama from "./Arama";
+import { SiteSettings } from "../_lib/supabase/get-settings";
+import DuyuruBari from "./DuyuruBari";
 
-const Navbar = () => {
+const Navbar = ({ settings }: { settings: SiteSettings }) => {
   const [user, setUser] = useState<User | null>(null);
   const [profilFoto, setProfilFoto] = useState<string | null>(null);
   const [isTop, setIsTop] = useState(true);
@@ -104,6 +106,9 @@ const Navbar = () => {
         isTop ? "" : "dark:bg-primary-950/35 bg-primary-800/25 backdrop-blur-xl"
       }`}
     >
+      {settings.duyuru_metni &&
+        settings.duyuru_tipi &&
+        settings.duyuru_aktif && <DuyuruBari settings={settings} />}
       {/* Üst Bar: Logo, Desktop Linkler, Ikonlar */}
       <div
         className={`relative z-40 flex items-center justify-between px-4 duration-300 md:justify-around ${
