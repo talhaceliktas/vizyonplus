@@ -1,12 +1,9 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import { poppins } from "./_lib/fontlar";
 
-import { Toaster } from "react-hot-toast";
-import { Providers } from "./_lib/next-theme/Providers";
-import { NuqsAdapter } from "nuqs/adapters/next/app";
-import NavbarThemeChecker from "./_components/NavbarThemeChecker";
 import { getCachedSettings, SiteSettings } from "./_lib/supabase/get-settings";
+import BakimKontrol from "./_components/BakimKontrol";
+import AnaLayout from "./_components/AnaLayout";
 
 export const metadata: Metadata = {
   title: "Vizyon+ | Modern Dizi & Film Platformu",
@@ -35,19 +32,11 @@ export default async function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <body>
         {settings.bakim_modu ? (
-          <div>Bakim aktif kardes</div>
+          <BakimKontrol>
+            <AnaLayout>{children}</AnaLayout>
+          </BakimKontrol>
         ) : (
-          <Providers>
-            <NuqsAdapter>
-              <main
-                className={`from-primary-950 via-primary-800/40 to-primary-950 dark:from-primary-900 dark:via-primary-800 dark:to-primary-900 min-h-screen bg-gradient-to-l antialiased transition-colors duration-300 ${poppins.className}`}
-              >
-                <NavbarThemeChecker />
-                {children}
-                <Toaster position="bottom-right" />
-              </main>
-            </NuqsAdapter>
-          </Providers>
+          <AnaLayout>{children}</AnaLayout>
         )}
       </body>
     </html>
