@@ -5,6 +5,11 @@ import type { YorumTipi } from "../../../types";
 import Yorum from "./Yorum";
 import SpoilerYorum from "./SpoilerYorum";
 import supabaseServerClient from "../../../_lib/supabase/server";
+import {
+  getCachedSettings,
+  SiteSettings,
+} from "../../../_lib/supabase/get-settings";
+import YorumYapama from "./YorumYapama";
 
 const Yorumlar = async ({ icerikId }: { icerikId: number }) => {
   const supabase = await supabaseServerClient();
@@ -12,6 +17,8 @@ const Yorumlar = async ({ icerikId }: { icerikId: number }) => {
   const user = (await supabase.auth.getUser()).data.user;
 
   const yorumlar = await icerikYorumlariniGetir(icerikId);
+
+  const settings: SiteSettings = await getCachedSettings();
 
   return (
     <div className="bg-primary-800/20 relative">
@@ -24,7 +31,12 @@ const Yorumlar = async ({ icerikId }: { icerikId: number }) => {
           </p>
           <h2>Yorumlar</h2>
         </div>
-        <YorumYap icerikId={icerikId} />
+        {settings.yorumlar_kilitli ? (
+          <YorumYapama />
+        ) : (
+          <YorumYap icerikId={icerikId} />
+        )}
+
         <div className="divide-primary-600/30 mt-8 flex flex-col gap-y-4 divide-y-2">
           {yorumlar.map((yorum: YorumTipi) =>
             yorum.spoiler_mi ? (
