@@ -8,6 +8,7 @@ import { MdPayments } from "react-icons/md";
 import { VscSignIn } from "react-icons/vsc";
 import CikisYapButton from "./ui/CikisYapButton";
 import { User } from "@supabase/supabase-js";
+import { RiAdminFill } from "react-icons/ri";
 
 const AsagiAcilirMenu = ({
   user,
@@ -32,7 +33,6 @@ const AsagiAcilirMenu = ({
       className="text-primary-100 hover:bg-primary-700 flex w-full items-center justify-between px-6 py-3 text-left text-lg md:px-4 md:py-2 md:text-base"
       onClick={() => setIsDropdownOpen(false)}
     >
-      {" "}
       {children} <span className="text-2xl md:text-xl">{icon}</span>{" "}
     </Link>
   );
@@ -67,6 +67,11 @@ const AsagiAcilirMenu = ({
           <MenuLink href="/abonelikler" icon={<MdPayments />}>
             Abonelikler
           </MenuLink>
+          {user.app_metadata?.role === "admin" && (
+            <MenuLink href="/admin" icon={<RiAdminFill />}>
+              Admin Paneli
+            </MenuLink>
+          )}
           <div className="bg-primary-700 my-1 h-px" />
           <CikisYapButton
             icon={<ImExit className="text-2xl md:text-xl" />}
