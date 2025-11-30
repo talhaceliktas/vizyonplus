@@ -3,10 +3,22 @@
 import { useState } from "react";
 import DiziBolumleri from "./DiziBolumleri";
 import DiziSezonlari from "./DiziSezonlari";
-import { DiziDetay } from "../../types";
+import { DiziDetay } from "../../../types";
+import AboneOlKarti from "./AboneOlKarti"; // Yeni kartı import et
 
-const DiziSezonKonteynir = ({ dizi }: { dizi: DiziDetay }) => {
+// Prop tipine aboneMi eklendi
+const DiziSezonKonteynir = ({
+  dizi,
+  aboneMi,
+}: {
+  dizi: DiziDetay;
+  aboneMi: boolean;
+}) => {
   const [seciliSezon, setSeciliSezon] = useState<number>(1);
+
+  if (!aboneMi) {
+    return <AboneOlKarti />;
+  }
 
   return (
     <div className="divide-primary-500 border-primary-600 flex flex-col border-[1px] md:flex-row">
@@ -15,8 +27,12 @@ const DiziSezonKonteynir = ({ dizi }: { dizi: DiziDetay }) => {
         seciliSezon={seciliSezon}
         setSeciliSezon={setSeciliSezon}
       />
-      <span className="bg-primary-600 h-full w-[1px]"></span>
-      <DiziBolumleri diziSezonBilgileri={dizi.dizi} seciliSezon={seciliSezon} />
+      <span className="bg-primary-600 h-px w-full md:h-auto md:w-[1px]"></span>
+      <DiziBolumleri
+        diziSezonBilgileri={dizi.dizi}
+        seciliSezon={seciliSezon}
+        diziId={dizi.id}
+      />
     </div>
   );
 };

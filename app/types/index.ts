@@ -37,6 +37,7 @@ export type IcerikTipi = {
   olusturulma_zamani?: string;
   turler: string[];
   yan_fotograf?: string;
+  video_url?: string;
 };
 
 export type FilmDetay = IcerikTipi & {
@@ -67,6 +68,7 @@ export type Bolumler = {
   sezon_numarasi: number;
   sure: number;
   yayin_tarihi: string;
+  video_url: string;
 };
 
 export type YorumTipi = {
