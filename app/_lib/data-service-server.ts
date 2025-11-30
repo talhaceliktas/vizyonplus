@@ -1,5 +1,6 @@
 "use server";
 
+import { revalidatePath } from "next/cache";
 import supabaseServer from "./supabase/server";
 
 export async function icerikleriGetir(tur: string, turFiltresi?: string) {
@@ -34,7 +35,7 @@ export async function filmiGetir(filmId: number) {
 
   const { data: filmler, error } = await supabase
     .from("icerikler")
-    .select("*")
+    .select("*, film_ucretleri(satin_alma_ucreti)")
     .eq("id", filmId)
     .single();
 
@@ -264,4 +265,77 @@ export async function otomatikYenilemeDegistir(
   }
 
   return { success: true };
+}
+
+export async function filmiSatinAl(filmId: number, fiyat: number) {
+  const supabase = await supabaseServer();
+
+  // 1. Kullanıcıyı al
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) {
+    return { success: false, error: "Oturum açmanız gerekiyor." };
+  }
+
+  // 2. Daha önce almış mı kontrol et (Mükerrer ödemeyi önle)
+  const { data: mevcut } = await supabase
+    .from("tekil_satin_almalar")
+    .select("id")
+    .eq("kullanici_id", user.id)
+    .eq("film_id", filmId)
+    .single();
+
+  if (mevcut) {
+    return { success: false, error: "Bu filmi zaten satın aldınız." };
+  }
+
+  // 3. Ödeme İşlemi (Mock - Burada Iyzico/Stripe vb. olur)
+  // ... ödeme başarılı varsayıyoruz ...
+
+  // 4. Filmi Kullanıcıya Tanımla
+  const { error: satinAlmaError } = await supabase
+    .from("tekil_satin_almalar")
+    .insert({
+      kullanici_id: user.id,
+      film_id: filmId,
+      fiyat: fiyat,
+    });
+
+  if (satinAlmaError) {
+    console.error(satinAlmaError);
+    return { success: false, error: "Satın alma kaydı oluşturulamadı." };
+  }
+
+  // 5. Finansal Log Tablosuna Yaz (Opsiyonel ama iyi pratik)
+  await supabase.from("odemeler").insert({
+    kullanici_id: user.id,
+    tutar: fiyat,
+    durum: "basarili",
+    provider_odeme_id: `film_${filmId}_${Date.now()}`,
+    odeme_yontemi: { type: "tekil_film", film_id: filmId },
+  });
+
+  // 6. Sayfayı yenile ki buton "İzle"ye dönsün
+  revalidatePath(`/film/${filmId}`); // Film detay sayfasının yolunu buraya yaz
+
+  return { success: true };
+}
+
+export async function filmeSahipMi(filmId: number) {
+  const supabase = await supabaseServer();
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  const { data: mevcut } = await supabase
+    .from("tekil_satin_almalar")
+    .select("id")
+    .eq("kullanici_id", user.id)
+    .eq("film_id", filmId)
+    .single();
+
+  if (!mevcut) return false;
+  return true;
 }
