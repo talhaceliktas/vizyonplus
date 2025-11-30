@@ -1,4 +1,5 @@
 import { BiCommentDetail } from "react-icons/bi";
+import { HiOutlineLogin } from "react-icons/hi";
 import YorumYap from "./YorumYap";
 import { icerikYorumlariniGetir } from "../../../_lib/data-service-server";
 import type { YorumTipi } from "../../../types";
@@ -10,48 +11,96 @@ import {
   SiteSettings,
 } from "../../../_lib/supabase/get-settings";
 import YorumYapama from "./YorumYapama";
+import Link from "next/link";
 
-const Yorumlar = async ({ icerikId }: { icerikId: number }) => {
+type YorumlarProps = {
+  icerikId: number;
+  variant?: "default" | "compact";
+};
+
+const Yorumlar = async ({ icerikId, variant = "default" }: YorumlarProps) => {
   const supabase = await supabaseServerClient();
-
   const user = (await supabase.auth.getUser()).data.user;
-
   const yorumlar = await icerikYorumlariniGetir(icerikId);
-
   const settings: SiteSettings = await getCachedSettings();
 
-  return (
-    <div className="bg-primary-800/20 relative">
-      <div
-        className={`border-primary-600 text-primary-100 relative w-full rounded-2xl border-2 p-4 pt-8 ${!user && "pointer-events-none blur-sm"}`}
-      >
-        <div className="absolute top-0 left-5 flex -translate-y-1/2 items-center gap-x-4 bg-[#f0f0f0] px-4 text-lg sm:text-2xl dark:bg-[#191919] sm:dark:bg-[#151515]">
-          <p className="text-xl sm:text-4xl">
-            <BiCommentDetail />
-          </p>
-          <h2>Yorumlar</h2>
-        </div>
-        {settings.yorumlar_kilitli ? (
-          <YorumYapama />
-        ) : (
-          <YorumYap icerikId={icerikId} />
-        )}
+  const isCompact = variant === "compact";
 
-        <div className="divide-primary-600/30 mt-8 flex flex-col gap-y-4 divide-y-2">
-          {yorumlar.map((yorum: YorumTipi) =>
-            yorum.spoiler_mi ? (
-              <SpoilerYorum key={yorum.id} yorum={yorum} />
-            ) : (
-              <Yorum key={yorum.id} yorum={yorum} />
-            ),
+  return (
+    <div className={`flex flex-col ${isCompact ? "gap-4" : "gap-8"}`}>
+      {/* --- YORUM YAPMA ALANI --- */}
+      {/* Compact modda (Chat) input alanı sayfanın altında sabit olduğu için
+          burada tekrar göstermiyoruz (Duplicate olmasın diye). 
+          Sadece Default modda gösteriyoruz. */}
+      {!isCompact && (
+        <div
+          className={`${!user ? "pointer-events-none opacity-50 blur-[1px]" : ""}`}
+        >
+          {settings.yorumlar_kilitli ? (
+            <YorumYapama />
+          ) : (
+            <YorumYap icerikId={icerikId} />
           )}
         </div>
-      </div>
-      {!user && (
-        <h2 className="text-secondary-1 absolute top-1/2 right-1/2 translate-x-1/2 -translate-y-1/2">
-          Yorumları görmek için lütfen giriş yapın!
-        </h2>
       )}
+
+      {/* --- GİRİŞ UYARISI (User yoksa) --- */}
+      {!user && (
+        <div
+          className={`relative z-10 flex flex-col items-center justify-center rounded-xl border border-yellow-500/20 bg-black/80 text-center backdrop-blur-md ${
+            isCompact ? "p-4 text-xs" : "p-8"
+          }`}
+        >
+          <HiOutlineLogin
+            className={`${isCompact ? "text-2xl" : "text-4xl"} mb-2 text-yellow-500`}
+          />
+          <h3
+            className={`${isCompact ? "text-sm" : "text-lg"} font-bold text-white`}
+          >
+            Sohbete Katıl
+          </h3>
+          {!isCompact && (
+            <p className="mb-4 text-sm text-gray-400">
+              Yorum yapmak ve toplulukla etkileşime geçmek için giriş
+              yapmalısın.
+            </p>
+          )}
+          <Link
+            href="/login"
+            className={`mt-2 rounded-full bg-yellow-500 font-bold text-black transition hover:bg-yellow-400 ${
+              isCompact ? "px-4 py-1.5 text-xs" : "px-6 py-2 text-sm"
+            }`}
+          >
+            Giriş Yap
+          </Link>
+        </div>
+      )}
+
+      {/* --- YORUM LİSTESİ --- */}
+      <div
+        className={`flex flex-col ${isCompact ? "gap-2 pb-2" : "gap-6 pb-10"}`}
+      >
+        {yorumlar.length > 0 ? (
+          yorumlar.map((yorum: YorumTipi) =>
+            yorum.spoiler_mi ? (
+              <SpoilerYorum key={yorum.id} yorum={yorum} variant={variant} />
+            ) : (
+              <Yorum key={yorum.id} yorum={yorum} variant={variant} />
+            ),
+          )
+        ) : (
+          <div
+            className={`text-center text-gray-500 ${isCompact ? "py-10" : "py-20"}`}
+          >
+            <BiCommentDetail
+              className={`mx-auto mb-2 opacity-20 ${isCompact ? "text-3xl" : "text-5xl"}`}
+            />
+            <p className={isCompact ? "text-xs" : "text-base"}>
+              Henüz yorum yapılmamış. <br /> İlk yorumu sen yap!
+            </p>
+          </div>
+        )}
+      </div>
     </div>
   );
 };
