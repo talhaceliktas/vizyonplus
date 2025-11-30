@@ -7,7 +7,8 @@ import { ThemeSwitcher } from "../_lib/next-theme/ThemeSwitcher";
 const NavbarThemeChecker = ({ settings }) => {
   const pathName = usePathname();
 
-  return pathName.split("/")[1] === "admin" ? null : (
+  return pathName.split("/")[1] === "admin" ||
+    pathName.split("/")[1] === "izle" ? null : (
     <>
       <Navbar settings={settings} />
       <ThemeSwitcher />
