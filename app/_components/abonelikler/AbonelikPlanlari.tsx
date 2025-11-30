@@ -1,31 +1,42 @@
 "use client";
 
 import React, { useState } from "react";
+import { useRouter } from "next/navigation";
+import { Toaster } from "react-hot-toast"; // Bildirimler için
 import AbonelikKarti from "./AbonelikKarti";
-import { AbonelikPlani } from "../../types";
+import OdemeModal from "../odeme/OdemeModal";
+import { AbonelikPlani } from "../../types"; // Types yolunu kendine göre ayarla
 
 interface Props {
   dbPlanlar: AbonelikPlani[];
 }
 
 const AbonelikPlanlari: React.FC<Props> = ({ dbPlanlar }) => {
-  const [loading, setLoading] = useState(false);
+  const router = useRouter();
+  const [selectedPlan, setSelectedPlan] = useState<AbonelikPlani | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const planSecimiAfirmasi = async (planId: number, planAdi: string) => {
-    setLoading(true);
-    console.log(
-      `${planAdi} (ID: ${planId}) seçildi. Ödeme sayfasına yönlendiriliyor...`,
-    );
+  // Karttaki butona basılınca çalışır
+  const handlePlanSelect = (id: number, planAdi: string) => {
+    const plan = dbPlanlar.find((p) => p.id === id);
+    if (plan) {
+      setSelectedPlan(plan);
+      setIsModalOpen(true);
+    }
+  };
 
-    // BURAYA DAHA SONRA IYZICO ENTEGRASYONU GELECEK
-    // router.push(`/odeme?planId=${planId}`);
-
-    setTimeout(() => setLoading(false), 1000); // Fake loading
+  // Ödeme başarılı olunca çalışır
+  const handleSuccess = () => {
+    router.refresh(); // Abonelik durumunu güncelle
+    router.push("/dashboard"); // Yönlendir
   };
 
   return (
     <section className="relative min-h-screen overflow-hidden bg-[#0a0a0a] py-20 md:py-32">
-      {/* Arka plan dekoratif elementleri - Biraz daha sadeleştirdim */}
+      {/* Toast Bildirimleri için Container */}
+      <Toaster position="top-center" reverseOrder={false} />
+
+      {/* Arka plan */}
       <div className="absolute top-0 left-0 h-full w-full bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-indigo-900/20 via-[#0a0a0a] to-[#0a0a0a]" />
 
       <div className="relative z-10 container mx-auto px-4">
@@ -43,11 +54,20 @@ const AbonelikPlanlari: React.FC<Props> = ({ dbPlanlar }) => {
             <AbonelikKarti
               key={plan.id}
               plan={plan}
-              onPlanSec={planSecimiAfirmasi}
-              isLoading={loading}
+              onPlanSec={handlePlanSelect}
+              // Modal açıldığında zaten loading orada dönüyor, kartta ayrıca göstermeye gerek yok
+              isLoading={false}
             />
           ))}
         </div>
+
+        {/* Ödeme Modalı */}
+        <OdemeModal
+          isOpen={isModalOpen}
+          onClose={() => setIsModalOpen(false)}
+          selectedPlan={selectedPlan}
+          onSuccess={handleSuccess}
+        />
 
         <div className="mt-16 text-center">
           <p className="text-sm text-gray-500">
