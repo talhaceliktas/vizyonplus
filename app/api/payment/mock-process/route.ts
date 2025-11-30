@@ -59,7 +59,6 @@ export async function POST(request: Request) {
         paket_id: paket.id,
         baslangic_tarihi: simdi.toISOString(),
         bitis_tarihi: bitisTarihi.toISOString(),
-        durum: "aktif",
         otomatik_yenileme: true,
         provider_abonelik_id: `mock_sub_${Math.random().toString(36).substr(2, 9)}`,
       })

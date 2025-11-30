@@ -214,20 +214,54 @@ export async function tanitimlariGetir() {
   return slidesData;
 }
 
-// Abonelik turlerini getir
-export async function abonelikTurleriniGetir() {
+export async function aktifAboneligiGetir(userId: string) {
   const supabase = await supabaseServer();
 
-  const { data: plans, error } = await supabase
+  const simdi = new Date().toISOString();
+
+  const { data, error } = await supabase
+    .from("kullanici_abonelikleri")
+    .select("*, abonelik_paketleri(*)")
+    .eq("kullanici_id", userId)
+    .gt("bitis_tarihi", simdi)
+    .single();
+
+  if (error) {
+    return null;
+  }
+
+  return data;
+}
+
+export async function abonelikTurleriniGetir() {
+  const supabase = await supabaseServer();
+  const { data, error } = await supabase
     .from("abonelik_paketleri")
     .select("*")
-    .eq("aktif_mi", true)
     .order("fiyat", { ascending: true });
 
   if (error) {
-    console.error("Planlar çekilemedi:", error);
+    console.error(error);
     return [];
   }
+  return data;
+}
 
-  return plans;
+export async function otomatikYenilemeDegistir(
+  abonelikId: string,
+  yeniDurum: boolean,
+) {
+  const supabase = await supabaseServer();
+
+  const { error } = await supabase
+    .from("kullanici_abonelikleri")
+    .update({ otomatik_yenileme: yeniDurum })
+    .eq("id", abonelikId);
+
+  if (error) {
+    console.error("Yenileme hatası:", error);
+    return { success: false, error: error.message };
+  }
+
+  return { success: true };
 }

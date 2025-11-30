@@ -2,7 +2,6 @@
 
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Toaster } from "react-hot-toast"; // Bildirimler için
 import AbonelikKarti from "./AbonelikKarti";
 import OdemeModal from "../odeme/OdemeModal";
 import { AbonelikPlani } from "../../types"; // Types yolunu kendine göre ayarla
@@ -28,14 +27,10 @@ const AbonelikPlanlari: React.FC<Props> = ({ dbPlanlar }) => {
   // Ödeme başarılı olunca çalışır
   const handleSuccess = () => {
     router.refresh(); // Abonelik durumunu güncelle
-    router.push("/dashboard"); // Yönlendir
   };
 
   return (
-    <section className="relative min-h-screen overflow-hidden bg-[#0a0a0a] py-20 md:py-32">
-      {/* Toast Bildirimleri için Container */}
-      <Toaster position="top-center" reverseOrder={false} />
-
+    <section className="relative min-h-screen overflow-hidden py-20 md:py-32">
       {/* Arka plan */}
       <div className="absolute top-0 left-0 h-full w-full bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-indigo-900/20 via-[#0a0a0a] to-[#0a0a0a]" />
 
