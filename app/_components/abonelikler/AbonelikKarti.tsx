@@ -1,135 +1,105 @@
 import React from "react";
+import { AbonelikPlani } from "../../types";
 
-// Tipleri Türkçeleştiriyoruz ve dışa aktarılabilir yapıyoruz
-export type PlanOzelligi = {
-  text: string;
-  included: boolean;
-};
-
-export type PlanTipi = {
-  name: string;
-  price: string;
-  priceDetails: string;
-  quality: string;
-  features: PlanOzelligi[];
-  isHighlighted?: boolean;
-};
-
-// Component'in alacağı props'ları (özellikleri) tanımlıyoruz
 type AbonelikKartiProps = {
-  plan: PlanTipi;
-  onPlanSec: (planAdi: string) => void;
+  plan: AbonelikPlani;
+  onPlanSec: (id: number, ad: string) => void;
+  isLoading: boolean;
 };
 
-// Component adını "AbonelikKarti" olarak değiştiriyoruz
-const AbonelikKarti: React.FC<AbonelikKartiProps> = ({ plan, onPlanSec }) => {
-  // Stil sınıflarını (tailwind class) dinamik olarak belirliyoruz
-  const cardClasses = plan.isHighlighted
-    ? "bg-gradient-to-br from-primary-900 to-primary-800 border-2 border-secondary-1 shadow-2xl shadow-secondary-1/20 scale-105 relative overflow-hidden"
-    : "bg-gradient-to-br from-primary-800 to-primary-900 border border-primary-700 shadow-xl hover:border-primary-600 hover:shadow-2xl";
-
-  const buttonClasses = plan.isHighlighted
-    ? "bg-gradient-to-r from-secondary-1 to-secondary-2 hover:from-secondary-2 hover:to-secondary-3 shadow-lg shadow-secondary-1/30"
-    : "bg-gradient-to-r from-primary-600 to-primary-700 hover:from-primary-500 hover:to-primary-600";
+const AbonelikKarti: React.FC<AbonelikKartiProps> = ({
+  plan,
+  onPlanSec,
+  isLoading,
+}) => {
+  const isHighlighted = plan.paket_adi === "Standart";
 
   return (
     <div
-      className={`flex h-full flex-col rounded-2xl p-8 text-white transition-all duration-500 hover:-translate-y-2 ${cardClasses}`}
+      className={`group relative flex h-full flex-col rounded-3xl p-8 transition-all duration-300 hover:-translate-y-2 ${
+        isHighlighted
+          ? "border-2 border-yellow-500/50 bg-gray-900 shadow-[0_0_40px_-10px_rgba(234,179,8,0.3)]"
+          : "border border-white/10 bg-gray-900/50 hover:border-white/20 hover:bg-gray-900"
+      }`}
     >
-      {/* Öne çıkan kart için parlama efekti */}
-      {plan.isHighlighted && (
-        <div className="from-secondary-1/10 absolute inset-0 rounded-2xl bg-gradient-to-br to-transparent" />
-      )}
-      <div className="relative z-10">
-        {/* Popüler etiket */}
-        {plan.isHighlighted && (
-          <div className="mb-6 text-center">
-            <span className="from-secondary-1 to-secondary-2 text-primary-900 inline-flex items-center gap-2 rounded-full bg-gradient-to-r px-5 py-2 text-sm font-bold shadow-lg">
-              <svg className="h-4 w-4" fill="currentColor" viewBox="0 0 20 20">
-                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-              </svg>
-              EN POPÜLER
-            </span>
-          </div>
-        )}
-
-        <h3 className="text-primary-50 mb-3 text-center text-3xl font-bold">
-          {plan.name}
-        </h3>
-        <p className="text-primary-300 mb-8 text-center text-sm font-medium">
-          {plan.quality}
-        </p>
-
-        <div className="mb-10 text-center">
-          <div className="flex items-baseline justify-center gap-2">
-            <span className="from-primary-50 to-primary-200 bg-gradient-to-r bg-clip-text text-6xl font-black text-transparent">
-              {plan.price}
-            </span>
-          </div>
-          <span className="text-primary-400 text-sm font-medium">
-            / {plan.priceDetails}
+      {/* Popüler Rozeti */}
+      {isHighlighted && (
+        <div className="absolute -top-4 right-0 left-0 mx-auto w-max">
+          <span className="flex items-center gap-1 rounded-full bg-yellow-500 px-4 py-1 text-xs font-bold text-black shadow-lg">
+            ★ EN POPÜLER
           </span>
         </div>
+      )}
 
-        <div className="via-primary-600 mb-8 h-px bg-gradient-to-r from-transparent to-transparent" />
-
-        <ul className="mb-10 flex-grow space-y-4">
-          {plan.features.map((feature, index) => (
-            <li key={index} className="flex items-start gap-3">
-              {feature.included ? (
-                <div className="bg-secondary-1/20 mt-0.5 flex-shrink-0 rounded-full p-1">
-                  <svg
-                    className="text-secondary-1 h-4 w-4"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={3}
-                      d="M5 13l4 4L19 7"
-                    />
-                  </svg>
-                </div>
-              ) : (
-                <div className="bg-primary-700/30 mt-0.5 flex-shrink-0 rounded-full p-1">
-                  <svg
-                    className="text-primary-500 h-4 w-4"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M6 18L18 6M6 6l12 12"
-                    />
-                  </svg>
-                </div>
-              )}
-              <span
-                className={
-                  feature.included
-                    ? "text-primary-100 font-medium"
-                    : "text-primary-500 line-through"
-                }
-              >
-                {feature.text}
-              </span>
-            </li>
-          ))}
-        </ul>
-
-        {/* Tıklama olayını Türkçeleştirilmiş prop'tan alıyoruz */}
-        <button
-          onClick={() => onPlanSec(plan.name)}
-          className={`w-full rounded-xl px-8 py-4 text-base font-bold text-white transition-all duration-300 hover:scale-105 active:scale-95 ${buttonClasses}`}
-        >
-          Planı Seç
-        </button>
+      <div className="mb-8">
+        <h3 className="mb-2 text-2xl font-bold tracking-wide text-white">
+          {plan.paket_adi}
+        </h3>
+        <div className="flex items-baseline gap-1">
+          <span className="text-4xl font-black text-white">{plan.fiyat} ₺</span>
+          <span className="text-sm text-gray-400">/ ay</span>
+        </div>
       </div>
+
+      <div className="mb-8 h-px w-full bg-gradient-to-r from-transparent via-white/20 to-transparent" />
+
+      {/* Özellik Listesi */}
+      <ul className="mb-8 flex-grow space-y-4">
+        {plan.ozellikler.map((feature, index) => (
+          <li key={index} className="flex items-start gap-3">
+            {feature.included ? (
+              <div className="mt-0.5 flex h-5 w-5 items-center justify-center rounded-full bg-green-500/20 text-green-400">
+                <svg
+                  className="h-3.5 w-3.5"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  strokeWidth={3}
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M5 13l4 4L19 7"
+                  />
+                </svg>
+              </div>
+            ) : (
+              <div className="mt-0.5 flex h-5 w-5 items-center justify-center rounded-full bg-red-500/10 text-gray-500">
+                <svg
+                  className="h-3.5 w-3.5"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  strokeWidth={3}
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M6 18L18 6M6 6l12 12"
+                  />
+                </svg>
+              </div>
+            )}
+            <span
+              className={`text-sm ${feature.included ? "text-gray-300" : "text-gray-600 line-through"}`}
+            >
+              {feature.text}
+            </span>
+          </li>
+        ))}
+      </ul>
+
+      <button
+        disabled={isLoading}
+        onClick={() => onPlanSec(plan.id, plan.paket_adi)}
+        className={`w-full rounded-xl py-4 text-sm font-bold transition-all active:scale-95 ${
+          isHighlighted
+            ? "bg-yellow-500 text-black shadow-lg shadow-yellow-500/20 hover:bg-yellow-400"
+            : "bg-white/10 text-white hover:bg-white/20"
+        } disabled:cursor-not-allowed disabled:opacity-50`}
+      >
+        {isLoading ? "İşleniyor..." : "Planı Seç"}
+      </button>
     </div>
   );
 };

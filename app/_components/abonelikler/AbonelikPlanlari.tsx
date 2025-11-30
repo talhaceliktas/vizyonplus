@@ -1,57 +1,56 @@
-"use client"; // Buton etkileşimi için bu bir client component olmalı
+"use client";
 
-import React from "react";
-// Türkçeleştirilmiş component'i ve tiplerini import ediyoruz
-import AbonelikKarti, { PlanTipi } from "./AbonelikKarti";
-// Harici JSON verisini import ediyoruz
-import planVerisi from "../../data/abonelikler.json";
+import React, { useState } from "react";
+import AbonelikKarti from "./AbonelikKarti";
+import { AbonelikPlani } from "../../types";
 
-// Component adını "AbonelikPlanlari" olarak değiştiriyoruz
-const AbonelikPlanlari: React.FC = () => {
-  // JSON'dan gelen veriyi `PlanTipi` dizisi olarak tanımlıyoruz
-  // Bu, TypeScript'in veri yapısını tanımasını sağlar
-  const planlar: PlanTipi[] = planVerisi;
+interface Props {
+  dbPlanlar: AbonelikPlani[];
+}
 
-  // Handler (işleyici) fonksiyonu da Türkçeleştirebiliriz
-  const planSecimiAfirmasi = (planAdi: string) => {
-    console.log(`${planAdi} planı seçildi!`);
-    // Burada Next.js router ile ödeme sayfasına yönlendirme yapabilirsiniz
-    // import { useRouter } from 'next/navigation';
-    // const router = useRouter();
-    // router.push(`/odeme?plan=${planAdi}`);
+const AbonelikPlanlari: React.FC<Props> = ({ dbPlanlar }) => {
+  const [loading, setLoading] = useState(false);
+
+  const planSecimiAfirmasi = async (planId: number, planAdi: string) => {
+    setLoading(true);
+    console.log(
+      `${planAdi} (ID: ${planId}) seçildi. Ödeme sayfasına yönlendiriliyor...`,
+    );
+
+    // BURAYA DAHA SONRA IYZICO ENTEGRASYONU GELECEK
+    // router.push(`/odeme?planId=${planId}`);
+
+    setTimeout(() => setLoading(false), 1000); // Fake loading
   };
 
   return (
-    <section className="from-primary-950 via-primary-900 to-primary-950 relative min-h-screen overflow-hidden bg-gradient-to-b py-20 md:py-32">
-      {/* Arka plan dekoratif elementleri */}
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,rgba(99,102,241,0.1),transparent_50%)]" />
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_80%,rgba(168,85,247,0.1),transparent_50%)]" />
+    <section className="relative min-h-screen overflow-hidden bg-[#0a0a0a] py-20 md:py-32">
+      {/* Arka plan dekoratif elementleri - Biraz daha sadeleştirdim */}
+      <div className="absolute top-0 left-0 h-full w-full bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-indigo-900/20 via-[#0a0a0a] to-[#0a0a0a]" />
 
       <div className="relative z-10 container mx-auto px-4">
         <div className="mx-auto mb-16 max-w-3xl text-center">
-          <h2 className="from-primary-50 via-primary-100 to-primary-200 mb-6 bg-gradient-to-r bg-clip-text text-5xl font-black text-transparent md:text-6xl">
+          <h2 className="mb-6 bg-gradient-to-r from-white via-gray-200 to-gray-400 bg-clip-text text-5xl font-black tracking-tight text-transparent md:text-6xl">
             Vizyon+&apos;a Katılın
           </h2>
-          <p className="text-primary-300 text-xl font-medium md:text-2xl">
+          <p className="text-xl font-medium text-gray-400 md:text-2xl">
             Size uygun planı seçin. İstediğiniz zaman iptal edin.
           </p>
         </div>
 
-        {/* Veriyi JSON'dan alıp map (döngü) ile işliyoruz.
-          Her bir "plan" için bir "AbonelikKarti" component'i oluşturuyoruz.
-        */}
         <div className="mx-auto grid max-w-7xl grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
-          {planlar.map((plan) => (
+          {dbPlanlar.map((plan) => (
             <AbonelikKarti
-              key={plan.name}
+              key={plan.id}
               plan={plan}
-              onPlanSec={planSecimiAfirmasi} // Türkçeleştirilmiş prop'u bağlıyoruz
+              onPlanSec={planSecimiAfirmasi}
+              isLoading={loading}
             />
           ))}
         </div>
 
         <div className="mt-16 text-center">
-          <p className="text-primary-400 text-sm">
+          <p className="text-sm text-gray-500">
             Tüm planlar 3 gün ücretsiz deneme ile başlar • İstediğiniz zaman
             iptal edin
           </p>

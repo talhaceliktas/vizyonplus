@@ -213,3 +213,21 @@ export async function tanitimlariGetir() {
 
   return slidesData;
 }
+
+// Abonelik turlerini getir
+export async function abonelikTurleriniGetir() {
+  const supabase = await supabaseServer();
+
+  const { data: plans, error } = await supabase
+    .from("abonelik_paketleri")
+    .select("*")
+    .eq("aktif_mi", true)
+    .order("fiyat", { ascending: true });
+
+  if (error) {
+    console.error("Planlar çekilemedi:", error);
+    return [];
+  }
+
+  return plans;
+}

@@ -92,3 +92,16 @@ export type TanitimSlideTipi = {
 export type GirisProps = {
   tanitimVerileri: TanitimSlideTipi[];
 };
+
+export type PlanOzelligi = {
+  text: string;
+  included: boolean;
+};
+
+export type AbonelikPlani = {
+  id: number;
+  paket_adi: string;
+  fiyat: number;
+  ozellikler: PlanOzelligi[];
+  aktif_mi: boolean;
+};

@@ -1,12 +1,8 @@
-import React from "react";
 import AbonelikPlanlari from "../_components/abonelikler/AbonelikPlanlari";
+import { abonelikTurleriniGetir } from "../_lib/data-service-server";
 
-const Page = () => {
-  return (
-    <div>
-      <AbonelikPlanlari />
-    </div>
-  );
-};
+export default async function Page() {
+  const plans = await abonelikTurleriniGetir();
 
-export default Page;
+  return <AbonelikPlanlari dbPlanlar={plans || []} />;
+}
