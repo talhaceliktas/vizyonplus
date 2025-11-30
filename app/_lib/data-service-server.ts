@@ -339,3 +339,44 @@ export async function filmeSahipMi(filmId: number) {
   if (!mevcut) return false;
   return true;
 }
+
+export async function puanVer(icerikId: number, puan: number) {
+  const supabase = await supabaseServer();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) return { error: "Giriş yapmalısınız." };
+
+  const { error } = await supabase.from("icerik_puanlari").upsert(
+    { kullanici_id: user.id, icerik_id: icerikId, puan: puan },
+    { onConflict: "kullanici_id, icerik_id" }, // Çakışma varsa güncelle
+  );
+
+  if (error) {
+    console.error(error);
+    return { error: "Puan kaydedilemedi." };
+  }
+
+  // Sayfayı yenile ki ortalama puan güncellensin
+  revalidatePath(`/film/${icerikId}`);
+  return { success: true };
+}
+
+export async function kullaniciPuaniniGetir(icerikId: number) {
+  const supabase = await supabaseServer();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) return null;
+
+  const { data } = await supabase
+    .from("icerik_puanlari")
+    .select("puan")
+    .eq("kullanici_id", user.id)
+    .eq("icerik_id", icerikId)
+    .single();
+
+  return data?.puan || null;
+}

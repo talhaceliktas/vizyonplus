@@ -2,7 +2,8 @@ import { Suspense } from "react";
 import {
   diziyiGetir,
   aktifAboneligiGetir,
-} from "../../../_lib/data-service-server"; // aktifAboneligiGetir eklendi
+  kullaniciPuaniniGetir, // 1. Yeni Fonksiyon
+} from "../../../_lib/data-service-server";
 import { DiziSezon } from "../../../types";
 import Loading from "../../../loading";
 import Image from "next/image";
@@ -12,11 +13,12 @@ import IcerikButonlari from "../../../_components/icerikler/dizi-film/IcerikButo
 import Yorumlar from "../../../_components/icerikler/dizi-film/Yorumlar";
 import DiziIcerigi from "../../../_components/icerikler/DiziIcerigi";
 import DiziSezonKonteynir from "../../../_components/icerikler/diziler/DiziSezonKonteynir";
+import IcerikPuanla from "../../../_components/icerikler/dizi-film/IcerikPuanla";
 
 const Page = async ({ params }: { params: { diziId: number } }) => {
   const { diziId } = await params;
 
-  // 1. Verileri Çek
+  // 1. Verileri Çek (Paralel çekim yapılabilir ama şimdilik sıralı kalsın)
   const dizi: DiziSezon = await diziyiGetir(diziId);
   const supabase = await supabaseServerClient();
   const {
@@ -29,10 +31,13 @@ const Page = async ({ params }: { params: { diziId: number } }) => {
     aktifAbonelik = await aktifAboneligiGetir(user.id);
   }
 
-  // Abone mi? (Boolean çevrimi)
+  // Abone mi?
   const aboneMi = !!aktifAbonelik;
 
   const { id, isim, fotograf } = dizi;
+
+  // 3. Kullanıcının Mevcut Puanını Çek
+  const mevcutPuan = await kullaniciPuaniniGetir(id);
 
   return (
     <Suspense fallback={<Loading />}>
@@ -40,12 +45,13 @@ const Page = async ({ params }: { params: { diziId: number } }) => {
         <div className="mx-auto flex h-full w-full max-w-[1360px] flex-col gap-y-20">
           <div className="flex flex-col gap-x-10 gap-y-10 md:flex-row">
             {/* Sol: Kapak */}
-            <div className="relative aspect-[9/16] w-full max-w-[400px]">
+            <div className="relative aspect-[9/16] w-full max-w-[400px] shrink-0">
               <Image
-                alt={`${isim} filmi kapağı`}
+                alt={`${isim} dizi kapağı`}
                 src={fotograf}
-                className="rounded-xl object-cover shadow-2xl"
+                className="rounded-xl object-cover shadow-2xl shadow-black/50"
                 fill
+                priority
               />
             </div>
 
@@ -53,16 +59,29 @@ const Page = async ({ params }: { params: { diziId: number } }) => {
             <div className="flex w-full flex-col gap-y-6">
               <DiziIcerigi dizi={dizi} />
 
-              <IcerikButonlari id={id} user={user} />
+              {/* --- AKSİYON VE PUANLAMA ALANI --- */}
+              <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+                {/* Sol: Listem / Beğen */}
+                <div className="flex items-center">
+                  <IcerikButonlari id={id} user={user} />
+                </div>
+
+                {/* Sağ: Puanlama (Sadece user varsa) */}
+                {user && (
+                  <div className="flex justify-start md:justify-end">
+                    <IcerikPuanla icerikId={id} mevcutPuan={mevcutPuan} />
+                  </div>
+                )}
+              </div>
 
               {/* Sezon Konteynırı (Abone durumunu iletiyoruz) */}
-              <div className="mt-8">
+              <div className="mt-4">
                 <DiziSezonKonteynir dizi={dizi} aboneMi={aboneMi} />
               </div>
             </div>
           </div>
 
-          <Yorumlar icerikId={id} />
+          <Yorumlar icerikId={id} variant="default" />
         </div>
       </div>
       <Footer />

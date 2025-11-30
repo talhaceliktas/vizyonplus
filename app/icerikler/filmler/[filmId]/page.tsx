@@ -3,6 +3,7 @@ import {
   filmiGetir,
   aktifAboneligiGetir,
   filmeSahipMi,
+  kullaniciPuaniniGetir, // 1. Yeni Fonksiyon Importu
 } from "../../../_lib/data-service-server";
 import Loading from "../../../loading";
 import Image from "next/image";
@@ -13,11 +14,12 @@ import FilmIcerigi from "../../../_components/icerikler/FilmIcerigi";
 import Yorumlar from "../../../_components/icerikler/dizi-film/Yorumlar";
 import IzleButonu from "../../../_components/icerikler/filmler/IzleButonu";
 import SatinAlButonu from "../../../_components/icerikler/filmler/SatinAlButonu";
+import IcerikPuanla from "../../../_components/icerikler/dizi-film/IcerikPuanla"; // 2. Yeni Bileşen Importu
 
 const Page = async ({ params }: { params: { filmId: number } }) => {
   const { filmId } = await params;
 
-  // Verileri paralel çekmek performansı artırır (Opsiyonel ama önerilir)
+  // Verileri paralel çekmek performansı artırır
   const filmPromise = filmiGetir(filmId);
   const supabasePromise = supabaseServerClient();
 
@@ -35,9 +37,13 @@ const Page = async ({ params }: { params: { filmId: number } }) => {
 
   const { id, isim, fotograf } = film;
 
+  // 3. Kullanıcının Mevcut Puanını Çek
+  // Eğer kullanıcı yoksa null döner, varsa puanı döner
+  const mevcutPuan = await kullaniciPuaniniGetir(id);
+
   // Erişim Kontrolleri
   const aboneMi = !!aktifAbonelik;
-  const filmeSahip = await filmeSahipMi(id); // Bu fonksiyonun user.id'yi içeriden aldığını varsayıyorum
+  const filmeSahip = await filmeSahipMi(id);
 
   // Satın al butonu görünmeli mi? (Abone değilse VE filme sahip değilse)
   const satinAlGoster = !aboneMi && !filmeSahip;
@@ -64,19 +70,18 @@ const Page = async ({ params }: { params: { filmId: number } }) => {
 
               {/* BUTON ALANI */}
               <div className="flex flex-col gap-6">
-                {/* Ana Aksiyonlar (İzle & Satın Al) */}
-                {/* Mobilde alt alta (flex-col), Masaüstünde yan yana (sm:flex-row) */}
+                {/* --- Üst Satır: İzle ve Satın Al --- */}
                 <div className="flex flex-col gap-4 sm:flex-row">
-                  {/* İzle Butonu: Her zaman genişlemeye çalışır (flex-1) */}
+                  {/* İzle Butonu */}
                   <div className="flex-1">
                     <IzleButonu
                       filmId={id}
                       aboneMi={aboneMi}
-                      sahipMi={filmeSahip} // İzle butonunu bu prop'u alacak şekilde güncellediğinden emin ol
+                      sahipMi={filmeSahip}
                     />
                   </div>
 
-                  {/* Satın Al Butonu: Sadece gerekirse gösterilir */}
+                  {/* Satın Al Butonu */}
                   {satinAlGoster && (
                     <div className="shrink-0">
                       <SatinAlButonu
@@ -88,8 +93,21 @@ const Page = async ({ params }: { params: { filmId: number } }) => {
                   )}
                 </div>
 
-                {/* Alt Aksiyonlar (Listem, Beğen vb.) */}
-                <IcerikButonlari id={id} user={user} />
+                {/* --- Alt Satır: Aksiyonlar ve Puanlama --- */}
+                {/* Grid yapısı ile yan yana hizalıyoruz */}
+                <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+                  {/* Sol: Listem / Beğen Butonları */}
+                  <div className="flex items-center">
+                    <IcerikButonlari id={id} user={user} />
+                  </div>
+
+                  {/* Sağ: Puanlama Alanı (Sadece giriş yapmışsa) */}
+                  {user && (
+                    <div className="flex justify-start md:justify-end">
+                      <IcerikPuanla icerikId={id} mevcutPuan={mevcutPuan} />
+                    </div>
+                  )}
+                </div>
               </div>
             </div>
           </div>
