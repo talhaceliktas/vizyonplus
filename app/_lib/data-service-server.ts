@@ -380,3 +380,41 @@ export async function kullaniciPuaniniGetir(icerikId: number) {
 
   return data?.puan || null;
 }
+
+export async function kullaniciPuanlamalariniGetir(userId: string) {
+  const supabase = await supabaseServer();
+
+  const { data, error } = await supabase
+    .from("icerik_puanlari")
+    .select("*, icerikler(*)") // İlişkili film/dizi bilgisini de al
+    .eq("kullanici_id", userId)
+    .order("created_at", { ascending: false }); // En son puanlanan en üstte
+
+  if (error) {
+    console.error("Puanlamalar çekilemedi:", error);
+    return [];
+  }
+
+  return data;
+}
+
+export async function puaniKaldir(puanId: number) {
+  const supabase = await supabaseServer();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) return { error: "Yetkisiz işlem" };
+
+  const { error } = await supabase
+    .from("icerik_puanlari")
+    .delete()
+    .eq("id", puanId)
+    .eq("kullanici_id", user.id); // Güvenlik: Sadece kendi puanını silebilir
+
+  if (error) return { error: error.message };
+
+  revalidatePath("/profil/puanlamalar"); // Listeyi yenile
+  // Eğer filmin kendi sayfasındaysa orayı da yenilemek isteyebilirsin
+  return { success: true };
+}
