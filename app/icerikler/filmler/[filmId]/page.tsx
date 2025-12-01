@@ -3,7 +3,7 @@ import {
   filmiGetir,
   aktifAboneligiGetir,
   filmeSahipMi,
-  kullaniciPuaniniGetir, // 1. Yeni Fonksiyon Importu
+  kullaniciPuaniniGetir,
 } from "../../../_lib/data-service-server";
 import Loading from "../../../loading";
 import Image from "next/image";
@@ -14,12 +14,12 @@ import FilmIcerigi from "../../../_components/icerikler/FilmIcerigi";
 import Yorumlar from "../../../_components/icerikler/dizi-film/Yorumlar";
 import IzleButonu from "../../../_components/icerikler/filmler/IzleButonu";
 import SatinAlButonu from "../../../_components/icerikler/filmler/SatinAlButonu";
-import IcerikPuanla from "../../../_components/icerikler/dizi-film/IcerikPuanla"; // 2. Yeni Bileşen Importu
+import IcerikPuanla from "../../../_components/icerikler/dizi-film/IcerikPuanla";
 
 const Page = async ({ params }: { params: { filmId: number } }) => {
   const { filmId } = await params;
 
-  // Verileri paralel çekmek performansı artırır
+  // Verileri paralel çek
   const filmPromise = filmiGetir(filmId);
   const supabasePromise = supabaseServerClient();
 
@@ -30,22 +30,29 @@ const Page = async ({ params }: { params: { filmId: number } }) => {
     data: { user },
   } = await supabase.auth.getUser();
 
+  // --- 1. Abonelik ve Sahiplik Kontrolü ---
   let aktifAbonelik = null;
+  let filmeSahip = false; // Varsayılan olarak false
+  let mevcutPuan = null;
+
   if (user) {
-    aktifAbonelik = await aktifAboneligiGetir(user.id);
+    // Sadece kullanıcı varsa veritabanına sor
+    // Promise.all ile paralel sorarak hızı artırabiliriz
+    const [abonelikData, sahipData, puanData] = await Promise.all([
+      aktifAboneligiGetir(user.id),
+      filmeSahipMi(film.id), // ID parametresini doğru geçirdiğinden emin ol
+      kullaniciPuaniniGetir(film.id),
+    ]);
+
+    aktifAbonelik = abonelikData;
+    filmeSahip = sahipData;
+    mevcutPuan = puanData;
   }
 
   const { id, isim, fotograf } = film;
-
-  // 3. Kullanıcının Mevcut Puanını Çek
-  // Eğer kullanıcı yoksa null döner, varsa puanı döner
-  const mevcutPuan = await kullaniciPuaniniGetir(id);
-
-  // Erişim Kontrolleri
   const aboneMi = !!aktifAbonelik;
-  const filmeSahip = await filmeSahipMi(id);
 
-  // Satın al butonu görünmeli mi? (Abone değilse VE filme sahip değilse)
+  // Satın al butonu görünmeli mi?
   const satinAlGoster = !aboneMi && !filmeSahip;
 
   return (
@@ -86,7 +93,8 @@ const Page = async ({ params }: { params: { filmId: number } }) => {
                     <div className="shrink-0">
                       <SatinAlButonu
                         filmId={id}
-                        fiyat={film.film_ucretleri[0].satin_alma_ucreti}
+                        // Film ücreti dizisinin boş gelme ihtimaline karşı optional chaining (?.)
+                        fiyat={film.film_ucretleri?.[0]?.satin_alma_ucreti || 0}
                         filmAdi={film.isim}
                       />
                     </div>
@@ -94,14 +102,13 @@ const Page = async ({ params }: { params: { filmId: number } }) => {
                 </div>
 
                 {/* --- Alt Satır: Aksiyonlar ve Puanlama --- */}
-                {/* Grid yapısı ile yan yana hizalıyoruz */}
                 <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
                   {/* Sol: Listem / Beğen Butonları */}
                   <div className="flex items-center">
                     <IcerikButonlari id={id} user={user} />
                   </div>
 
-                  {/* Sağ: Puanlama Alanı (Sadece giriş yapmışsa) */}
+                  {/* Sağ: Puanlama Alanı */}
                   {user && (
                     <div className="flex justify-start md:justify-end">
                       <IcerikPuanla icerikId={id} mevcutPuan={mevcutPuan} />

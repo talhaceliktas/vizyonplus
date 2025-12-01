@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { DiziDetay } from "../../../types";
+import toast from "react-hot-toast";
 
 const DiziBolumleri = ({
   diziSezonBilgileri,
@@ -16,6 +17,10 @@ const DiziBolumleri = ({
     (s) => s.sezon_numarasi === seciliSezon,
   );
 
+  const onClick = () => {
+    toast.success("İyi seyirler! Player açılıyor...");
+  };
+
   return (
     <div className="flex w-full flex-1 flex-col">
       <div className="flex w-full flex-col">
@@ -24,6 +29,7 @@ const DiziBolumleri = ({
             key={bolum.id}
             href={`/izle/dizi/${diziId}/${bolum.id}`}
             className="hover:bg-primary-800 dark:hover:bg-primary-700 flex w-full items-center justify-between border-b border-white/5 py-2 transition-colors duration-300"
+            onClick={onClick}
           >
             <div className="text-primary-400 w-[20%] min-w-[80px] p-2 text-xs sm:text-base">
               Bölüm {bolum.bolum_numarasi}
