@@ -133,12 +133,12 @@ export async function icerikYorumlariniGetir(icerikId: number) {
   return yorumlar || [];
 }
 
-export async function profilFotografiniGetir(kullaniciId: string) {
+export async function profilBilgileriniGetir(kullaniciId: string) {
   const supabase = await supabaseServer();
 
   const { data, error } = await supabase
     .from("profiller")
-    .select("profil_fotografi")
+    .select("*")
     .eq("id", kullaniciId)
     .single();
 
@@ -147,7 +147,7 @@ export async function profilFotografiniGetir(kullaniciId: string) {
   }
 
   // data null olursa boş string döndür
-  return data?.profil_fotografi ?? "";
+  return data ?? [];
 }
 
 export async function rapidApidenFilmleriGetir() {
@@ -417,4 +417,107 @@ export async function puaniKaldir(puanId: number) {
   revalidatePath("/profil/puanlamalar"); // Listeyi yenile
   // Eğer filmin kendi sayfasındaysa orayı da yenilemek isteyebilirsin
   return { success: true };
+}
+
+export async function profiliGuncelle(formData: FormData) {
+  const supabase = await supabaseServer();
+
+  // 1. Form verilerini al
+  const adSoyad = formData.get("adSoyad") as string;
+  const cinsiyet = formData.get("cinsiyet") as string;
+
+  // Basit validasyon
+  if (!adSoyad || adSoyad.length < 3) {
+    return { success: false, error: "Ad Soyad en az 3 karakter olmalıdır." };
+  }
+
+  const {
+    data: { user },
+    error: userError,
+  } = await supabase.auth.getUser();
+
+  if (userError || !user) {
+    return { success: false, error: "Oturum açmanız gerekiyor." };
+  }
+
+  try {
+    const { error: authError } = await supabase.auth.updateUser({
+      data: { display_name: adSoyad },
+    });
+
+    if (authError)
+      throw new Error("Auth güncelleme hatası: " + authError.message);
+
+    const { error: dbError } = await supabase
+      .from("profiller")
+      .update({
+        isim: adSoyad,
+        cinsiyet,
+      })
+      .eq("id", user.id);
+
+    if (dbError) throw new Error("Veritabanı hatası: " + dbError.message);
+
+    revalidatePath("/profil/ayarlar");
+    revalidatePath("/", "layout");
+
+    return { success: true, message: "Profil başarıyla güncellendi." };
+  } catch (error) {
+    console.error(error);
+    return { success: false, error: error.message || "Bir hata oluştu." };
+  }
+}
+
+export async function sifreyiGuncelle(formData: FormData) {
+  const supabase = await supabaseServer();
+
+  // 1. Form verilerini al
+  const mevcutParola = formData.get("mevcutParola") as string;
+  const yeniParola = formData.get("yeniParola") as string;
+  const yeniParolaDogrula = formData.get("yeniParolaDogrula") as string;
+
+  // 2. Basit Validasyonlar
+  if (!mevcutParola || !yeniParola || !yeniParolaDogrula) {
+    return { success: false, error: "Lütfen tüm alanları doldurun." };
+  }
+
+  if (yeniParola.length < 8) {
+    return { success: false, error: "Yeni şifre en az 8 karakter olmalıdır." };
+  }
+
+  if (yeniParola !== yeniParolaDogrula) {
+    return { success: false, error: "Yeni şifreler birbiriyle eşleşmiyor." };
+  }
+
+  // 3. Mevcut Kullanıcıyı Al
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user || !user.email) {
+    return { success: false, error: "Oturum hatası." };
+  }
+
+  // 4. Mevcut Şifreyi Doğrula (SignIn Denemesi ile)
+  const { error: signInError } = await supabase.auth.signInWithPassword({
+    email: user.email,
+    password: mevcutParola,
+  });
+
+  if (signInError) {
+    return { success: false, error: "Mevcut şifreniz hatalı." };
+  }
+
+  // 5. Yeni Şifreyi Güncelle
+  const { error: updateError } = await supabase.auth.updateUser({
+    password: yeniParola,
+  });
+
+  if (updateError) {
+    return {
+      success: false,
+      error: "Güncelleme hatası: " + updateError.message,
+    };
+  }
+
+  return { success: true, message: "Şifreniz başarıyla güncellendi." };
 }

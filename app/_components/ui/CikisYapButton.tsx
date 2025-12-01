@@ -2,17 +2,9 @@
 
 import Link from "next/link";
 import supabaseBrowserClient from "../../_lib/supabase/client";
-import type { ReactNode } from "react";
 import toast from "react-hot-toast";
 
-type CikisYap = {
-  children: ReactNode;
-  icon: ReactNode;
-  className: string;
-  href: string;
-};
-
-const CikisYapButton = ({ children, icon, className, href }: CikisYap) => {
+const CikisYapButton = ({ children, icon, className, href }) => {
   return (
     <Link
       className={className}

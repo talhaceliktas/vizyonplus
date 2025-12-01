@@ -1,41 +1,59 @@
 import Link from "next/link";
 import { dahaSonraIzlenecekleriGetir } from "../../_lib/data-service-server";
 import KayitliFilm from "./KayitliFilm";
-import { FaRegBookmark } from "react-icons/fa6";
+import { FaRegBookmark, FaFilm } from "react-icons/fa6";
 
 const Izlenecekler = async () => {
   const izlenecekler = await dahaSonraIzlenecekleriGetir();
 
   if (!izlenecekler || izlenecekler.length === 0) {
     return (
-      <div className="flex h-[60vh] w-full flex-col items-center justify-center gap-4 text-center">
+      <div className="flex h-[60vh] w-full flex-col items-center justify-center gap-6 text-center">
+        <div className="relative">
+          <div className="absolute inset-0 animate-pulse rounded-full bg-yellow-500/20 blur-xl"></div>
+          <div className="relative flex h-24 w-24 items-center justify-center rounded-full border-2 border-yellow-500/30 bg-[#121212] shadow-2xl">
+            <FaRegBookmark className="text-4xl text-yellow-500" />
+          </div>
+        </div>
+
+        <div className="max-w-md space-y-2">
+          <h2 className="text-2xl font-bold text-white">Listeniz Henüz Boş</h2>
+          <p className="text-sm leading-relaxed text-gray-400">
+            İlgini çeken filmleri ve dizileri kaydetmek için içeriklerdeki{" "}
+            <FaRegBookmark className="inline text-yellow-500" /> ikonuna
+            tıklayabilirsin.
+          </p>
+        </div>
+
         <Link
           href="/icerikler"
-          className="flex items-center justify-center rounded-full bg-gradient-to-br from-blue-100 to-blue-200 p-6"
+          className="group flex items-center gap-2 rounded-full bg-white px-8 py-3 font-bold text-black transition-all hover:bg-yellow-500 hover:shadow-lg hover:shadow-yellow-500/20 active:scale-95"
         >
-          <FaRegBookmark className="text-4xl text-blue-500" />
+          <FaFilm />
+          <span>İçerikleri Keşfet</span>
         </Link>
-
-        <h2 className="text-secondary-1-2 text-xl font-semibold">
-          Daha Sonra İzle listende henüz film yok
-        </h2>
-        <p className="text-secondary-3 flex items-center justify-center gap-1 text-sm">
-          İzlemek istediğin filmleri <FaRegBookmark className="text-xl" />{" "}
-          ikonuna tıklayarak buraya ekleyebilirsin.
-        </p>
       </div>
     );
   }
 
   return (
-    <div className="grid h-full w-full gap-x-10 gap-y-16 lg:grid-cols-2">
-      {izlenecekler.map((izlenecek) => (
-        <KayitliFilm
-          key={izlenecek.icerikler_id}
-          icerik_id={izlenecek.icerikler_id}
-          kayitTuru="dahaSonra"
-        />
-      ))}
+    <div className="w-full">
+      <div className="mb-8 flex items-center gap-3 border-b border-white/10 pb-4">
+        <h1 className="text-2xl font-bold text-white">İzleme Listem</h1>
+        <span className="rounded-full bg-white/10 px-3 py-1 text-xs font-medium text-gray-400">
+          {izlenecekler.length} İçerik
+        </span>
+      </div>
+
+      <div className="grid grid-cols-1 gap-6 xl:grid-cols-2">
+        {izlenecekler.map((izlenecek) => (
+          <KayitliFilm
+            key={izlenecek.icerikler_id}
+            icerik_id={izlenecek.icerikler_id}
+            kayitTuru="dahaSonra"
+          />
+        ))}
+      </div>
     </div>
   );
 };

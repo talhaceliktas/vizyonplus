@@ -1,45 +1,131 @@
-import { User } from "@supabase/supabase-js";
+"use client";
 
-const ProfilAyarlari = ({ user }: { user: User }) => {
+import { useState } from "react";
+import toast from "react-hot-toast";
+import { profiliGuncelle } from "../../_lib/data-service-server"; // Server action yolunu kontrol et
+import { Loader2 } from "lucide-react";
+
+const ProfilAyarlari = ({ user, profilBilgileri }) => {
+  const [loading, setLoading] = useState(false);
+
   const {
     user_metadata: { display_name },
     email,
   } = user;
 
+  async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    setLoading(true);
+
+    const formData = new FormData(event.currentTarget);
+
+    // Server action'ı çağır
+    const result = await profiliGuncelle(formData);
+
+    if (result.success) {
+      toast.success(result.message);
+    } else {
+      toast.error(result.error);
+    }
+
+    setLoading(false);
+  }
+
   return (
-    <div className="w-full max-w-lg text-base md:text-lg">
-      <div className="text-primary-50 grid grid-cols-1 items-start gap-x-0 gap-y-2 md:grid-cols-[150px_1fr] md:items-center md:gap-x-6 md:gap-y-4">
-        <label htmlFor="adSoyad">Ad Soyad:</label>
+    <form onSubmit={handleSubmit} className="w-full space-y-6">
+      {/* --- AD SOYAD --- */}
+      <div className="group relative">
+        <label
+          htmlFor="adSoyad"
+          className="text-primary-500 dark:text-primary-400 mb-1 block text-xs font-medium tracking-wider uppercase"
+        >
+          Ad Soyad
+        </label>
         <input
           id="adSoyad"
+          name="adSoyad"
           type="text"
-          className="dark:bg-primary-700 bg-primary-800 w-full rounded-md px-3 py-2 text-base outline-none disabled:opacity-60 md:text-lg"
+          className="border-primary-800 bg-primary-900 text-primary-50 focus:border-secondary-1 focus:bg-primary-800 dark:border-primary-700 w-full rounded-lg border px-4 py-3 transition-all focus:outline-none dark:text-white"
           defaultValue={display_name}
+          required
+          minLength={3}
         />
+      </div>
 
-        <label htmlFor="email">Email:</label>
+      {/* --- EMAIL (DISABLED) --- */}
+      <div className="group relative opacity-70">
+        <label
+          htmlFor="email"
+          className="text-primary-500 dark:text-primary-400 mb-1 block text-xs font-medium tracking-wider uppercase"
+        >
+          Email Adresi
+        </label>
         <input
           id="email"
           type="email"
-          className="dark:bg-primary-700 bg-primary-800 w-full rounded-md px-3 py-2 text-base outline-none disabled:opacity-60 md:text-lg"
+          className="border-primary-800 bg-primary-800/50 text-primary-400 dark:border-primary-700 w-full cursor-not-allowed rounded-lg border px-4 py-3 focus:outline-none"
           defaultValue={email}
           disabled
         />
-
-        <label htmlFor="cinsiyet">Cinsiyet:</label>
-        <select
-          id="cinsiyet"
-          className="dark:bg-primary-700 bg-primary-800 w-full rounded-md px-3 py-2 text-base outline-none md:text-lg"
-        >
-          <option>Belirtmemeyi tercih ediyorum</option>
-          <option>Erkek</option>
-          <option>Kadın</option>
-        </select>
+        <span className="absolute top-9 right-3 text-xs text-red-500/70">
+          Değiştirilemez
+        </span>
       </div>
-      <button className="dark:bg-secondary-1 dark:hover:bg-secondary-2 hover:bg-secondary-1-2 bg-secondary-2 mt-6 block w-full cursor-pointer rounded-md px-4 py-2 text-base text-black duration-300 md:mt-4 md:ml-auto md:w-auto md:px-2 md:py-1 md:text-lg">
-        Kaydet
-      </button>
-    </div>
+
+      {/* --- CİNSİYET --- */}
+      <div className="group relative">
+        <label
+          htmlFor="cinsiyet"
+          className="text-primary-500 dark:text-primary-400 mb-1 block text-xs font-medium tracking-wider uppercase"
+        >
+          Cinsiyet
+        </label>
+        <div className="relative">
+          <select
+            id="cinsiyet"
+            name="cinsiyet"
+            className="border-primary-800 bg-primary-900 text-primary-50 focus:border-secondary-1 focus:bg-primary-800 dark:border-primary-700 w-full appearance-none rounded-lg border px-4 py-3 transition-all focus:outline-none dark:text-white"
+            defaultValue={profilBilgileri?.cinsiyet || "belirtilmemis"}
+          >
+            {/* Option arka planları */}
+            <option
+              className="bg-white text-black dark:bg-[#121212] dark:text-white"
+              value=""
+            >
+              Belirtmemeyi tercih ediyorum
+            </option>
+            <option
+              className="bg-white text-black dark:bg-[#121212] dark:text-white"
+              value="erkek"
+            >
+              Erkek
+            </option>
+            <option
+              className="bg-white text-black dark:bg-[#121212] dark:text-white"
+              value="kadin"
+            >
+              Kadın
+            </option>
+          </select>
+          {/* Custom Chevron İkonu */}
+          <div className="text-primary-500 pointer-events-none absolute top-1/2 right-4 -translate-y-1/2">
+            ▼
+          </div>
+        </div>
+      </div>
+
+      {/* --- KAYDET BUTONU --- */}
+      <div className="pt-4">
+        <button
+          type="submit"
+          disabled={loading}
+          className="bg-secondary-2 hover:bg-secondary-1-2 hover:shadow-secondary-2/20 flex w-full items-center justify-center gap-2 rounded-xl py-3 font-bold text-black transition-all hover:shadow-lg active:scale-95 disabled:cursor-not-allowed disabled:opacity-70 md:w-auto md:px-10"
+        >
+          {loading && <Loader2 className="h-5 w-5 animate-spin" />}
+          {loading ? "Kaydediliyor..." : "Değişiklikleri Kaydet"}
+        </button>
+      </div>
+    </form>
   );
 };
 

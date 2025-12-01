@@ -1,6 +1,7 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
-import { FaRegHeart, FaStar } from "react-icons/fa6"; // FaStar eklendi
+import { FaRegHeart, FaStar } from "react-icons/fa6";
+import { FaCreditCard } from "react-icons/fa"; // İkon importu eksikti, ekledim
 import { ImExit } from "react-icons/im";
 import { LuCalendarClock } from "react-icons/lu";
 import { MdOutlineSettings } from "react-icons/md";
@@ -13,7 +14,7 @@ type MenuItem = {
 };
 
 const ProfilYanMenu = ({ routeHref }: { routeHref: string }) => {
-  // Menü elemanları listesi
+  // Menü elemanlarını burada tanımlıyoruz
   const menuItems: MenuItem[] = [
     {
       href: "/profil/favoriler",
@@ -26,9 +27,14 @@ const ProfilYanMenu = ({ routeHref }: { routeHref: string }) => {
       icon: <LuCalendarClock />,
     },
     {
-      href: "/profil/puanlamalarim", // YENİ ROTA
+      href: "/profil/puanlamalarim",
       label: "Puanlamalarım",
       icon: <FaStar />,
+    },
+    {
+      href: "/abonelikler",
+      label: "Abonelik & Plan",
+      icon: <FaCreditCard />,
     },
     {
       href: "/profil/ayarlar",
@@ -39,8 +45,12 @@ const ProfilYanMenu = ({ routeHref }: { routeHref: string }) => {
 
   return (
     <aside className="w-full shrink-0 md:w-72">
-      <div className="scrollbar-hide sticky top-24 flex flex-row items-center gap-2 overflow-x-auto rounded-2xl border border-white/10 bg-[#121212] p-2 shadow-xl backdrop-blur-md md:flex-col md:overflow-visible md:p-4">
-        {/* --- MENÜ LİNKLERİ --- */}
+      {/* KONTEYNIR RENKLERİ:
+          bg-primary-900: Dark(#121212) / Light(#e0e0e0)
+          border-primary-800: Dark(#1c1c1c) / Light(#c2c2c2)
+      */}
+      <div className="border-primary-800 bg-primary-900 scrollbar-hide sticky top-24 flex flex-row items-center gap-2 overflow-x-auto rounded-2xl border p-2 shadow-xl backdrop-blur-md md:flex-col md:overflow-visible md:p-4">
+        {/* --- LİNKLER --- */}
         {menuItems.map((item) => {
           const isActive = routeHref === item.href;
           return (
@@ -49,12 +59,14 @@ const ProfilYanMenu = ({ routeHref }: { routeHref: string }) => {
               href={item.href}
               className={`group flex flex-1 flex-col items-center justify-center gap-y-1 rounded-xl p-3 text-center transition-all duration-200 md:w-full md:flex-row md:justify-start md:gap-x-4 md:px-4 md:py-3.5 md:text-left ${
                 isActive
-                  ? "bg-yellow-500/10 text-yellow-500 shadow-[0_0_10px_rgba(234,179,8,0.1)]"
-                  : "text-gray-400 hover:bg-white/5 hover:text-white"
+                  ? "bg-secondary-1/10 text-secondary-1 shadow-[0_0_10px_rgba(234,179,8,0.1)]"
+                  : "text-primary-500 hover:bg-primary-800 hover:text-primary-50"
               }`}
             >
               <span
-                className={`text-xl transition-transform duration-200 md:text-2xl ${isActive ? "scale-110" : "group-hover:scale-110"}`}
+                className={`text-xl transition-transform duration-200 md:text-2xl ${
+                  isActive ? "scale-110" : "group-hover:scale-110"
+                }`}
               >
                 {item.icon}
               </span>
@@ -64,15 +76,13 @@ const ProfilYanMenu = ({ routeHref }: { routeHref: string }) => {
 
               {/* Aktiflik İşaretçisi (Sadece Desktop) */}
               {isActive && (
-                <div className="hidden h-1.5 w-1.5 rounded-full bg-yellow-500 md:ml-auto md:block" />
+                <div className="bg-secondary-1 hidden h-1.5 w-1.5 rounded-full md:ml-auto md:block" />
               )}
             </Link>
           );
         })}
-
         {/* --- AYIRAÇ --- */}
-        <div className="hidden h-px w-full bg-white/10 md:my-2 md:block" />
-
+        <div className="bg-primary-800 hidden h-px w-full md:my-2 md:block" />
         {/* --- ÇIKIŞ YAP BUTONU --- */}
         <CikisYapButton
           href="/"

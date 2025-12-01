@@ -1,14 +1,11 @@
 import supabaseServerClient from "../../_lib/supabase/server";
-import { profilFotografiniGetir } from "../../_lib/data-service-server";
+import { profilBilgileriniGetir } from "../../_lib/data-service-server";
 import ProfilAyarlari from "./ProfilAyarlari";
-import { FaRegAddressCard } from "react-icons/fa";
 import SifreDegistir from "./SifreDegistir";
-import { IoMdUnlock } from "react-icons/io";
 import AvatarYukle from "./AvatarYukle";
 
 const Ayarlar = async () => {
   const supabase = await supabaseServerClient();
-
   const { data } = await supabase.auth.getUser();
   const user = data.user;
 
@@ -20,32 +17,43 @@ const Ayarlar = async () => {
     user_metadata: { display_name },
   } = user;
 
-  const kullaniciFotografi = await profilFotografiniGetir(user.id);
+  const profilBilgileri = await profilBilgileriniGetir(user.id);
 
   return (
-    <div className="flex flex-col gap-y-10 md:gap-y-20">
-      <div className="border-primary-700 relative flex flex-col items-center justify-center gap-y-8 border-2 px-4 py-8 md:flex-row md:items-start md:gap-x-16">
-        <div>
-          <div className="border-primary-600 relative h-36 w-36 shrink-0 overflow-hidden rounded-full border-4 md:h-52 md:w-52">
-            <AvatarYukle
-              user={user}
-              displayName={display_name}
-              src={kullaniciFotografi}
-            />
+    <div className="flex-1 space-y-10">
+      {/* --- KART 1: PROFİL BİLGİLERİ --- */}
+      <div className="rounded-2xl border border-white/5 bg-[#121212] p-6 shadow-xl md:p-10">
+        <h2 className="mb-8 border-b border-white/10 pb-4 text-2xl font-bold text-white">
+          Kullanıcı Bilgilerim
+        </h2>
+
+        <div className="flex flex-col gap-10 lg:flex-row lg:items-start lg:gap-16">
+          <div className="flex flex-col items-center gap-4">
+            <div className="relative h-32 w-32 overflow-hidden rounded-full border-4 border-white/10 shadow-2xl transition-all hover:border-yellow-500/50 md:h-40 md:w-40">
+              <AvatarYukle
+                user={user}
+                displayName={display_name}
+                src={profilBilgileri.profil_fotografi}
+              />
+            </div>
+            <p className="text-xs text-gray-500">
+              Değiştirmek için resme tıkla
+            </p>
+          </div>
+
+          {/* Sağ: Form */}
+          <div className="w-full flex-1">
+            <ProfilAyarlari user={user} profilBilgileri={profilBilgileri} />
           </div>
         </div>
-        <h2 className="text-primary-50 absolute top-0 left-4 flex -translate-y-1/2 items-center gap-x-2 bg-[#eaeaea] px-4 md:left-10 md:gap-x-4 dark:bg-[#191919]">
-          <FaRegAddressCard className="text-3xl md:text-4xl" />
-          <p className="text-lg md:text-xl">Kullanıcı Bilgilerim</p>
-        </h2>
-        <ProfilAyarlari user={user} />
       </div>
-      <div className="border-primary-700 relative flex justify-center border-2">
-        <SifreDegistir user={user} />
-        <h2 className="text-primary-50 absolute top-0 left-4 flex -translate-y-1/2 items-center gap-x-2 bg-[#eaeaea] px-4 md:left-10 md:gap-x-4 dark:bg-[#191919]">
-          <IoMdUnlock className="text-3xl md:text-4xl" />
-          <p className="text-lg md:text-xl">Şifre Değiştir</p>
+
+      {/* --- KART 2: GÜVENLİK --- */}
+      <div className="rounded-2xl border border-white/5 bg-[#121212] p-6 shadow-xl md:p-10">
+        <h2 className="mb-8 border-b border-white/10 pb-4 text-2xl font-bold text-white">
+          Güvenlik ve Şifre
         </h2>
+        <SifreDegistir />
       </div>
     </div>
   );

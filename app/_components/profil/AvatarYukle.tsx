@@ -1,11 +1,12 @@
 "use client";
+
 import React, { useState } from "react";
 import supabase from "../../_lib/supabase/client";
 import { User } from "@supabase/supabase-js";
 import toast from "react-hot-toast";
-
 import NextImage from "next/image";
-import { FaPencilAlt } from "react-icons/fa";
+import { FaCamera } from "react-icons/fa";
+import { AiOutlineLoading3Quarters } from "react-icons/ai";
 
 interface AvatarYukleProps {
   user: User;
@@ -20,6 +21,7 @@ export default function AvatarYukle({
 }: AvatarYukleProps) {
   const [uploading, setUploading] = useState(false);
 
+  // Görseli kare (1:1) formatında kırpma ve yeniden boyutlandırma
   async function resizeAndCropImage(file: File, size = 512): Promise<Blob> {
     return new Promise((resolve, reject) => {
       const img = new Image();
@@ -70,17 +72,15 @@ export default function AvatarYukle({
 
       const allowedTypes = ["image/jpeg", "image/png", "image/webp"];
       if (!allowedTypes.includes(file.type)) {
-        toast.error(
-          "Yalnızca JPG, PNG veya WEBP formatında görsel yükleyebilirsin!",
-        );
+        toast.error("Yalnızca JPG, PNG veya WEBP formatı kabul edilir.");
         return;
       }
 
       const processedImage = await resizeAndCropImage(file, 512);
-      const filePath = `${user.id}/avatar.jpg`;
-      const bucket = supabase.storage.from("profil_fotograflari");
 
-      await bucket.remove([filePath]);
+      const filePath = `${user.id}/avatar.jpg`;
+
+      const bucket = supabase.storage.from("profil_fotograflari");
 
       const { error: uploadError } = await bucket.upload(
         filePath,
@@ -103,47 +103,56 @@ export default function AvatarYukle({
 
       if (updateError) throw updateError;
 
-      toast.success("Profil fotoğrafı güncellendi ✅");
-    } catch {
-      toast.error("Yükleme hatası");
+      toast.success("Profil fotoğrafı güncellendi ✨");
+    } catch (error) {
+      console.error(error);
+      toast.error("Yükleme sırasında bir hata oluştu.");
     } finally {
       setUploading(false);
     }
   }
+
   return (
-    <div className="flex flex-col items-center gap-2">
-      <div className="border-primary-600 group relative h-36 w-36 shrink-0 overflow-hidden rounded-full border-4 md:h-52 md:w-52">
-        <NextImage
-          alt={`${displayName || "Kullanıcı"} fotoğrafı`}
-          src={src || "/default-user.jpg"}
-          fill
-          className="object-cover"
-          sizes="(max-width: 768px) 144px, 208px"
-        />
+    <div className="group relative h-full w-full">
+      {/* Profil Resmi */}
+      <NextImage
+        alt={`${displayName || "Kullanıcı"} fotoğrafı`}
+        src={src || "/default-user.jpg"}
+        fill
+        className="object-cover transition-transform duration-500 group-hover:scale-110"
+        sizes="(max-width: 768px) 144px, 208px"
+        priority
+      />
 
-        <label
-          htmlFor="avatar-upload"
-          className="absolute inset-0 z-10 flex cursor-pointer flex-col items-center justify-center gap-2 bg-black/60 text-white opacity-0 transition-opacity group-hover:opacity-100"
-        >
-          <FaPencilAlt className="text-2xl md:text-3xl" />
-          <span className="text-xs font-medium md:text-sm">
-            Avatarı Değiştir
-          </span>
-        </label>
+      <label
+        htmlFor="avatar-upload"
+        className={`absolute inset-0 z-10 flex cursor-pointer flex-col items-center justify-center gap-2 bg-black/50 text-white backdrop-blur-[2px] transition-all duration-300 ${
+          uploading ? "opacity-100" : "opacity-0 group-hover:opacity-100"
+        }`}
+      >
+        {uploading ? (
+          <div className="flex flex-col items-center gap-2">
+            <AiOutlineLoading3Quarters className="animate-spin text-3xl text-yellow-500" />
+            <span className="text-xs font-bold text-yellow-500">
+              Yükleniyor...
+            </span>
+          </div>
+        ) : (
+          <>
+            <FaCamera className="text-3xl text-white drop-shadow-md" />
+            <span className="text-xs font-medium text-gray-200">Değiştir</span>
+          </>
+        )}
+      </label>
 
-        <input
-          id="avatar-upload"
-          type="file"
-          accept="image/*"
-          onChange={uploadAvatar}
-          disabled={uploading}
-          className="hidden"
-        />
-      </div>
-
-      {uploading && (
-        <p className="animate-pulse text-sm text-gray-500">Yükleniyor...</p>
-      )}
+      <input
+        id="avatar-upload"
+        type="file"
+        accept="image/*"
+        onChange={uploadAvatar}
+        disabled={uploading}
+        className="hidden"
+      />
     </div>
   );
 }
