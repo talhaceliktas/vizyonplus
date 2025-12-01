@@ -1,7 +1,7 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
 import { FaRegHeart, FaStar } from "react-icons/fa6";
-import { FaCreditCard } from "react-icons/fa"; // İkon importu eksikti, ekledim
+import { FaCreditCard } from "react-icons/fa";
 import { ImExit } from "react-icons/im";
 import { LuCalendarClock } from "react-icons/lu";
 import { MdOutlineSettings } from "react-icons/md";
@@ -14,7 +14,6 @@ type MenuItem = {
 };
 
 const ProfilYanMenu = ({ routeHref }: { routeHref: string }) => {
-  // Menü elemanlarını burada tanımlıyoruz
   const menuItems: MenuItem[] = [
     {
       href: "/profil/favoriler",
@@ -32,7 +31,7 @@ const ProfilYanMenu = ({ routeHref }: { routeHref: string }) => {
       icon: <FaStar />,
     },
     {
-      href: "/abonelikler",
+      href: "/profil/abonelikler", // Sayfanın tam rotası bu olmalı
       label: "Abonelik & Plan",
       icon: <FaCreditCard />,
     },
@@ -45,14 +44,13 @@ const ProfilYanMenu = ({ routeHref }: { routeHref: string }) => {
 
   return (
     <aside className="w-full shrink-0 md:w-72">
-      {/* KONTEYNIR RENKLERİ:
-          bg-primary-900: Dark(#121212) / Light(#e0e0e0)
-          border-primary-800: Dark(#1c1c1c) / Light(#c2c2c2)
-      */}
       <div className="border-primary-800 bg-primary-900 scrollbar-hide sticky top-24 flex flex-row items-center gap-2 overflow-x-auto rounded-2xl border p-2 shadow-xl backdrop-blur-md md:flex-col md:overflow-visible md:p-4">
         {/* --- LİNKLER --- */}
         {menuItems.map((item) => {
+          // Basit ve kesin eşleşme kontrolü
           const isActive = routeHref === item.href;
+          console.log(item.href);
+          console.log(routeHref);
           return (
             <Link
               key={item.href}

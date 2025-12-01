@@ -1,5 +1,5 @@
+import { redirect } from "next/navigation";
 import AbonelikPlanlari from "../_components/abonelikler/AbonelikPlanlari";
-import AbonelikYonetimi from "../_components/abonelikler/AbonelikYonetimi"; // Yeni oluşturacağımız bileşen
 import {
   abonelikTurleriniGetir,
   aktifAboneligiGetir,
@@ -17,9 +17,9 @@ export default async function Page() {
     aktifAbonelik = await aktifAboneligiGetir(user.id);
   }
 
-  if (aktifAbonelik) {
-    return <AbonelikYonetimi abonelik={aktifAbonelik} />;
-  }
+  // if (aktifAbonelik) {
+  //   redirect("/profil/abonelikler");
+  // }
 
   const plans = await abonelikTurleriniGetir();
   return <AbonelikPlanlari dbPlanlar={plans || []} />;
