@@ -6,23 +6,27 @@ import { Play, Lock } from "lucide-react";
 import toast from "react-hot-toast";
 
 type IzleButonuProps = {
-  filmId: number;
+  icerikId: number;
   aboneMi: boolean;
   sahipMi: boolean;
+  tur: string;
 };
 
 export default function IzleButonu({
-  filmId,
+  icerikId,
   aboneMi,
   sahipMi,
+  tur,
 }: IzleButonuProps) {
   const router = useRouter();
 
   const handleIzle = () => {
     if (aboneMi || sahipMi) {
-      router.push(`/izle/film/${filmId}`);
+      router.push(
+        tur === "film" ? `/izle/film/${icerikId}` : `/izle/dizi/${icerikId}`,
+      );
       toast.success("İyi seyirler! Player açılıyor...");
-      console.log("Player'a yönlendiriliyor ID:", filmId);
+      console.log("Player'a yönlendiriliyor ID:", icerikId);
     } else {
       toast.error("Bu içeriği izlemek için aktif bir abonelik gerekiyor.");
       router.push("/abonelikler");

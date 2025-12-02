@@ -85,9 +85,10 @@ const Page = async ({ params }: { params: { filmId: number } }) => {
                   {/* İzle Butonu */}
                   <div className="flex-1">
                     <IzleButonu
-                      filmId={id}
+                      icerikId={id}
                       aboneMi={aboneMi}
                       sahipMi={filmeSahip}
+                      tur="film"
                     />
                   </div>
 

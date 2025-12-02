@@ -1,5 +1,6 @@
 import { createServerClient } from "@supabase/ssr";
 import { NextRequest, NextResponse } from "next/server";
+import { aktifAboneligiGetir } from "./app/_lib/data-service-server";
 
 export async function middleware(request: NextRequest) {
   const response = NextResponse.next({
@@ -50,9 +51,23 @@ export async function middleware(request: NextRequest) {
     return NextResponse.redirect(new URL("/", request.url));
   }
 
+  if (request.nextUrl.pathname.startsWith("/izle")) {
+    const aktifAbonelik = await aktifAboneligiGetir(user.id);
+
+    if (!aktifAbonelik || !user)
+      return NextResponse.redirect(new URL("/", request.url));
+  }
+
   return response;
 }
 
 export const config = {
-  matcher: ["/profil/:path*", "/giris", "/kayitol", "/admin", "/admin/:islem"],
+  matcher: [
+    "/profil/:path*",
+    "/giris",
+    "/kayitol",
+    "/admin",
+    "/admin/:islem",
+    "/izle/:path*",
+  ],
 };

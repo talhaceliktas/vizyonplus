@@ -27,7 +27,7 @@ const DiziBolumleri = ({
         {seciliSezonBolumleri?.bolumler.map((bolum) => (
           <Link
             key={bolum.id}
-            href={`/izle/dizi/${diziId}/${seciliSezon}/${bolum.id}`}
+            href={`/izle/dizi/${diziId}/${seciliSezon}/${bolum.bolum_numarasi}`}
             className="hover:bg-primary-800 dark:hover:bg-primary-700 flex w-full items-center justify-between border-b border-white/5 py-2 transition-colors duration-300"
             onClick={onClick}
           >

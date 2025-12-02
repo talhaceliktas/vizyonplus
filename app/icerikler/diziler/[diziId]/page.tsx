@@ -16,6 +16,7 @@ import DiziIcerigi from "../../../_components/icerikler/DiziIcerigi";
 import DiziSezonKonteynir from "../../../_components/icerikler/diziler/DiziSezonKonteynir";
 import IcerikPuanla from "../../../_components/icerikler/dizi-film/IcerikPuanla";
 import IcerikOyla from "../../../_components/icerikler/IcerikOyla";
+import IzleButonu from "../../../_components/icerikler/filmler/IzleButonu";
 
 const Page = async ({ params }: { params: { diziId: number } }) => {
   const { diziId } = await params;
@@ -61,6 +62,12 @@ const Page = async ({ params }: { params: { diziId: number } }) => {
             {/* Sağ: İçerik */}
             <div className="flex w-full flex-col gap-y-6">
               <DiziIcerigi dizi={dizi} />
+              <IzleButonu
+                aboneMi={aboneMi}
+                icerikId={diziId}
+                sahipMi={false}
+                tur="dizi"
+              />
 
               {/* --- AKSİYON VE PUANLAMA ALANI --- */}
               <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
