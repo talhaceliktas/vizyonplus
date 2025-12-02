@@ -4,7 +4,8 @@ import {
   aktifAboneligiGetir,
   kullaniciPuaniniGetir,
   icerikOylamaBilgisiniGetir,
-  enSonIzlenenBolumuGetir, // 1. Yeni Fonksiyon
+  enSonIzlenenBolumuGetir,
+  icerikOrtalamasiniGetir, // <--- 1. YENİ IMPORT
 } from "../../../_lib/data-service-server";
 import { DiziSezon } from "../../../types";
 import Loading from "../../../loading";
@@ -52,7 +53,10 @@ const Page = async ({ params }: { params: { diziId: string } }) => {
     sonIzlenenBolum = await enSonIzlenenBolumuGetir(user.id, numericDiziId);
   }
 
+  // 4. Genel Verileri Çek (Paralel çalışsın diye burada topladık)
+  // Oylama durumu ve GENEL ORTALAMA verisi
   const oylamaDurumu = await icerikOylamaBilgisiniGetir(id);
+  const genelPuanVerisi = await icerikOrtalamasiniGetir(id); // <--- 2. VERİYİ ÇEKTİK
 
   return (
     <Suspense fallback={<Loading />}>
@@ -91,7 +95,11 @@ const Page = async ({ params }: { params: { diziId: string } }) => {
 
                 {user && (
                   <div className="flex justify-start md:justify-end">
-                    <IcerikPuanla icerikId={id} mevcutPuan={mevcutPuan} />
+                    <IcerikPuanla
+                      icerikId={id}
+                      mevcutPuan={mevcutPuan}
+                      genelPuan={genelPuanVerisi} // <--- 3. PROP OLARAK GEÇTİK
+                    />
                   </div>
                 )}
               </div>

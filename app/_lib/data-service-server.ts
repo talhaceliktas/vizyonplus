@@ -731,3 +731,105 @@ export async function filminIzlenmeBilgisiniGetir(
 
   return data;
 }
+
+// _lib/data-service-server.ts dosyasına ekle
+
+export async function kullaniciIzlemeGecmisiniGetir(userId: string) {
+  const supabase = await supabaseServer();
+
+  const { data, error } = await supabase
+    .from("izleme_gecmisi")
+    .select(
+      `
+      id,
+      kalinan_saniye,
+      toplam_saniye,
+      updated_at,
+      film_id,
+      bolum_id,
+      icerikler!izleme_gecmisi_film_id_fkey (
+        id, isim, fotograf, tur, video_url
+      ),
+      bolumler!izleme_gecmisi_bolum_id_fkey (
+        id, sezon_numarasi, bolum_numarasi,
+        dizi (
+           icerikler (
+             id, isim, fotograf, tur
+           )
+        )
+      )
+    `,
+    )
+    .eq("kullanici_id", userId)
+    .order("updated_at", { ascending: false });
+
+  if (error) {
+    console.error("Geçmiş hatası:", error.message);
+    return [];
+  }
+
+  // --- BENZERSİZLEŞTİRME VE FORMATLAMA ---
+  const islenenIcerikler = new Set();
+  const temizListe = [];
+
+  for (const kayit of data) {
+    let uniqueId = "";
+    let icerikBilgisi = null;
+    let detay = ""; // "S1.B2" gibi detay metni için
+
+    // 1. DURUM: FİLM İSE
+    if (kayit.film_id && kayit.icerikler) {
+      uniqueId = `film-${kayit.icerikler.id}`;
+      icerikBilgisi = kayit.icerikler;
+    }
+    // 2. DURUM: DİZİ İSE
+    // Zincirleme kontrol: bolumler -> dizi -> icerikler
+    else if (kayit.bolum_id && kayit.bolumler?.dizi?.icerikler) {
+      const diziAnaBilgisi = kayit.bolumler.dizi.icerikler;
+
+      uniqueId = `dizi-${diziAnaBilgisi.id}`;
+      icerikBilgisi = diziAnaBilgisi;
+      detay = `S${kayit.bolumler.sezon_numarasi}.B${kayit.bolumler.bolum_numarasi}`;
+    }
+
+    // Listeye ekleme mantığı
+    if (uniqueId && icerikBilgisi && !islenenIcerikler.has(uniqueId)) {
+      islenenIcerikler.add(uniqueId);
+
+      temizListe.push({
+        gecmis_id: kayit.id,
+        updated_at: kayit.updated_at,
+        kalinan_saniye: kayit.kalinan_saniye,
+        toplam_saniye: kayit.toplam_saniye,
+        yuzde: (kayit.kalinan_saniye / (kayit.toplam_saniye || 1)) * 100,
+        icerik: icerikBilgisi,
+        detay: detay,
+        tur: kayit.film_id ? "film" : "dizi",
+      });
+    }
+  }
+
+  return temizListe;
+}
+
+export async function icerikOrtalamasiniGetir(icerikId: number) {
+  const supabase = await supabaseServer();
+
+  // Sadece puan sütununu çekiyoruz, performansı yormayalım
+  const { data, error } = await supabase
+    .from("icerik_puanlari")
+    .select("puan")
+    .eq("icerik_id", icerikId);
+
+  if (error || !data || data.length === 0) {
+    return { ortalama: 0, oySayisi: 0 };
+  }
+
+  const toplamPuan = data.reduce((acc, curr) => acc + curr.puan, 0);
+  const ortalama = toplamPuan / data.length;
+
+  return {
+    ortalama: Number(ortalama.toFixed(1)), // "8.4" formatında döner
+    oySayisi: data.length,
+  };
+}

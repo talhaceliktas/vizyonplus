@@ -6,6 +6,7 @@ import {
   kullaniciPuaniniGetir,
   icerikOylamaBilgisiniGetir,
   filminIzlenmeBilgisiniGetir,
+  icerikOrtalamasiniGetir, // <--- 1. YENİ IMPORT
 } from "../../../_lib/data-service-server";
 import Loading from "../../../loading";
 import Image from "next/image";
@@ -33,23 +34,25 @@ const Page = async ({ params }: { params: { filmId: number } }) => {
     data: { user },
   } = await supabase.auth.getUser();
 
-  // --- 1. Abonelik ve Sahiplik Kontrolü ---
+  // --- 1. Abonelik, Sahiplik ve Geçmiş Kontrolü ---
   let aktifAbonelik = null;
-  let filmeSahip = false; // Varsayılan olarak false
+  let filmeSahip = false;
   let mevcutPuan = null;
+  let izlenenFilm = null; // Başlangıç değeri null
 
   if (user) {
     // Sadece kullanıcı varsa veritabanına sor
-    // Promise.all ile paralel sorarak hızı artırabiliriz
-    const [abonelikData, sahipData, puanData] = await Promise.all([
+    const [abonelikData, sahipData, puanData, izlemeData] = await Promise.all([
       aktifAboneligiGetir(user.id),
-      filmeSahipMi(film.id), // ID parametresini doğru geçirdiğinden emin ol
+      filmeSahipMi(film.id),
       kullaniciPuaniniGetir(film.id),
+      filminIzlenmeBilgisiniGetir(user.id, filmId), // <--- Buraya taşıdık (Güvenli olması için)
     ]);
 
     aktifAbonelik = abonelikData;
     filmeSahip = sahipData;
     mevcutPuan = puanData;
+    izlenenFilm = izlemeData;
   }
 
   const { id, isim, fotograf } = film;
@@ -57,8 +60,10 @@ const Page = async ({ params }: { params: { filmId: number } }) => {
 
   // Satın al butonu görünmeli mi?
   const satinAlGoster = !aboneMi && !filmeSahip;
+
+  // 4. Genel Verileri Çek (Oylama ve Ortalama)
   const oylamaDurumu = await icerikOylamaBilgisiniGetir(id);
-  const izlenenFilm = await filminIzlenmeBilgisiniGetir(user.id, filmId);
+  const genelPuanVerisi = await icerikOrtalamasiniGetir(id); // <--- 2. GENEL PUANI ÇEKTİK
 
   return (
     <Suspense fallback={<Loading />}>
@@ -100,7 +105,6 @@ const Page = async ({ params }: { params: { filmId: number } }) => {
                     <div className="shrink-0">
                       <SatinAlButonu
                         filmId={id}
-                        // Film ücreti dizisinin boş gelme ihtimaline karşı optional chaining (?.)
                         fiyat={film.film_ucretleri?.[0]?.satin_alma_ucreti || 0}
                         filmAdi={film.isim}
                       />
@@ -119,7 +123,11 @@ const Page = async ({ params }: { params: { filmId: number } }) => {
                   {/* Sağ: Puanlama Alanı */}
                   {user && (
                     <div className="flex justify-start md:justify-end">
-                      <IcerikPuanla icerikId={id} mevcutPuan={mevcutPuan} />
+                      <IcerikPuanla
+                        icerikId={id}
+                        mevcutPuan={mevcutPuan}
+                        genelPuan={genelPuanVerisi} // <--- 3. PROP OLARAK GEÇTİK
+                      />
                     </div>
                   )}
                 </div>

@@ -40,6 +40,11 @@ const ProfilYanMenu = ({ routeHref }: { routeHref: string }) => {
       label: "Ayarlar",
       icon: <MdOutlineSettings />,
     },
+    {
+      href: "/profil/sonIzlenilenler",
+      label: "Son İzlenilenler",
+      icon: <MdOutlineSettings />,
+    },
   ];
 
   return (
