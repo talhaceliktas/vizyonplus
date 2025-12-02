@@ -4,6 +4,7 @@ import {
   aktifAboneligiGetir,
   filmeSahipMi,
   kullaniciPuaniniGetir,
+  icerikOylamaBilgisiniGetir,
 } from "../../../_lib/data-service-server";
 import Loading from "../../../loading";
 import Image from "next/image";
@@ -15,6 +16,7 @@ import Yorumlar from "../../../_components/icerikler/dizi-film/Yorumlar";
 import IzleButonu from "../../../_components/icerikler/filmler/IzleButonu";
 import SatinAlButonu from "../../../_components/icerikler/filmler/SatinAlButonu";
 import IcerikPuanla from "../../../_components/icerikler/dizi-film/IcerikPuanla";
+import IcerikOyla from "../../../_components/icerikler/IcerikOyla";
 
 const Page = async ({ params }: { params: { filmId: number } }) => {
   const { filmId } = await params;
@@ -54,6 +56,7 @@ const Page = async ({ params }: { params: { filmId: number } }) => {
 
   // Satın al butonu görünmeli mi?
   const satinAlGoster = !aboneMi && !filmeSahip;
+  const oylamaDurumu = await icerikOylamaBilgisiniGetir(id);
 
   return (
     <Suspense fallback={<Loading />}>
@@ -104,8 +107,9 @@ const Page = async ({ params }: { params: { filmId: number } }) => {
                 {/* --- Alt Satır: Aksiyonlar ve Puanlama --- */}
                 <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
                   {/* Sol: Listem / Beğen Butonları */}
-                  <div className="flex items-center">
+                  <div className="flex items-center gap-x-4">
                     <IcerikButonlari id={id} user={user} />
+                    <IcerikOyla icerikId={id} mevcutDurum={oylamaDurumu} />
                   </div>
 
                   {/* Sağ: Puanlama Alanı */}

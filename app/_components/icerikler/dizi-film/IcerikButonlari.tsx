@@ -6,7 +6,7 @@ import { User } from "@supabase/supabase-js";
 
 const IcerikButonlari = ({ user, id }: { user: User | null; id: number }) => {
   return (
-    <div className="mt-4 flex justify-end gap-x-2">
+    <div className="flex justify-end gap-x-2">
       {user ? (
         <>
           <FavorilereEkleButton icerik_id={id} />

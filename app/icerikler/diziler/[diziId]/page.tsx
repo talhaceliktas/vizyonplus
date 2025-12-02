@@ -2,7 +2,8 @@ import { Suspense } from "react";
 import {
   diziyiGetir,
   aktifAboneligiGetir,
-  kullaniciPuaniniGetir, // 1. Yeni Fonksiyon
+  kullaniciPuaniniGetir,
+  icerikOylamaBilgisiniGetir, // 1. Yeni Fonksiyon
 } from "../../../_lib/data-service-server";
 import { DiziSezon } from "../../../types";
 import Loading from "../../../loading";
@@ -14,6 +15,7 @@ import Yorumlar from "../../../_components/icerikler/dizi-film/Yorumlar";
 import DiziIcerigi from "../../../_components/icerikler/DiziIcerigi";
 import DiziSezonKonteynir from "../../../_components/icerikler/diziler/DiziSezonKonteynir";
 import IcerikPuanla from "../../../_components/icerikler/dizi-film/IcerikPuanla";
+import IcerikOyla from "../../../_components/icerikler/IcerikOyla";
 
 const Page = async ({ params }: { params: { diziId: number } }) => {
   const { diziId } = await params;
@@ -38,6 +40,7 @@ const Page = async ({ params }: { params: { diziId: number } }) => {
 
   // 3. Kullanıcının Mevcut Puanını Çek
   const mevcutPuan = await kullaniciPuaniniGetir(id);
+  const oylamaDurumu = await icerikOylamaBilgisiniGetir(id);
 
   return (
     <Suspense fallback={<Loading />}>
@@ -62,8 +65,9 @@ const Page = async ({ params }: { params: { diziId: number } }) => {
               {/* --- AKSİYON VE PUANLAMA ALANI --- */}
               <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
                 {/* Sol: Listem / Beğen */}
-                <div className="flex items-center">
+                <div className="flex items-center gap-x-4">
                   <IcerikButonlari id={id} user={user} />
+                  <IcerikOyla icerikId={id} mevcutDurum={oylamaDurumu} />
                 </div>
 
                 {/* Sağ: Puanlama (Sadece user varsa) */}

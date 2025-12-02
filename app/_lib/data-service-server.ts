@@ -521,3 +521,67 @@ export async function sifreyiGuncelle(formData: FormData) {
 
   return { success: true, message: "Şifreniz başarıyla güncellendi." };
 }
+
+export async function icerikOylamaBilgisiniGetir(icerikId: number) {
+  const supabase = await supabaseServer();
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) return null;
+
+  const { data } = await supabase
+    .from("begeniler")
+    .select("durum")
+    .eq("kullanici_id", user.id)
+    .eq("icerik_id", icerikId)
+    .maybeSingle();
+
+  return data?.durum ?? null;
+}
+
+export async function icerikOyla(icerikId: number, durum: boolean) {
+  const supabase = await supabaseServer();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) return { success: false, error: "Giriş yapmalısınız." };
+
+  const { data: mevcut } = await supabase
+    .from("begeniler")
+    .select("durum")
+    .eq("kullanici_id", user.id)
+    .eq("icerik_id", icerikId)
+    .single();
+
+  if (mevcut && mevcut.durum === durum) {
+    await supabase
+      .from("begeniler")
+      .delete()
+      .eq("kullanici_id", user.id)
+      .eq("icerik_id", icerikId);
+
+    revalidatePath(`/izle/film/${icerikId}`);
+    return { success: true, message: "Oylama kaldırıldı", removed: true };
+  }
+
+  const { error } = await supabase.from("begeniler").upsert(
+    {
+      kullanici_id: user.id,
+      icerik_id: icerikId,
+      durum: durum,
+      guncellenme_zamani: new Date().toISOString(),
+    },
+    { onConflict: "kullanici_id, icerik_id" },
+  );
+
+  if (error) return { success: false, error: error.message };
+
+  revalidatePath(`/izle/film/${icerikId}`);
+  return {
+    success: true,
+    message: durum ? "Beğendin 👍" : "Geri bildirim alındı 👎",
+  };
+}
