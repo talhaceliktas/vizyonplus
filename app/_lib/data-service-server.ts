@@ -668,3 +668,66 @@ export async function bolumeYorumYap(
   revalidatePath(`/izle/dizi/[diziId]/[sezonNo]/[bolumNo]`); // Dinamik path'i tetiklemesi zor olabilir, o yüzden layout'u yenilemek daha iyi
   return { success: true };
 }
+
+export async function enSonIzlenenBolumuGetir(userId: string, diziId: number) {
+  const supabase = await supabaseServer();
+
+  // Debug için log (Sorun çözülünce silebilirsin)
+  // console.log("Sorgu Başlıyor:", { userId, diziId });
+
+  const { data, error } = await supabase
+    .from("izleme_gecmisi")
+    .select(
+      `
+      kalinan_saniye,
+      toplam_saniye,
+      updated_at,
+      bolumler!inner (
+        id,
+        sezon_numarasi,
+        bolum_numarasi
+      )
+    `,
+    )
+    .eq("kullanici_id", userId)
+    .eq("bolumler.icerik_id", diziId) // diziId number olmalı
+    .order("updated_at", { ascending: false })
+    .limit(1)
+    .maybeSingle(); // .single() yerine .maybeSingle() kullanmak hata fırlatmasını engeller ve null döner
+
+  if (error) {
+    console.error("Geçmiş Getirme Hatası:", error.message);
+    return null;
+  }
+
+  return data;
+}
+
+export async function filminIzlenmeBilgisiniGetir(
+  userId: string,
+  filmId: number,
+) {
+  const supabase = await supabaseServer();
+
+  const { data, error } = await supabase
+    .from("izleme_gecmisi")
+    .select(
+      `
+      kalinan_saniye,
+      toplam_saniye,
+      updated_at
+    `, // <-- Buradaki sondaki virgülü kaldırdık
+    )
+    .eq("kullanici_id", userId)
+    .eq("film_id", filmId) // DB'de kolon adı 'film_id' ise doğru
+    .order("updated_at", { ascending: false })
+    .limit(1)
+    .maybeSingle();
+
+  if (error) {
+    console.error("Geçmiş Getirme Hatası:", error.message);
+    return null;
+  }
+
+  return data;
+}

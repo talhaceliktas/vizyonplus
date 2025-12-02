@@ -5,6 +5,7 @@ import {
   filmeSahipMi,
   kullaniciPuaniniGetir,
   icerikOylamaBilgisiniGetir,
+  filminIzlenmeBilgisiniGetir,
 } from "../../../_lib/data-service-server";
 import Loading from "../../../loading";
 import Image from "next/image";
@@ -57,6 +58,7 @@ const Page = async ({ params }: { params: { filmId: number } }) => {
   // Satın al butonu görünmeli mi?
   const satinAlGoster = !aboneMi && !filmeSahip;
   const oylamaDurumu = await icerikOylamaBilgisiniGetir(id);
+  const izlenenFilm = await filminIzlenmeBilgisiniGetir(user.id, filmId);
 
   return (
     <Suspense fallback={<Loading />}>
@@ -89,6 +91,7 @@ const Page = async ({ params }: { params: { filmId: number } }) => {
                       aboneMi={aboneMi}
                       sahipMi={filmeSahip}
                       tur="film"
+                      sonIzlenen={izlenenFilm}
                     />
                   </div>
 

@@ -7,6 +7,7 @@ import { useEffect, useState, useRef } from "react";
 import vizyonPLusLogo from "../../../public/logo.png";
 import supabaseBrowserClient from "../../_lib/supabase/client"; // Supabase client yolunu kontrol et
 import { User as SupabaseUser } from "@supabase/supabase-js";
+import { useRouter } from "next/navigation";
 
 type IzleNavbarProps = {
   baslik?: string;
@@ -19,6 +20,7 @@ const IzleNavbar = ({ baslik }: IzleNavbarProps) => {
   const [profilFoto, setProfilFoto] = useState<string | null>(null);
 
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const router = useRouter();
 
   useEffect(() => {
     const fetchUserAndProfile = async () => {
@@ -76,13 +78,13 @@ const IzleNavbar = ({ baslik }: IzleNavbarProps) => {
       <div className="relative mx-auto flex h-20 w-full items-center justify-between px-6 lg:px-10">
         {/* --- SOL TARAFI: GERİ DÖN & LOGO --- */}
         <div className="z-10 flex items-center gap-6">
-          <Link
-            href="/"
+          <button
             className="group flex translate-y-2 items-center justify-center rounded-full bg-white/10 p-3 text-white backdrop-blur-md transition-all hover:scale-105 hover:bg-white/20 active:scale-95"
-            title="Ana Sayfaya Dön"
+            title="Geri Dön"
+            onClick={() => router.back()}
           >
             <ArrowLeft className="h-6 w-6 transition-transform group-hover:-translate-x-1" />
-          </Link>
+          </button>
 
           {/* Logo */}
           <Link

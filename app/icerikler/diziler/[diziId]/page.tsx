@@ -3,7 +3,8 @@ import {
   diziyiGetir,
   aktifAboneligiGetir,
   kullaniciPuaniniGetir,
-  icerikOylamaBilgisiniGetir, // 1. Yeni Fonksiyon
+  icerikOylamaBilgisiniGetir,
+  enSonIzlenenBolumuGetir, // 1. Yeni Fonksiyon
 } from "../../../_lib/data-service-server";
 import { DiziSezon } from "../../../types";
 import Loading from "../../../loading";
@@ -18,11 +19,14 @@ import IcerikPuanla from "../../../_components/icerikler/dizi-film/IcerikPuanla"
 import IcerikOyla from "../../../_components/icerikler/IcerikOyla";
 import IzleButonu from "../../../_components/icerikler/filmler/IzleButonu";
 
-const Page = async ({ params }: { params: { diziId: number } }) => {
+const Page = async ({ params }: { params: { diziId: string } }) => {
+  // NOT: Next.js params her zaman string döner, o yüzden tipini string yaptım.
   const { diziId } = await params;
 
-  // 1. Verileri Çek (Paralel çekim yapılabilir ama şimdilik sıralı kalsın)
-  const dizi: DiziSezon = await diziyiGetir(diziId);
+  const numericDiziId = Number(diziId);
+
+  // 1. Verileri Çek
+  const dizi: DiziSezon = await diziyiGetir(numericDiziId);
   const supabase = await supabaseServerClient();
   const {
     data: { user },
@@ -30,17 +34,24 @@ const Page = async ({ params }: { params: { diziId: number } }) => {
 
   // 2. Abonelik Kontrolü
   let aktifAbonelik = null;
+  // Sadece kullanıcı varsa aboneliğe bak
   if (user) {
     aktifAbonelik = await aktifAboneligiGetir(user.id);
   }
 
-  // Abone mi?
   const aboneMi = !!aktifAbonelik;
-
   const { id, isim, fotograf } = dizi;
 
-  // 3. Kullanıcının Mevcut Puanını Çek
-  const mevcutPuan = await kullaniciPuaniniGetir(id);
+  // 3. Kullanıcının Verilerini Çek (SADECE USER VARSA)
+  let mevcutPuan = null;
+  let sonIzlenenBolum = null;
+
+  // Kullanıcı giriş yapmışsa kişisel verileri çekiyoruz
+  if (user) {
+    mevcutPuan = await kullaniciPuaniniGetir(id);
+    sonIzlenenBolum = await enSonIzlenenBolumuGetir(user.id, numericDiziId);
+  }
+
   const oylamaDurumu = await icerikOylamaBilgisiniGetir(id);
 
   return (
@@ -62,22 +73,22 @@ const Page = async ({ params }: { params: { diziId: number } }) => {
             {/* Sağ: İçerik */}
             <div className="flex w-full flex-col gap-y-6">
               <DiziIcerigi dizi={dizi} />
+
               <IzleButonu
                 aboneMi={aboneMi}
-                icerikId={diziId}
+                icerikId={numericDiziId} // Number gönderiyoruz
                 sahipMi={false}
                 tur="dizi"
+                sonIzlenen={sonIzlenenBolum}
               />
 
-              {/* --- AKSİYON VE PUANLAMA ALANI --- */}
+              {/* ... Diğer bileşenler aynı kalacak ... */}
               <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-                {/* Sol: Listem / Beğen */}
                 <div className="flex items-center gap-x-4">
                   <IcerikButonlari id={id} user={user} />
                   <IcerikOyla icerikId={id} mevcutDurum={oylamaDurumu} />
                 </div>
 
-                {/* Sağ: Puanlama (Sadece user varsa) */}
                 {user && (
                   <div className="flex justify-start md:justify-end">
                     <IcerikPuanla icerikId={id} mevcutPuan={mevcutPuan} />
@@ -85,7 +96,6 @@ const Page = async ({ params }: { params: { diziId: number } }) => {
                 )}
               </div>
 
-              {/* Sezon Konteynırı (Abone durumunu iletiyoruz) */}
               <div className="mt-4">
                 <DiziSezonKonteynir dizi={dizi} aboneMi={aboneMi} />
               </div>

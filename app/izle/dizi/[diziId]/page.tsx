@@ -1,13 +1,14 @@
 import { Suspense } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { Play } from "lucide-react";
+import { Play, RotateCcw } from "lucide-react"; // İkon ekledik
 import { notFound } from "next/navigation";
 
 import {
   diziyiGetir,
   aktifAboneligiGetir,
   icerikOylamaBilgisiniGetir,
+  enSonIzlenenBolumuGetir, // YENİ FONKSİYON
 } from "../../../_lib/data-service-server";
 import supabaseServerClient from "../../../_lib/supabase/server";
 import Loading from "../../../loading";
@@ -22,50 +23,64 @@ const Page = async ({ params }: { params: { diziId: string } }) => {
   const { diziId } = await params;
   const id = Number(diziId);
 
-  // 1. Verileri Paralel Çekelim
+  // 1. Temel Verileri Çek
   const diziDataPromise = diziyiGetir(id);
   const supabasePromise = supabaseServerClient();
 
   const dizi = await diziDataPromise;
   const supabase = await supabasePromise;
 
-  // Dizi bulunamadıysa 404
   if (!dizi || !dizi.id) {
     notFound();
   }
 
-  // 2. Kullanıcı Oturumu ve Abonelik Kontrolü
   const {
     data: { user },
   } = await supabase.auth.getUser();
 
   let aktifAbonelik = null;
   let oylamaDurumu = null;
+  let sonIzlenenKayit = null; // Yeni değişken
 
+  // 2. Kullanıcı Varsa Ek Verileri Çek
   if (user) {
-    // Paralel sorgu: Abonelik durumu ve Beğeni durumu
-    const [abonelik, begeni] = await Promise.all([
+    const [abonelik, begeni, sonIzlenen] = await Promise.all([
       aktifAboneligiGetir(user.id),
       icerikOylamaBilgisiniGetir(id),
+      enSonIzlenenBolumuGetir(user.id, id), // Kullanıcının bu dizideki geçmişi
     ]);
     aktifAbonelik = abonelik;
     oylamaDurumu = begeni;
+    sonIzlenenKayit = sonIzlenen;
   }
 
   const aboneMi = !!aktifAbonelik;
 
-  // 3. İlk Bölümü Bul (Oynat butonu için)
-  // Dizi tablosu -> Sezonlar -> Bölümler şeklinde iniyoruz.
-  // Genelde 1. Sezon 1. Bölüm en mantıklısıdır.
-  // Veri yapına göre sıralama yapıldığını varsayıyoruz.
-  const ilkSezon = dizi.dizi?.[0]; // İlk sezon (Genelde Sezon 1)
-  const ilkBolum = ilkSezon?.bolumler?.[0]; // İlk bölüm
+  // --- OYNAT BUTONU MANTIĞI ---
+  let oynatButonMetni = "1. Bölümü İzle";
+  let oynatLink = "#";
+  let Icon = Play;
 
-  // Link: /izle/dizi/435/1/18 (DiziID / SezonNumarası / BölümID)
-  // Not: Senin istediğin URL yapısına göre ayarlıyorum.
-  const oynatLink = ilkBolum
-    ? `/izle/dizi/${id}/${ilkSezon.sezon_numarasi}/${ilkBolum.bolum_numarasi}`
-    : "#";
+  // Varsayılan: 1. Sezon 1. Bölüm
+  const ilkSezon = dizi.dizi?.[0];
+  const ilkBolum = ilkSezon?.bolumler?.[0];
+
+  if (sonIzlenenKayit && sonIzlenenKayit.bolumler) {
+    // DURUM A: Kullanıcı daha önce izlemiş -> Kaldığı yerden devam et
+    const {
+      sezon_numarasi,
+      bolum_numarasi,
+      id: bolumId,
+    } = sonIzlenenKayit.bolumler;
+
+    oynatButonMetni = `S${sezon_numarasi}:B${bolum_numarasi} Devam Et`;
+    // Link yapısı: /izle/dizi/[diziId]/[sezonNo]/[bolumNo]
+    oynatLink = `/izle/dizi/${id}/${sezon_numarasi}/${bolum_numarasi}`;
+    Icon = RotateCcw; // Devam et ikonu
+  } else if (ilkBolum) {
+    // DURUM B: Hiç izlememiş -> En baştan başla
+    oynatLink = `/izle/dizi/${id}/${ilkSezon.sezon_numarasi}/${ilkBolum.bolum_numarasi}`;
+  }
 
   return (
     <div className="relative min-h-screen bg-black text-white">
@@ -74,9 +89,8 @@ const Page = async ({ params }: { params: { diziId: string } }) => {
 
       <div className="mx-auto max-w-[1400px] px-4 pt-24 pb-20 lg:px-8">
         <Suspense fallback={<Loading />}>
-          {/* --- ÜST KISIM: DİZİ BİLGİLERİ --- */}
           <div className="flex flex-col gap-10 lg:flex-row lg:items-start">
-            {/* SOL: Dizi Afişi */}
+            {/* Dizi Afişi */}
             <div className="relative aspect-[2/3] w-full max-w-[300px] shrink-0 self-center overflow-hidden rounded-xl shadow-2xl shadow-yellow-500/10 lg:self-start">
               <Image
                 src={dizi.fotograf}
@@ -87,7 +101,6 @@ const Page = async ({ params }: { params: { diziId: string } }) => {
               />
             </div>
 
-            {/* SAĞ: Bilgiler ve Aksiyonlar */}
             <div className="flex flex-1 flex-col gap-6">
               {/* Başlık ve Meta */}
               <div>
@@ -110,22 +123,21 @@ const Page = async ({ params }: { params: { diziId: string } }) => {
 
               {/* Aksiyon Butonları */}
               <div className="flex flex-col gap-6 sm:flex-row sm:items-center">
-                {/* Oynat Butonu */}
-                {ilkBolum && (
-                  <Link
-                    href={oynatLink}
-                    className={`group flex items-center justify-center gap-3 rounded-full px-8 py-4 text-lg font-bold transition-all active:scale-95 ${
-                      aboneMi
-                        ? "bg-yellow-500 text-black shadow-lg shadow-yellow-500/20 hover:bg-yellow-400"
-                        : "bg-primary-800 hover:bg-primary-700 pointer-events-none cursor-not-allowed text-gray-300 opacity-80"
-                    }`}
-                  >
-                    <Play className="h-6 w-6 fill-current" />
-                    <span>
-                      {aboneMi ? "1. Bölümü İzle" : "İzlemek İçin Abone Ol"}
-                    </span>
-                  </Link>
-                )}
+                {/* DİNAMİK OYNAT BUTONU */}
+                <Link
+                  href={oynatLink}
+                  className={`group flex items-center justify-center gap-3 rounded-full px-8 py-4 text-lg font-bold transition-all active:scale-95 ${
+                    aboneMi
+                      ? "bg-yellow-500 text-black shadow-lg shadow-yellow-500/20 hover:bg-yellow-400"
+                      : "bg-primary-800 hover:bg-primary-700 pointer-events-none cursor-not-allowed text-gray-300 opacity-80"
+                  }`}
+                >
+                  {/* İkonu da dinamik yaptık (Play veya Devam Et) */}
+                  <Icon className="h-6 w-6 fill-current" />
+                  <span>
+                    {aboneMi ? oynatButonMetni : "İzlemek İçin Abone Ol"}
+                  </span>
+                </Link>
 
                 {/* Listem / Beğen / Oyla */}
                 <div className="flex items-center gap-4">
@@ -143,11 +155,6 @@ const Page = async ({ params }: { params: { diziId: string } }) => {
             <h2 className="mb-6 border-l-4 border-yellow-500 pl-4 text-2xl font-bold text-white">
               Bölümler
             </h2>
-
-            {/* DiziSezonKonteynir bileşeni:
-                - Abone ise bölümleri listeler.
-                - Abone değilse "Kilitli" kartı gösterir.
-            */}
             <DiziSezonKonteynir dizi={dizi} aboneMi={aboneMi} />
           </div>
 
