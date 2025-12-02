@@ -12,6 +12,7 @@ import {
   RotateCcw,
   Loader2,
 } from "lucide-react";
+import { izlemeGecmisiGuncelle } from "../../_lib/data-service-server";
 
 type VideoPlayerProps = {
   src: string;
@@ -36,35 +37,58 @@ const formatTime = (seconds: number) => {
 export default function CustomVideoPlayer({
   src,
   poster,
+  filmId,
+  bolumId,
   baslangicSaniyesi = 0,
 }: VideoPlayerProps) {
-  // Native Video Element Referansı
   const videoRef = useRef<HTMLVideoElement>(null);
   const playerContainerRef = useRef<HTMLDivElement>(null);
   const controlsTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const lastSavedTimeRef = useRef<number>(0); // Son kaydedilen saniyeyi tutar
 
   // --- STATE ---
   const [playing, setPlaying] = useState(false);
   const [volume, setVolume] = useState(1);
   const [muted, setMuted] = useState(false);
-  const [currentTime, setCurrentTime] = useState(0); // Anlık süre
-  const [duration, setDuration] = useState(0); // Toplam süre
+  const [currentTime, setCurrentTime] = useState(0);
+  const [duration, setDuration] = useState(0);
   const [showControls, setShowControls] = useState(true);
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [buffering, setBuffering] = useState(false);
-  const [isDragging, setIsDragging] = useState(false); // İlerleme çubuğunu tutuyor mu?
+  const [isDragging, setIsDragging] = useState(false);
+
+  // --- KAYIT FONKSİYONU ---
+  const saveProgress = async (time: number, totalDuration: number) => {
+    // Geçersiz değerleri veya çok sık kayıtları engelle
+    if (time <= 0 || totalDuration <= 0) return;
+    if (Math.abs(time - lastSavedTimeRef.current) < 5) return; // En az 5 saniye fark olsun
+
+    lastSavedTimeRef.current = time;
+
+    // Server action çağrısı (Arka planda çalışır, UI'ı bloklamaz)
+    // filmId veya bolumId'den hangisi varsa onu kullanır
+    try {
+      await izlemeGecmisiGuncelle({
+        filmId,
+        bolumId,
+        saniye: time,
+        toplamSaniye: totalDuration,
+      });
+      // console.log("Kayıt Başarılı:", time);
+    } catch (error) {
+      console.error("Kayıt Hatası:", error);
+    }
+  };
 
   // --- COMPONENT MOUNT ---
   useEffect(() => {
     const video = videoRef.current;
     if (!video) return;
 
-    // Başlangıç saniyesini ayarla
     if (baslangicSaniyesi > 0) {
       video.currentTime = baslangicSaniyesi;
     }
 
-    // Tam ekran dinleyicisi
     const handleFullscreenChange = () => {
       setIsFullscreen(screenfull.isFullscreen);
     };
@@ -77,21 +101,21 @@ export default function CustomVideoPlayer({
       if (screenfull.isEnabled) {
         screenfull.off("change", handleFullscreenChange);
       }
+      // Sayfadan çıkarken son kez kaydet
+      if (video) saveProgress(video.currentTime, video.duration);
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [baslangicSaniyesi]);
 
-  // --- KONTROLLERİ GİZLEME MANTIĞI ---
   const handleMouseMove = () => {
     setShowControls(true);
     if (controlsTimeoutRef.current) clearTimeout(controlsTimeoutRef.current);
-    if (!playing) return; // Video duruyorsa gizleme
+    if (!playing) return;
 
     controlsTimeoutRef.current = setTimeout(() => {
       setShowControls(false);
     }, 3000);
   };
-
-  // --- VİDEO EVENT HANDLERS (Native HTML5 Eventleri) ---
 
   const togglePlay = () => {
     const video = videoRef.current;
@@ -103,13 +127,22 @@ export default function CustomVideoPlayer({
     } else {
       video.pause();
       setPlaying(false);
+      // Durdurulunca kaydet
+      saveProgress(video.currentTime, video.duration);
     }
   };
 
   const handleTimeUpdate = () => {
     const video = videoRef.current;
-    if (!video || isDragging) return; // Sürüklerken update etme
-    setCurrentTime(video.currentTime);
+    if (!video || isDragging) return;
+
+    const curr = video.currentTime;
+    setCurrentTime(curr);
+
+    // Her 10 saniyede bir otomatik kaydet
+    if (Math.floor(curr) > 0 && Math.floor(curr) % 10 === 0) {
+      saveProgress(curr, video.duration);
+    }
   };
 
   const handleLoadedMetadata = () => {
@@ -124,12 +157,14 @@ export default function CustomVideoPlayer({
   const handleEnded = () => {
     setPlaying(false);
     setShowControls(true);
+    // Bittiğinde son kez kaydet (Backend %95 üstü olunca "izlendi" işaretler)
+    if (videoRef.current)
+      saveProgress(videoRef.current.duration, videoRef.current.duration);
   };
 
-  // --- SEEKING (İlerleme Çubuğu) ---
   const handleSeekChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newTime = parseFloat(e.target.value);
-    setCurrentTime(newTime); // Görsel olarak güncelle
+    setCurrentTime(newTime);
     setIsDragging(true);
   };
 
@@ -138,16 +173,17 @@ export default function CustomVideoPlayer({
   ) => {
     const video = videoRef.current;
     if (video) {
-      // Değeri event target'tan al veya state'ten kullan
       const target = e.target as HTMLInputElement;
-      video.currentTime = parseFloat(target.value);
+      const newTime = parseFloat(target.value);
+      video.currentTime = newTime;
       video.play();
       setPlaying(true);
+      // Sarmadan sonra hemen kaydet
+      saveProgress(newTime, video.duration);
     }
     setIsDragging(false);
   };
 
-  // --- SES ---
   const handleVolumeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newVolume = parseFloat(e.target.value);
     setVolume(newVolume);
@@ -170,21 +206,18 @@ export default function CustomVideoPlayer({
     }
   };
 
-  // --- GERİ SARMA ---
   const handleRewind = () => {
     if (videoRef.current) {
       videoRef.current.currentTime -= 10;
     }
   };
 
-  // --- TAM EKRAN ---
   const toggleFullScreen = () => {
     if (screenfull.isEnabled && playerContainerRef.current) {
       screenfull.toggle(playerContainerRef.current);
     }
   };
 
-  // İlerleme yüzdesi (CSS için)
   const progressPercent = duration > 0 ? (currentTime / duration) * 100 : 0;
 
   return (
@@ -195,7 +228,6 @@ export default function CustomVideoPlayer({
       onMouseLeave={() => playing && setShowControls(false)}
       onClick={() => setShowControls(true)}
     >
-      {/* --- NATIVE HTML5 VIDEO --- */}
       <video
         ref={videoRef}
         src={src}
@@ -213,14 +245,12 @@ export default function CustomVideoPlayer({
         playsInline
       />
 
-      {/* --- BUFFERING LOADER --- */}
       {buffering && (
         <div className="pointer-events-none absolute inset-0 z-10 flex items-center justify-center bg-black/20 backdrop-blur-[1px]">
           <Loader2 className="h-16 w-16 animate-spin text-yellow-500" />
         </div>
       )}
 
-      {/* --- ORTA BÜYÜK PLAY/PAUSE (Duraklatıldığında görünür) --- */}
       {!playing && !buffering && (
         <div className="pointer-events-none absolute inset-0 z-10 flex items-center justify-center">
           <div
@@ -235,7 +265,6 @@ export default function CustomVideoPlayer({
         </div>
       )}
 
-      {/* --- KONTROL PANELI (Overlay) --- */}
       <div
         className={`absolute right-0 bottom-0 left-0 z-20 flex flex-col justify-end bg-gradient-to-t from-black/90 via-black/60 to-transparent p-4 pb-6 transition-all duration-300 ${
           showControls
@@ -244,12 +273,11 @@ export default function CustomVideoPlayer({
         }`}
         onClick={(e) => e.stopPropagation()}
       >
-        {/* Progress Bar */}
         <div className="group/slider relative flex h-4 w-full cursor-pointer items-center">
           <input
             type="range"
             min={0}
-            max={duration || 100} // duration yoksa 100 varsay
+            max={duration || 100}
             step="any"
             value={currentTime}
             onMouseDown={() => setIsDragging(true)}
@@ -258,17 +286,12 @@ export default function CustomVideoPlayer({
             onTouchEnd={handleSeekMouseUp}
             className="absolute z-20 h-full w-full cursor-pointer appearance-none bg-transparent opacity-0"
           />
-
-          {/* Çubuk Arka Plan */}
           <div className="absolute top-1/2 left-0 h-1 w-full -translate-y-1/2 overflow-hidden rounded-full bg-white/30 transition-all group-hover/slider:h-2">
-            {/* Doluluk Çizgisi */}
             <div
               className="h-full bg-yellow-500"
               style={{ width: `${progressPercent}%` }}
             />
           </div>
-
-          {/* Top (Thumb) */}
           <div
             className="pointer-events-none absolute h-4 w-4 scale-0 rounded-full bg-yellow-500 shadow-lg transition-transform duration-200 group-hover/slider:scale-100"
             style={{
@@ -278,10 +301,8 @@ export default function CustomVideoPlayer({
           />
         </div>
 
-        {/* Alt Kontroller */}
         <div className="mt-2 flex items-center justify-between">
           <div className="flex items-center gap-4">
-            {/* Oynat / Durdur */}
             <button
               onClick={togglePlay}
               className="transform text-white transition-colors hover:text-yellow-500 active:scale-90"
@@ -293,7 +314,6 @@ export default function CustomVideoPlayer({
               )}
             </button>
 
-            {/* 10sn Geri */}
             <button
               onClick={handleRewind}
               className="group/rewind flex flex-col items-center text-xs text-white/80 hover:text-white"
@@ -301,7 +321,6 @@ export default function CustomVideoPlayer({
               <RotateCcw className="h-5 w-5 transition-transform group-hover/rewind:-rotate-45" />
             </button>
 
-            {/* Ses */}
             <div className="group/volume flex items-center gap-2">
               <button
                 onClick={toggleMute}
@@ -324,7 +343,6 @@ export default function CustomVideoPlayer({
               />
             </div>
 
-            {/* Süre */}
             <div className="text-xs font-medium text-white/90">
               <span>{formatTime(currentTime)}</span>
               <span className="mx-1 text-white/50">/</span>

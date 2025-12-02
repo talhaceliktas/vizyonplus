@@ -585,3 +585,86 @@ export async function icerikOyla(icerikId: number, durum: boolean) {
     message: durum ? "Beğendin 👍" : "Geri bildirim alındı 👎",
   };
 }
+
+export async function izlemeGecmisiGuncelle({
+  filmId,
+  bolumId,
+  saniye,
+  toplamSaniye,
+}) {
+  const supabase = await supabaseServer();
+
+  // 1. Kullanıcıyı kontrol et
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) return;
+
+  const izlenmeOrani = saniye / toplamSaniye;
+  const bittiMi = izlenmeOrani > 0.95;
+
+  // 3. Veritabanına kaydet (Upsert)
+  const { error } = await supabase.from("izleme_gecmisi").upsert(
+    {
+      kullanici_id: user.id,
+      // Eğer filmId varsa onu, yoksa null
+      film_id: filmId || null,
+      // Eğer bolumId varsa onu, yoksa null
+      bolum_id: bolumId || null,
+      kalinan_saniye: saniye,
+      toplam_saniye: toplamSaniye,
+      bitti_mi: bittiMi,
+      updated_at: new Date().toISOString(),
+    },
+    {
+      // Hangi unique constraint'e göre güncelleme yapacağını belirtiyoruz
+      onConflict: filmId ? "kullanici_id, film_id" : "kullanici_id, bolum_id",
+    },
+  );
+
+  if (error) {
+    console.error("İzleme kaydı hatası:", error.message);
+  }
+}
+
+export async function bolumYorumlariniGetir(bolumId: number) {
+  const supabase = await supabaseServer();
+
+  const { data, error } = await supabase
+    .from("bolum_yorumlari")
+    .select("*, profiller(isim, profil_fotografi)") // Profili de çekiyoruz
+    .eq("bolum_id", bolumId)
+    .order("created_at", { ascending: false });
+
+  if (error) {
+    console.error("Yorum çekme hatası:", error);
+    return [];
+  }
+  return data;
+}
+
+// --- BÖLÜME YORUM YAP ---
+export async function bolumeYorumYap(
+  bolumId: number,
+  yorum: string,
+  spoiler: boolean,
+) {
+  const supabase = await supabaseServer();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) return { success: false, error: "Giriş yapmalısınız." };
+
+  const { error } = await supabase.from("bolum_yorumlari").insert({
+    kullanici_id: user.id,
+    bolum_id: bolumId,
+    yorum: yorum,
+    spoiler_mi: spoiler,
+  });
+
+  if (error) return { success: false, error: error.message };
+
+  revalidatePath(`/izle/dizi/[diziId]/[sezonNo]/[bolumNo]`); // Dinamik path'i tetiklemesi zor olabilir, o yüzden layout'u yenilemek daha iyi
+  return { success: true };
+}
