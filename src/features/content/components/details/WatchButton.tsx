@@ -5,14 +5,14 @@ import { Play, Lock } from "lucide-react";
 import toast from "react-hot-toast";
 
 type WatchButtonProps = {
-  icerikId: number;
+  slug: string;
   aboneMi: boolean;
   tur: string;
   sonIzlenen: any;
 };
 
 export default function WatchButton({
-  icerikId,
+  slug,
   aboneMi,
   tur,
   sonIzlenen,
@@ -46,16 +46,16 @@ export default function WatchButton({
 
     if (tur === "dizi") {
       if (diziDevamEdiyor) {
-        hedefUrl = `/izle/dizi/${icerikId}/${bolumBilgisi.sezon_numarasi}/${bolumBilgisi.bolum_numarasi}`;
+        hedefUrl = `/izle/dizi/${slug}/${bolumBilgisi.sezon_numarasi}/${bolumBilgisi.bolum_numarasi}`;
         toast.success(
           `S${bolumBilgisi.sezon_numarasi}.B${bolumBilgisi.bolum_numarasi} açılıyor...`,
         );
       } else {
-        hedefUrl = `/izle/dizi/${icerikId}`;
+        hedefUrl = `/izle/dizi/${slug}`;
       }
     } else {
       // Film
-      hedefUrl = `/izle/film/${icerikId}`;
+      hedefUrl = `/izle/film/${slug}`;
       if (filmDevamEdiyor) toast.success("Kaldığınız yerden devam ediliyor...");
     }
 

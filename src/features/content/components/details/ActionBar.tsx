@@ -35,7 +35,7 @@ export default function ActionBar({
       <div className="flex flex-col gap-4 sm:flex-row">
         <div className="flex-1">
           <WatchButton
-            icerikId={content.id}
+            slug={content.slug}
             aboneMi={isSubscribed}
             tur={content.tur}
             sonIzlenen={watchHistory}
