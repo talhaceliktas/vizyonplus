@@ -7,7 +7,7 @@ import toast from "react-hot-toast";
 import {
   checkFavorite,
   updateFavorite,
-} from "@lib/supabase/data-service-client";
+} from "@/lib/supabase/data-service-client"; // Import yolunu kontrol et
 
 interface Props {
   contentId: number;
@@ -60,18 +60,20 @@ export default function AddToFavoritesButton({
     <button
       onClick={toggleFavorite}
       disabled={loading}
-      className={`group flex h-10 w-10 items-center justify-center rounded-full border transition-all active:scale-95 sm:h-12 sm:w-12 ${
+      className={`group flex h-10 w-10 items-center justify-center rounded-full border transition-all duration-300 active:scale-95 sm:h-12 sm:w-12 ${
         isFavorite
-          ? "border-red-500 bg-red-500 text-white shadow-lg shadow-red-500/50"
-          : "border-white/20 bg-black/40 text-white backdrop-blur-md hover:bg-white/10"
+          ? // AKTİF DURUM (Kırmızı)
+            "border-red-500 bg-red-500 text-white shadow-lg shadow-red-500/40 hover:scale-105 hover:bg-red-600"
+          : // PASİF DURUM (Light: Gri / Dark: Cam Efekti)
+            "border-gray-200 bg-gray-100 text-gray-500 hover:bg-gray-200 hover:text-red-500 dark:border-white/20 dark:bg-black/40 dark:text-gray-300 dark:backdrop-blur-md dark:hover:bg-white/10 dark:hover:text-white"
       }`}
     >
       {loading ? (
         <ImSpinner8 className="animate-spin" />
       ) : isFavorite ? (
-        <FaHeart className="text-xl" />
+        <FaHeart className="text-lg sm:text-xl" />
       ) : (
-        <FaRegHeart className="text-xl" />
+        <FaRegHeart className="text-lg sm:text-xl" />
       )}
     </button>
   );

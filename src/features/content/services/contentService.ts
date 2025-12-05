@@ -1,6 +1,7 @@
 "use server";
 import supabaseServer from "@lib/supabase/server";
 import { FeaturedContent } from "../types";
+import { Table } from "@/types";
 
 export async function getFeaturedContent(): Promise<FeaturedContent[]> {
   const supabase = await supabaseServer();
@@ -61,8 +62,6 @@ export async function getContents(tur: string, turFiltresi?: string) {
   return icerikler as any;
 }
 
-const PAGE_SIZE = Number(process.env.NEXT_PUBLIC_CONTENT_PAGE_SIZE!);
-
 export async function getFilteredContents(
   tur: string | null,
   kategori: string | null,
@@ -71,6 +70,7 @@ export async function getFilteredContents(
 ) {
   const supabase = await supabaseServer();
 
+  const PAGE_SIZE = Number(process.env.NEXT_PUBLIC_CONTENT_PAGE_SIZE!);
   const from = (page - 1) * PAGE_SIZE;
   const to = from + PAGE_SIZE - 1;
 
@@ -136,4 +136,129 @@ export async function getFilteredContents(
       count: count || 0,
     };
   }
+}
+
+export async function getContentBySlug(slug: string) {
+  const supabase = await supabaseServer();
+
+  const { data, error } = await supabase
+    .from("icerikler")
+    .select("*")
+    .eq("slug", slug)
+    .single();
+
+  if (error) return null;
+  return data as Table<"icerikler">;
+}
+
+export async function getUserContentInteractions(
+  userId: string,
+  contentId: number,
+  icerikTur: string,
+) {
+  const supabase = await supabaseServer();
+
+  let watchHistoryQuery;
+
+  if (icerikTur === "dizi") {
+    watchHistoryQuery = supabase
+      .from("izleme_gecmisi")
+      .select(
+        `
+        kalinan_saniye,
+        toplam_saniye,
+        updated_at,
+        bolumler!inner (
+          id,
+          sezon_numarasi,
+          bolum_numarasi
+        )
+      `,
+      )
+      .eq("kullanici_id", userId)
+      .eq("bolumler.icerik_id", contentId)
+      .order("updated_at", { ascending: false })
+      .limit(1)
+      .maybeSingle();
+  } else {
+    watchHistoryQuery = supabase
+      .from("izleme_gecmisi")
+      .select(
+        `
+        kalinan_saniye,
+        toplam_saniye,
+        updated_at
+      `,
+      )
+      .eq("kullanici_id", userId)
+      .eq("film_id", contentId)
+      .maybeSingle();
+  }
+
+  const [subscription, rating, watchHistory, voteStatus, favorite, watchLater] =
+    await Promise.all([
+      supabase
+        .from("kullanici_abonelikleri")
+        .select("*")
+        .eq("kullanici_id", userId)
+        .gte("bitis_tarihi", new Date().toISOString())
+        .maybeSingle(),
+
+      supabase
+        .from("icerik_puanlari")
+        .select("puan")
+        .eq("kullanici_id", userId)
+        .eq("icerik_id", contentId)
+        .maybeSingle(),
+
+      watchHistoryQuery,
+
+      supabase
+        .from("begeniler")
+        .select("durum")
+        .eq("kullanici_id", userId)
+        .eq("icerik_id", contentId)
+        .maybeSingle(),
+
+      supabase
+        .from("favoriler")
+        .select("icerikler_id")
+        .eq("kullanici_id", userId)
+        .eq("icerikler_id", contentId)
+        .maybeSingle(),
+
+      supabase
+        .from("daha_sonra_izle")
+        .select("icerikler_id")
+        .eq("kullanici_id", userId)
+        .eq("icerikler_id", contentId)
+        .maybeSingle(),
+    ]);
+
+  return {
+    isSubscribed: !!subscription.data,
+    userRating: rating.data?.puan || null,
+    watchHistory: (watchHistory.data as any) || null,
+    voteStatus: voteStatus.data?.durum ?? null,
+    favorite: !!favorite.data,
+    watchLater: !!watchLater.data,
+  };
+}
+
+export async function getContentAverageRating(contentId: number) {
+  const supabase = await supabaseServer();
+
+  const { data, error } = await supabase.rpc("get_rating_stats", {
+    _icerik_id: contentId,
+  });
+
+  if (error) {
+    console.error("Puan hesaplama hatası:", error.message);
+    return { average: 0, count: 0 };
+  }
+
+  return {
+    average: Number(data.average),
+    count: Number(data.count),
+  };
 }

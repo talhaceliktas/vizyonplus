@@ -5,4 +5,9 @@ renk modu gecisi yok duration eklenmeli
 kayit olurken hata toastlari cikmiyor
 admin panelindeki yorumlar sadece filmlerden cekiliyor iclerinde dizi yorumlari yok
 turler manuel olarak eklendi veritabaninda turler tablosu olusturulacak
-dijital icerikler kisminda 
+dijital icerikler kisminda sluglar kullanilacak
+service role key kullanimi iptal edilecek.
+
+proje kritik sorunu duzeltilecek
+
+1 critical severity vulnerability
