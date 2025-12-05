@@ -9,5 +9,3 @@ dijital icerikler kisminda sluglar kullanilacak
 service role key kullanimi iptal edilecek.
 
 proje kritik sorunu duzeltilecek
-
-1 critical severity vulnerability

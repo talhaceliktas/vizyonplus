@@ -14,6 +14,7 @@ import ContentHero from "@/features/content/components/details/ContentHero";
 import ActionBar from "@/features/content/components/details/ActionBar";
 import EpisodesList from "@/features/content/components/details/EpisodesList";
 import Yorumlar from "@/features/content/components/comments/CommentsSection";
+import Navbar from "../../../../../shared/components/layout/Navbar";
 
 interface PageProps {
   params: Promise<{ icerikSlug: string }>;
@@ -68,6 +69,7 @@ export default async function ContentPage({ params }: PageProps) {
   return (
     <Suspense fallback={<LoadingSpinner />}>
       <main className="min-h-screen bg-white pt-24 pb-20 text-gray-900 dark:bg-black dark:text-gray-50">
+        <Navbar />
         <div className="mx-auto flex h-full w-full max-w-[1360px] flex-col gap-y-16 px-4 md:gap-y-20">
           <div className="animate-in fade-in slide-in-from-bottom-4 duration-700">
             <ContentHero content={content} />

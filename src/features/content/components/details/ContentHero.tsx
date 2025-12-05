@@ -105,7 +105,7 @@ export default function ContentHero({ content }: ContentHeroProps) {
           {/* <div className="text-sm">
                 <span className="font-bold text-gray-900 dark:text-gray-200">Oyuncular:</span>{" "}
                 <span className="text-gray-600 dark:text-gray-400">Haluk Bilginer, Cansu Dere...</span>
-            </div> */}
+                </div> */}
         </div>
       </div>
     </div>

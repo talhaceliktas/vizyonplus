@@ -14,7 +14,7 @@ import vizyonPLusLogo from "@public/logo.png";
 import { Table } from "@/types";
 
 interface NavbarProps {
-  settings: Table<"ayarlar">;
+  settings?: Table<"ayarlar">;
 }
 
 const Navbar = ({ settings }: NavbarProps) => {

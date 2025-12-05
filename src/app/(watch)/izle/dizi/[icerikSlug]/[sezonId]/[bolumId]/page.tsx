@@ -108,7 +108,7 @@ export default async function WatchEpisodePage({ params }: PageProps) {
 
             {/* Liste */}
             <Link
-              href={`/icerikler/${icerikSlug}`}
+              href={`/izle/dizi/${icerikSlug}`}
               className="flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-2 text-sm font-bold text-white transition-all hover:border-yellow-500/50 hover:bg-white/10 hover:text-yellow-500"
             >
               <List className="h-4 w-4" />
