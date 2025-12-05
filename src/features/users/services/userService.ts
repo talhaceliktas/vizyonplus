@@ -172,3 +172,49 @@ export async function getWatchHistory() {
 
   return temizListe;
 }
+
+export async function getUserRatings() {
+  const supabase = await supabaseServer();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) return [];
+
+  const { data, error } = await supabase
+    .from("icerik_puanlari")
+    .select(
+      `
+      id,
+      puan,
+      created_at,
+      icerik:icerikler (
+        id,
+        isim,
+        fotograf,
+        tur,
+        slug,
+        yayinlanma_tarihi,
+        aciklama
+      )
+    `,
+    )
+    .eq("kullanici_id", user.id)
+    .order("created_at", { ascending: false });
+
+  if (error) {
+    console.error("Puanlamalar çekilemedi:", error.message);
+    return [];
+  }
+
+  // Veriyi düzgün bir formata çevirip dönelim
+  // null gelen içerikleri filtreleyelim
+  return data
+    .filter((item) => item.icerik !== null)
+    .map((item) => ({
+      ratingId: item.id,
+      rating: item.puan,
+      ratedAt: item.created_at,
+      content: item.icerik!,
+    }));
+}
