@@ -8,7 +8,6 @@ export async function getFeaturedContent(): Promise<FeaturedContent[]> {
   const { data, error } = await supabase
     .from("tanitimlar")
     .select("icerikler(*)");
-
   if (error || !data) return [];
 
   return data
@@ -16,7 +15,11 @@ export async function getFeaturedContent(): Promise<FeaturedContent[]> {
     .filter((item): item is FeaturedContent => item !== null);
 }
 
-export async function getContents(tur: string, turFiltresi?: string) {
+export async function getContents(
+  tur: string,
+  turFiltresi?: string,
+  limit = 10,
+) {
   const supabase = await supabaseServer();
 
   const selectQuery =
@@ -30,7 +33,7 @@ export async function getContents(tur: string, turFiltresi?: string) {
     query = query.contains("turler", [turFiltresi]);
   }
 
-  const { data: icerikler, error } = await query;
+  const { data: icerikler, error } = await query.limit(limit);
 
   if (error) {
     console.log(error);
@@ -254,6 +257,7 @@ function mapToFeaturedContent(raw: any): FeaturedContent | null {
     tur: icerik.tur,
     poster: icerik.yan_fotograf || icerik.fotograf,
     link: `/icerikler/${icerik.tur === "film" ? "filmler" : "diziler"}/${icerik.id}`,
+    slug: icerik.slug,
   };
 }
 

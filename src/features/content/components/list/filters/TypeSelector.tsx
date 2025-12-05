@@ -21,8 +21,8 @@ export default function TypeSelector({
           onClick={() => onTypeChange(item.id)}
           className={`rounded-full px-6 py-2 text-sm font-bold transition-all duration-300 ${
             currentType === item.id
-              ? "bg-secondary-1 text-black shadow-lg shadow-yellow-500/10"
-              : "text-gray-400 hover:text-white"
+              ? "bg-secondary-1-2 text-primary-50 shadow-lg shadow-yellow-500/10"
+              : "text-primary-200/50 hover:text-primary-100/80"
           }`}
         >
           {item.label}

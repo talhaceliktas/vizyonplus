@@ -21,13 +21,13 @@ const ContentRow = async ({ type, category, title }: ContentRowProps) => {
   return (
     <div className="py-4 pr-4 pl-4 md:py-8 md:pl-12">
       <div className="mb-4 flex items-end justify-between px-2">
-        <h2 className="text-lg font-semibold text-white md:text-2xl lg:text-3xl">
+        <h2 className="text-secondary-1-2 text-lg font-semibold md:text-2xl lg:text-3xl">
           {displayTitle}
         </h2>
 
         <Link
           href={listUrl}
-          className="text-primary-100/70 text-sm font-medium duration-200 hover:text-white hover:underline"
+          className="text-primary-50 hover:text-primary-400 text-sm font-medium duration-200 hover:underline"
         >
           Tümünü Gör
         </Link>

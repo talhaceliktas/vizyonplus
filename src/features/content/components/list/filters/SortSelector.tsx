@@ -15,7 +15,7 @@ export default function SortSelector({
       <select
         value={currentSort || "yeni"}
         onChange={(e) => onSortChange(e.target.value)}
-        className="focus:border-secondary-1 h-10 cursor-pointer appearance-none rounded-full border border-white/10 bg-black/20 pr-8 pl-9 text-sm font-medium text-white transition-colors hover:border-white/20 focus:outline-none"
+        className="focus:border-secondary-1 text-primary-100 h-10 cursor-pointer appearance-none rounded-full border border-white/10 bg-black/20 pr-8 pl-9 text-sm font-medium transition-colors hover:border-white/20 focus:outline-none"
       >
         <option value="yeni" className="bg-primary-900">
           En Yeni Eklenen

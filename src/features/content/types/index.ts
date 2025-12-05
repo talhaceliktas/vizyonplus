@@ -7,6 +7,7 @@ export interface FeaturedContent {
   poster: string;
   link: string;
   tur: "film" | "dizi" | string;
+  slug: string;
 }
 
 export interface Content {

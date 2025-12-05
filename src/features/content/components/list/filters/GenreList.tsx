@@ -23,7 +23,7 @@ export default function GenreList({
 
   return (
     <div className="flex flex-col gap-3">
-      <div className="flex items-center gap-2 text-xs font-semibold tracking-wider text-gray-400 uppercase">
+      <div className="text-primary-50 flex items-center gap-2 text-xs font-semibold tracking-wider uppercase">
         <FaFilter />
         <span>{typeLabel}</span>
         {selectedGenre && (
@@ -42,8 +42,8 @@ export default function GenreList({
               onClick={() => onGenreSelect(isSelected ? null : kat)}
               className={`group flex items-center gap-2 rounded-xl border px-3 py-1.5 text-xs font-medium transition-all active:scale-95 ${
                 isSelected
-                  ? "border-secondary-1 bg-secondary-1 text-black shadow-md shadow-yellow-500/20"
-                  : "border-white/10 bg-white/5 text-gray-400 hover:border-white/20 hover:bg-white/10 hover:text-gray-200"
+                  ? "border-secondary-2 bg-secondary-1-2 text-black shadow-md shadow-yellow-500/20"
+                  : "bg-primary-700 text-primary-100/80 hover:border-primary-50/20 hover:text-primary-50 border-white/10 hover:bg-white/10"
               }`}
             >
               {isSelected && <FaCheck size={10} />}

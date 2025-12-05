@@ -36,7 +36,7 @@ const ContentSlider = ({ items }: ContentSliderProps) => {
           1280: { slidesPerView: 5 },
         }}
         // Pagination renk ayarları
-        className="[&_.swiper-pagination-bullet]:bg-primary-200/50 [&_.swiper-pagination-bullet-active]:bg-primary-200 pb-10"
+        className="[&_.swiper-pagination-bullet]:bg-primary-200/50 [&_.swiper-pagination-bullet-active]:bg-primary-200 pb-10!"
       >
         {items.map((item) => (
           <SwiperSlide key={item.id}>

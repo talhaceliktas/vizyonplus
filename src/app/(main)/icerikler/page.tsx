@@ -18,10 +18,10 @@ export default async function ContentPage({ searchParams }: PageProps) {
   return (
     <div className="container mx-auto min-h-screen px-4 py-12 pt-40 md:px-8">
       <div className="mb-8">
-        <h1 className="text-3xl font-black tracking-tight text-white md:text-4xl">
+        <h1 className="text-primary-100 text-3xl font-black tracking-tight md:text-4xl">
           Kütüphaneyi Keşfet
         </h1>
-        <p className="mt-2 text-gray-400">
+        <p className="text-primary-500 mt-2">
           {tur
             ? `${tur === "film" ? "Filmler" : "Diziler"} listeleniyor.`
             : "Tüm kütüphane listeleniyor."}

@@ -37,7 +37,7 @@ const HeroSlideContent = ({ item }: HeroSlideContentProps) => {
 
       <Link
         className="mt-4 flex items-center justify-end gap-x-2 pr-2 duration-300 hover:scale-x-[1.05] hover:scale-y-[1.15] hover:gap-x-4"
-        href={item.link}
+        href={`icerikler/${item.slug}`}
       >
         <p className="dark:from-secondary-1 dark:via-secondary-2 dark:to-secondary-1 from-secondary-3 via-secondary-2 to-secondary-3 bg-linear-to-l bg-clip-text font-bold text-transparent duration-100">
           {item.tur === "film" ? "Filme Git" : "Diziye Git"}
