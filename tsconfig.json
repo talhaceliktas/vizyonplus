@@ -33,7 +33,8 @@
       "@hooks/*": ["./src/shared/hooks/*"],
       "@admin/*": ["./src/features/admin/*"],
       "@ui/*": ["./src/shared/components/ui/*"],
-      "@users/*": ["./src/features/users/*"]
+      "@users/*": ["./src/features/users/*"],
+      "@watch/*": ["./src/features/watch/*"]
     }
   },
   "include": [

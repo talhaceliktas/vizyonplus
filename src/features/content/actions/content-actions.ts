@@ -94,3 +94,32 @@ export async function postComment(
 
   return { success: true, message: "Yorumunuz paylaşıldı." };
 }
+
+export async function postEpisodeComment(
+  episodeId: number,
+  comment: string,
+  isSpoiler: boolean,
+  path: string,
+) {
+  const supabase = await supabaseServer();
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) return { success: false, message: "Giriş yapmalısınız." };
+
+  const { error } = await supabase.from("bolum_yorumlari").insert({
+    bolum_id: episodeId,
+    kullanici_id: user.id,
+    yorum: comment,
+    spoiler_mi: isSpoiler,
+  });
+
+  if (error) {
+    console.error("Yorum Hatası:", error);
+    return { success: false, message: "Yorum gönderilemedi." };
+  }
+
+  revalidatePath(path);
+  return { success: true, message: "Yorumunuz paylaşıldı." };
+}
