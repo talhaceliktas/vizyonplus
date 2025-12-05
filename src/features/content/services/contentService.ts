@@ -1,10 +1,11 @@
 "use server";
 import supabaseServer from "@lib/supabase/server";
+import { supabaseStatic } from "@lib/supabase/server-static";
 import { FeaturedContent } from "../types";
 import { Table } from "@/types";
 
 export async function getFeaturedContent(): Promise<FeaturedContent[]> {
-  const supabase = await supabaseServer();
+  const supabase = await supabaseStatic();
   const { data, error } = await supabase
     .from("tanitimlar")
     .select("icerikler(*)");
@@ -20,7 +21,7 @@ export async function getContents(
   turFiltresi?: string,
   limit = 10,
 ) {
-  const supabase = await supabaseServer();
+  const supabase = await supabaseStatic();
 
   const selectQuery =
     tur === "film"
@@ -49,7 +50,7 @@ export async function getFilteredContents(
   sirala: string | null,
   page: number = 1,
 ) {
-  const supabase = await supabaseServer();
+  const supabase = await supabaseStatic();
 
   const PAGE_SIZE = Number(process.env.NEXT_PUBLIC_CONTENT_PAGE_SIZE!);
   const from = (page - 1) * PAGE_SIZE;
@@ -120,7 +121,7 @@ export async function getFilteredContents(
 }
 
 export async function getContentBySlug(slug: string) {
-  const supabase = await supabaseServer();
+  const supabase = await supabaseStatic();
 
   const { data, error } = await supabase
     .from("icerikler")

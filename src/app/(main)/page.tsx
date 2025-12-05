@@ -3,6 +3,8 @@ import HeroSection from "../../features/content/components/home/HeroSection";
 import ContentRow from "../../features/content/components/home/ContentRow";
 import ScrollIndicator from "@/shared/components/ui/ScrollIndicator";
 
+export const revalidate = 3600;
+
 export default async function Page() {
   const featuredContent = await getFeaturedContent();
 

@@ -9,3 +9,5 @@ dijital icerikler kisminda sluglar kullanilacak
 service role key kullanimi iptal edilecek.
 proje kritik sorunu duzeltilecek
 admin kullanicilar sayfasi
+yarim kalan ssg konfigrasyonu tum sayfalar icin tamamlanacak
+cookie kullanmayan sunucu fonksiyonlari icin supabase static server kullanilacak
