@@ -5,37 +5,15 @@ import { Table } from "@/types";
 
 export async function getFeaturedContent(): Promise<FeaturedContent[]> {
   const supabase = await supabaseServer();
-
-  const { data: tanitimlar, error } = await supabase
+  const { data, error } = await supabase
     .from("tanitimlar")
     .select("icerikler(*)");
 
-  if (error || !tanitimlar) {
-    console.error("Tanıtım hatası:", error?.message);
-    return [];
-  }
+  if (error || !data) return [];
 
-  const slidesData = tanitimlar
-    .map((tanitim) => {
-      const icerik: any = tanitim.icerikler;
-      if (!icerik) return null;
-
-      const mappedItem: FeaturedContent = {
-        id: icerik.id,
-        isim: icerik.isim,
-        aciklama: icerik.aciklama || "Açıklama mevcut değil.",
-        kategoriler: (icerik.turler || []).slice(0, 3).join(" | "),
-        sure: `${icerik.sure || 0} dk`,
-        tur: icerik.tur,
-        poster: icerik.yan_fotograf || icerik.fotograf,
-        link: `/icerikler/${icerik.tur === "film" ? "filmler" : "diziler"}/${icerik.id}`,
-      };
-
-      return mappedItem;
-    })
+  return data
+    .map(mapToFeaturedContent)
     .filter((item): item is FeaturedContent => item !== null);
-
-  return slidesData;
 }
 
 export async function getContents(tur: string, turFiltresi?: string) {
@@ -260,5 +238,21 @@ export async function getContentAverageRating(contentId: number) {
   return {
     average: Number(data.average),
     count: Number(data.count),
+  };
+}
+
+function mapToFeaturedContent(raw: any): FeaturedContent | null {
+  const icerik = raw.icerikler;
+  if (!icerik) return null;
+
+  return {
+    id: icerik.id,
+    isim: icerik.isim,
+    aciklama: icerik.aciklama || "Açıklama mevcut değil.",
+    kategoriler: (icerik.turler || []).slice(0, 3).join(" | "),
+    sure: `${icerik.sure || 0} dk`,
+    tur: icerik.tur,
+    poster: icerik.yan_fotograf || icerik.fotograf,
+    link: `/icerikler/${icerik.tur === "film" ? "filmler" : "diziler"}/${icerik.id}`,
   };
 }

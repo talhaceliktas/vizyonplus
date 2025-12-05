@@ -7,7 +7,7 @@ import { IoEyeOffOutline, IoEyeOutline } from "react-icons/io5";
 import { Loader2 } from "lucide-react";
 import toast from "react-hot-toast";
 import useClickOutside from "@hooks/useClickOutside";
-import { postComment } from "../../actions/comment-actions";
+import { postComment } from "../../actions/content-actions";
 
 const EmojiPicker = dynamic(() => import("emoji-picker-react"), { ssr: false });
 
@@ -45,7 +45,7 @@ export default function CommentForm({ icerikId, slug }: CommentFormProps) {
   }
 
   return (
-    <div className="relative rounded-xl border border-gray-200 bg-gray-50 p-4 transition-all duration-300 focus-within:border-yellow-500 focus-within:bg-white dark:border-white/10 dark:bg-white/5 dark:backdrop-blur-md dark:focus-within:border-yellow-500/50 dark:focus-within:bg-black/40">
+    <div className="relative rounded-xl border border-gray-200 bg-linear-to-br from-gray-50 via-white to-gray-100 p-4 transition-all duration-300 focus-within:border-yellow-500 focus-within:bg-white dark:border-white/10 dark:bg-linear-to-br dark:from-white/10 dark:via-white/5 dark:to-transparent dark:backdrop-blur-md dark:focus-within:border-yellow-500/50 dark:focus-within:bg-black/40">
       <textarea
         value={yorum}
         onChange={(e) => setYorum(e.target.value)}

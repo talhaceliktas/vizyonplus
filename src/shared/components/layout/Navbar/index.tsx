@@ -11,52 +11,86 @@ import SearchBar from "@features/search/components/SearchBar";
 import AnnouncementBar from "../AnnouncementBar";
 
 import vizyonPLusLogo from "@public/logo.png";
-
 import { Table } from "@/types";
 
-const Navbar = ({ settings }: { settings: Table<"ayarlar"> }) => {
+interface NavbarProps {
+  settings: Table<"ayarlar">;
+}
+
+const Navbar = ({ settings }: NavbarProps) => {
   const [isTop, setIsTop] = useState(true);
 
   useEffect(() => {
-    const handleScroll = () => setIsTop(window.scrollY === 0);
+    const handleScroll = () => {
+      // 10px tolerans yeterli, hemen tepki versin
+      setIsTop(window.scrollY < 10);
+    };
+
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
   return (
     <nav
-      className={`fixed top-0 z-30 w-full duration-300 ${
+      className={`fixed top-0 z-50 w-full transition-all duration-500 ease-in-out ${
         isTop
-          ? "bg-transparent"
-          : "bg-primary-800/25 dark:bg-primary-950/35 backdrop-blur-xl"
+          ? "bg-linear-to-b from-white/90 via-white/50 to-transparent py-6 backdrop-blur-[2px] dark:from-black/90 dark:via-black/50 dark:to-transparent dark:backdrop-blur-none"
+          : "border-gray-200 bg-white/90 py-3 shadow-lg backdrop-blur-xl dark:border-white/5 dark:bg-black/90 dark:shadow-black/50"
       }`}
     >
-      {settings?.duyuru_aktif && settings?.duyuru_metni && (
-        <AnnouncementBar settings={settings} />
-      )}
+      {/* Duyuru Alanı */}
+      <div className="w-full">
+        {settings?.duyuru_aktif && settings?.duyuru_metni && (
+          <div className="mb-2">
+            <AnnouncementBar settings={settings} />
+          </div>
+        )}
+      </div>
 
-      <div
-        className={`relative z-40 flex items-center justify-between px-4 duration-300 md:justify-around ${
-          isTop ? "py-4" : "py-3"
-        }`}
-      >
-        <Link href="/">
-          <Image
-            alt="Vizyon Plus Logosu"
-            src={vizyonPLusLogo}
-            className="w-24 object-contain sm:w-38"
-            priority
-          />
-        </Link>
+      {/* --- ANA KONTEYNER --- */}
+      <div className="mx-auto flex w-full max-w-[1440px] items-center justify-between px-4 sm:px-8">
+        {/* SOL GRUP */}
+        <div className="flex items-center gap-x-8 lg:gap-x-12">
+          {/* Logo */}
+          <Link
+            href="/"
+            className="group relative flex shrink-0 items-center transition-transform outline-none hover:scale-105 active:scale-95"
+            aria-label="Vizyon Plus Ana Sayfa"
+          >
+            <Image
+              alt="Vizyon Plus Logosu"
+              src={vizyonPLusLogo}
+              priority
+              className={`w-auto object-contain transition-all duration-500 ease-in-out ${
+                isTop
+                  ? "h-8 translate-y-0.5 sm:h-10" // Üstte
+                  : "h-7 sm:h-8" // Aşağıda
+              }`}
+            />
+          </Link>
 
-        <div className="hidden items-center gap-x-5 md:flex">
-          <NavLinks />
-          <SearchBar />
+          {/* Desktop Linkler */}
+          <div className="hidden items-center gap-x-6 md:flex lg:gap-x-8">
+            <NavLinks />
+          </div>
         </div>
 
-        <div className="flex items-center gap-x-4">
-          <UserMenu />
-          <MobileMenu />
+        <div className="flex items-center gap-x-2 sm:gap-x-4 lg:gap-x-6">
+          <div
+            className={`hidden transition-all duration-500 md:block ${isTop ? "opacity-100" : "opacity-90"}`}
+          >
+            <SearchBar />
+          </div>
+
+          {/* Profil */}
+          <div className="shrink-0">
+            <UserMenu />
+          </div>
+
+          {/* Mobil */}
+          <div className="md:hidden">
+            <MobileMenu />
+          </div>
         </div>
       </div>
     </nav>

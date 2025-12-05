@@ -1,4 +1,5 @@
 export const NAV_LINKS = [
-  { href: "/icerikler", label: "Dijital İçerikler" },
-  { href: "/kampanyalar", label: "Kampanyalar" },
+  { href: "/", label: "Ana Sayfa" },
+  { href: "/icerikler?tur=film", label: "Filmler" },
+  { href: "/icerikler?tur=dizi", label: "Diziler" },
 ];

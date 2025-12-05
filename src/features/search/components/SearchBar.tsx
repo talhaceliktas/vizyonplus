@@ -1,30 +1,21 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import Link from "next/link";
-import Image from "next/image";
+import { HiOutlineMagnifyingGlass } from "react-icons/hi2";
 
-// Bağımlılıklar (Yeni yerlerinden çağırıyoruz)
+// Servisler ve Hooklar
 import { searchContent } from "@/features/search/services/SearchService";
 import useClickOutside from "@/shared/hooks/useClickOutside";
 
-// Tip Tanımı
-interface SearchResult {
-  id: string | number;
-  fotograf: string;
-  isim?: string;
-  aciklama?: string;
-  tur?: string;
-}
+// Yeni ayırdığımız bileşen
+import SearchResultsList, { SearchResult } from "./SearchResultsList";
 
 const SearchBar = () => {
-  const [query, setQuery] = useState(""); // 'arama' -> 'query'
-  const [results, setResults] = useState<SearchResult[]>([]); // 'veriler' -> 'results'
+  const [query, setQuery] = useState("");
+  const [results, setResults] = useState<SearchResult[]>([]);
   const [isMobileView, setIsMobileView] = useState(false);
 
-  const containerRef = useRef(null); // 'aramaRef' -> 'containerRef'
-
-  // Hook ismini İngilizce yaptıysan güncelle
+  const containerRef = useRef(null);
   const { isOpen, setIsOpen } = useClickOutside(containerRef);
 
   // --- Mobil Kontrolü ---
@@ -42,11 +33,9 @@ const SearchBar = () => {
     if (query.length >= 2) {
       const performSearch = async () => {
         try {
-          // Servis fonksiyonunu çağır
           const data = await searchContent(query, controller.signal);
           setResults(Array.isArray(data) ? data : []);
         } catch (err) {
-          // Hata yönetimi (AbortError hariç)
           if ((err as Error).name !== "AbortError") {
             setResults([]);
           }
@@ -60,68 +49,43 @@ const SearchBar = () => {
     return () => controller.abort();
   }, [query]);
 
+  // Listeyi kapatma ve temizleme fonksiyonu
+  const handleClose = () => {
+    setIsOpen(false);
+    setQuery("");
+  };
+
   return (
     <div
       className={isMobileView ? "w-full px-4" : "relative"}
       ref={containerRef}
     >
-      <input
-        type="text"
-        className={
-          isMobileView
-            ? "dark:bg-primary-50 bg-primary-200 dark:placeholder:text-primary-500 placeholder:text-primary-950 text-primary-900 w-full rounded-md p-2 pl-4 text-lg outline-none"
-            : "dark:bg-primary-50 bg-primary-200 dark:placeholder:text-primary-500 placeholder:text-primary-950 text-primary-900 w-60 rounded-full p-1 pl-3 duration-300 outline-none focus:w-[20rem]"
-        }
-        placeholder="Film veya dizi ara..."
-        onChange={(e) => setQuery(e.target.value)}
-        value={query}
-        onClick={() => setIsOpen(true)}
-      />
+      <div className="relative flex items-center">
+        {/* İkon */}
+        {!isMobileView && (
+          <div className="pointer-events-none absolute left-3 text-gray-500 dark:text-gray-400">
+            <HiOutlineMagnifyingGlass className="h-5 w-5" />
+          </div>
+        )}
 
-      {/* Sonuç Listesi */}
+        <input
+          type="text"
+          className={`/* Light Mode Input */ /* Dark Mode Input */ /* Boyutlandırma */ rounded-full border border-transparent bg-gray-100 py-2 text-gray-900 transition-all duration-300 outline-none placeholder:text-gray-500 focus:border-yellow-500 focus:bg-white focus:ring-2 focus:ring-yellow-500/20 dark:bg-white/10 dark:text-white dark:placeholder:text-gray-400 dark:focus:border-yellow-500/50 dark:focus:bg-black/60 dark:focus:ring-yellow-500/10 ${
+            isMobileView ? "w-full px-4 text-base" : "w-64 pr-4 pl-10 text-sm"
+          } `}
+          placeholder={isMobileView ? "Ara..." : "İçerik ara..."}
+          onChange={(e) => setQuery(e.target.value)}
+          value={query}
+          onClick={() => setIsOpen(true)}
+        />
+      </div>
+
       {results.length > 0 && isOpen && (
-        <div
-          className={
-            isMobileView
-              ? "mt-4 grid max-h-[50vh] grid-cols-1 gap-2 overflow-y-auto"
-              : "bg-primary-900 absolute top-12 z-50 grid w-[200%] -translate-x-1/4 grid-cols-1 gap-2 rounded-lg border border-gray-700 p-2 shadow-xl"
-          }
-        >
-          {results.map((item) => (
-            <Link
-              key={item.id}
-              onClick={() => {
-                setIsOpen(false);
-                setQuery("");
-              }}
-              href={`/icerikler/${item.tur === "film" ? "filmler" : "diziler"}/${item.id}`}
-              className="flex items-start gap-3 rounded-md p-2 transition-colors hover:bg-white/10"
-            >
-              {/* Görsel */}
-              <div className="relative h-16 w-12 shrink-0">
-                <Image
-                  alt={item.isim || "Görsel"}
-                  src={item.fotograf || "/placeholder.jpg"}
-                  fill
-                  className="rounded object-cover"
-                />
-              </div>
-
-              {/* Yazılar */}
-              <div className="flex min-w-0 flex-1 flex-col">
-                <h4 className="truncate text-sm font-semibold text-white">
-                  {item.isim}
-                </h4>
-                <p className="line-clamp-2 text-xs text-gray-400">
-                  {item.aciklama}
-                </p>
-                <span className="text-primary-200 mt-1 text-[10px] tracking-wide uppercase">
-                  {item.tur}
-                </span>
-              </div>
-            </Link>
-          ))}
-        </div>
+        <SearchResultsList
+          results={results}
+          onClose={handleClose}
+          isMobileView={isMobileView}
+        />
       )}
     </div>
   );
