@@ -256,3 +256,21 @@ function mapToFeaturedContent(raw: any): FeaturedContent | null {
     link: `/icerikler/${icerik.tur === "film" ? "filmler" : "diziler"}/${icerik.id}`,
   };
 }
+
+export async function getContentEpisodes(contentId: number) {
+  const supabase = await supabaseServer();
+
+  const { data, error } = await supabase
+    .from("bolumler")
+    .select("*")
+    .eq("icerik_id", contentId)
+    .order("sezon_numarasi", { ascending: true })
+    .order("bolum_numarasi", { ascending: true });
+
+  if (error) {
+    console.error("Bölüm getirme hatası:", error.message);
+    return [];
+  }
+
+  return data;
+}
