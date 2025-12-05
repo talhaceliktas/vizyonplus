@@ -4,7 +4,7 @@
     "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": true,
     "skipLibCheck": true,
-    "strict": false,
+    "strict": true,
     "noEmit": true,
     "esModuleInterop": true,
     "module": "esnext",
@@ -19,7 +19,21 @@
       }
     ],
     "paths": {
-      "@/*": ["./*"]
+      "@/*": ["./src/*"],
+      "@features/*": ["./src/features/*"],
+      "@settings/*": ["./src/features/settings/*"],
+      "@lib/*": ["./src/lib/*"],
+      "@navigation/*": ["./src/features/navigation/*"],
+      "@auth/*": ["./src/features/auth/*"],
+      "@public/*": ["./public/*"],
+      "@styles/*": ["./src/styles/*"],
+      "@shared/*": ["./src/shared/*"],
+      "@layout/*": ["./src/shared/components/layout/*"],
+      "@content/*": ["./src/features/content/*"],
+      "@hooks/*": ["./src/shared/hooks/*"],
+      "@admin/*": ["./src/features/admin/*"],
+      "@ui/*": ["./src/shared/components/ui/*"],
+      "@users/*": ["./src/features/users/*"]
     }
   },
   "include": [

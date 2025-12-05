@@ -1,6 +1,6 @@
 import { createServerClient } from "@supabase/ssr";
 import { NextRequest, NextResponse } from "next/server";
-import { aktifAboneligiGetir } from "./app/_lib/data-service-server";
+import { getCurrentSubscription } from "@auth/services/authServices";
 
 export async function middleware(request: NextRequest) {
   const response = NextResponse.next({
@@ -52,7 +52,7 @@ export async function middleware(request: NextRequest) {
   }
 
   if (request.nextUrl.pathname.startsWith("/izle")) {
-    const aktifAbonelik = await aktifAboneligiGetir(user.id);
+    const aktifAbonelik = await getCurrentSubscription(user?.id ?? "");
 
     if (!aktifAbonelik || !user)
       return NextResponse.redirect(new URL("/", request.url));

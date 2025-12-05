@@ -1,0 +1,8 @@
+disari tiklama hooku calismiyor.
+admin panelde eksiklikler var bazi sayfalarda
+login ekranindaki inputlarin css efekti yok
+renk modu gecisi yok duration eklenmeli 
+kayit olurken hata toastlari cikmiyor
+admin panelindeki yorumlar sadece filmlerden cekiliyor iclerinde dizi yorumlari yok
+turler manuel olarak eklendi veritabaninda turler tablosu olusturulacak
+dijital icerikler kisminda 

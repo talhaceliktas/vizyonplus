@@ -1,5 +1,0 @@
-const Page = () => {
-  return <div>Icerik Ekle</div>;
-};
-
-export default Page;
