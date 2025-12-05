@@ -45,7 +45,7 @@ const ProfileDropdown = ({
   onClose,
 }: ProfileDropdownProps) => {
   return (
-    <div className="bg-primary-900/50 md:bg-primary-900 fixed top-16 left-0 z-20 w-full rounded-b-lg shadow-lg ring-1 ring-black backdrop-blur-xl focus:outline-none md:absolute md:top-auto md:right-0 md:left-auto md:mt-2 md:w-56 md:origin-top-right md:translate-y-2/3 md:rounded-md md:py-2">
+    <div className="bg-primary-900/50 md:bg-primary-900 fixed top-16 left-0 z-20 w-full rounded-b-lg shadow-lg ring-1 ring-black backdrop-blur-xl focus:outline-none md:absolute md:top-auto md:right-0 md:left-auto md:mt-2 md:w-56 md:origin-top-right md:translate-y-1/12 md:rounded-md md:py-2">
       {user ? (
         <>
           <div className="flex items-center gap-4 px-6 py-3 md:gap-3 md:px-4 md:py-2">

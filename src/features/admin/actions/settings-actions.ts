@@ -39,7 +39,7 @@ export async function updateSettings(formData: SettingsFormData) {
     if (error) throw error;
 
     // Cache temizliği
-    revalidateTag("site-settings");
+    revalidateTag("site-settings", "default");
 
     return { success: true };
   } catch (error) {
