@@ -1,6 +1,6 @@
 import { Suspense } from "react";
 import ProfileSettings from "@/features/users/components/profile/ProfileSettings";
-import LoadingSpinner from "@/shared/components/ui/LoadingSpinner";
+import ProfileSettingsSkeleton from "../../../features/users/components/skeleton/ProfileSettingsSkeleton";
 
 export const metadata = {
   title: "Profil Ayarları | Vizyon+",
@@ -8,7 +8,7 @@ export const metadata = {
 
 export default function ProfilePage() {
   return (
-    <Suspense fallback={<LoadingSpinner />}>
+    <Suspense fallback={<ProfileSettingsSkeleton />}>
       <ProfileSettings />
     </Suspense>
   );

@@ -1,6 +1,6 @@
 import { Suspense } from "react";
-import LoadingSpinner from "@/shared/components/ui/LoadingSpinner";
 import WatchList from "@/features/users/components/watchLater/WatchList";
+import SavedContentCardsSkeleton from "@/features/users/components/skeleton/SavedContentCardsSkeleton";
 
 export const metadata = {
   title: "Favorilerim | Vizyon+",
@@ -8,7 +8,7 @@ export const metadata = {
 
 export default function FavoritesPage() {
   return (
-    <Suspense fallback={<LoadingSpinner />}>
+    <Suspense fallback={<SavedContentCardsSkeleton />}>
       <WatchList />
     </Suspense>
   );

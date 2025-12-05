@@ -37,7 +37,8 @@ export async function getFavorites() {
         fotograf,
         tur,
         turler,
-        aciklama
+        aciklama,
+        slug
       )
     `,
     )
@@ -70,7 +71,8 @@ export async function getWatchList() {
         fotograf,
         tur,
         turler,
-        aciklama
+        aciklama,
+        slug
       )
     `,
     )

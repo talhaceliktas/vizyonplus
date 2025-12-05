@@ -7,5 +7,5 @@ admin panelindeki yorumlar sadece filmlerden cekiliyor iclerinde dizi yorumlari 
 turler manuel olarak eklendi veritabaninda turler tablosu olusturulacak
 dijital icerikler kisminda sluglar kullanilacak
 service role key kullanimi iptal edilecek.
-
 proje kritik sorunu duzeltilecek
+admin kullanicilar sayfasi

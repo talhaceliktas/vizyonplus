@@ -3,6 +3,7 @@
 import { useTheme } from "next-themes";
 import { useEffect, useState } from "react";
 import { FaMoon, FaSun } from "react-icons/fa";
+import LoadingSpinner from "@shared/components/ui/LoadingSpinner"; // Varsa kullan, yoksa null dön
 
 export const ThemeSwitcher = () => {
   const [mounted, setMounted] = useState(false);
@@ -13,33 +14,34 @@ export const ThemeSwitcher = () => {
   }, []);
 
   if (!mounted) {
-    return (
-      <div className="fixed bottom-5 left-5 z-9999">
-        <div className="relative flex h-12 w-12 items-center justify-center rounded-full border p-2.5 shadow-lg md:h-14 md:w-14 md:p-3 lg:h-16 lg:w-16 lg:p-3.5" />
-      </div>
-    );
+    // Layout kaymasını önlemek için boş bir placeholder
+    return <div className="h-9 w-9" />;
   }
 
   return (
-    <div className="fixed bottom-5 left-5 z-9999">
-      <button
-        onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-        type="button"
-        className={`group relative flex h-12 w-12 items-center justify-center rounded-full border p-2.5 shadow-lg transition-all duration-300 hover:scale-110 hover:shadow-xl focus:ring-2 focus:ring-offset-2 focus:outline-none md:h-14 md:w-14 md:p-3 lg:h-16 lg:w-16 lg:p-3.5 ${
+    <button
+      onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+      type="button"
+      className="group relative flex h-9 w-9 items-center justify-center rounded-full transition-all hover:bg-gray-100 focus:ring-2 focus:ring-yellow-500/50 focus:outline-none dark:hover:bg-white/10"
+      aria-label="Temayı değiştir"
+    >
+      {/* Güneş İkonu (Dark modda gizli, Light modda görünür) */}
+      <FaSun
+        className={`h-5 w-5 text-yellow-500 transition-all duration-300 ${
           theme === "dark"
-            ? "bg-primary-50 hover:border-accent-600 border-gray-700"
-            : "bg-primary-800 border-primary-800 hover:border-accent-300"
+            ? "scale-0 rotate-90 opacity-0"
+            : "scale-100 rotate-0 opacity-100"
         }`}
-        aria-label={`Switch to ${theme === "dark" ? "light" : "dark"} mode`}
-      >
-        {theme === "dark" ? (
-          <FaSun className="h-6 w-6 text-amber-400 md:h-7 md:w-7 lg:h-8 lg:w-8" />
-        ) : (
-          <FaMoon className="h-6 w-6 text-slate-100 md:h-7 md:w-7 lg:h-8 lg:w-8" />
-        )}
+      />
 
-        <div className="from-accent-400 to-accent-600 dark:from-accent-500 dark:to-accent-700 absolute -inset-1 rounded-full bg-linear-to-r opacity-0 transition-opacity duration-300 group-hover:opacity-20" />
-      </button>
-    </div>
+      {/* Ay İkonu (Light modda gizli, Dark modda görünür) */}
+      <FaMoon
+        className={`absolute h-5 w-5 text-blue-300 transition-all duration-300 ${
+          theme === "dark"
+            ? "scale-100 rotate-0 opacity-100"
+            : "scale-0 -rotate-90 opacity-0"
+        }`}
+      />
+    </button>
   );
 };

@@ -9,6 +9,7 @@ import { MobileMenu } from "./MobileMenu";
 import { NavLinks } from "./NavLinks";
 import SearchBar from "@features/search/components/SearchBar";
 import AnnouncementBar from "../AnnouncementBar";
+import { ThemeSwitcher } from "@shared/components/ui/ThemeSwitcher"; // Importu unutma
 
 import vizyonPLusLogo from "@public/logo.png";
 import { Table } from "@/types";
@@ -22,7 +23,6 @@ const Navbar = ({ settings }: NavbarProps) => {
 
   useEffect(() => {
     const handleScroll = () => {
-      // 10px tolerans yeterli, hemen tepki versin
       setIsTop(window.scrollY < 10);
     };
 
@@ -34,7 +34,7 @@ const Navbar = ({ settings }: NavbarProps) => {
     <nav
       className={`fixed top-0 z-50 w-full transition-all duration-500 ease-in-out ${
         isTop
-          ? "bg-linear-to-b from-white/90 via-white/50 to-transparent py-6 backdrop-blur-[2px] dark:from-black/90 dark:via-black/50 dark:to-transparent dark:backdrop-blur-none"
+          ? "bg-linear-to-b from-white/90 via-white/50 to-transparent py-4 backdrop-blur-[2px] dark:from-black/90 dark:via-black/50 dark:to-transparent dark:backdrop-blur-none"
           : "border-gray-200 bg-white/90 py-3 shadow-lg backdrop-blur-xl dark:border-white/5 dark:bg-black/90 dark:shadow-black/50"
       }`}
     >
@@ -62,9 +62,7 @@ const Navbar = ({ settings }: NavbarProps) => {
               src={vizyonPLusLogo}
               priority
               className={`w-auto object-contain transition-all duration-500 ease-in-out ${
-                isTop
-                  ? "h-8 translate-y-0.5 sm:h-10" // Üstte
-                  : "h-7 sm:h-8" // Aşağıda
+                isTop ? "h-8 translate-y-0.5 sm:h-10" : "h-7 sm:h-8"
               }`}
             />
           </Link>
@@ -75,11 +73,18 @@ const Navbar = ({ settings }: NavbarProps) => {
           </div>
         </div>
 
-        <div className="flex items-center gap-x-2 sm:gap-x-4 lg:gap-x-6">
+        {/* SAĞ GRUP */}
+        <div className="flex items-center gap-x-2 sm:gap-x-4">
+          {/* Arama */}
           <div
             className={`hidden transition-all duration-500 md:block ${isTop ? "opacity-100" : "opacity-90"}`}
           >
             <SearchBar />
+          </div>
+
+          {/* --- THEME SWITCHER (BURAYA EKLENDİ) --- */}
+          <div className="hidden sm:block">
+            <ThemeSwitcher />
           </div>
 
           {/* Profil */}
@@ -88,7 +93,9 @@ const Navbar = ({ settings }: NavbarProps) => {
           </div>
 
           {/* Mobil */}
-          <div className="md:hidden">
+          <div className="flex items-center gap-2 md:hidden">
+            {/* Mobilde de switcher görünsün istersen buraya da ekleyebilirsin */}
+            <ThemeSwitcher />
             <MobileMenu />
           </div>
         </div>

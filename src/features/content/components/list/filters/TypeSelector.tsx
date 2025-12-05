@@ -14,7 +14,7 @@ export default function TypeSelector({
   ];
 
   return (
-    <div className="flex items-center gap-1 self-start rounded-full bg-black/20 p-1">
+    <div className="flex flex-col items-center gap-1 self-start rounded-full bg-black/20 p-1 sm:flex-row">
       {options.map((item) => (
         <button
           key={item.label}

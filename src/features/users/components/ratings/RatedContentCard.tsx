@@ -36,7 +36,7 @@ export default function RatedContentCard({
     <div className="group relative flex flex-col gap-4 overflow-hidden rounded-2xl bg-white/5 p-4 ring-1 ring-white/10 transition-all hover:bg-white/10 sm:flex-row sm:items-start">
       {/* 1. POSTER ALANI */}
       <div className="relative aspect-2/3 w-full shrink-0 overflow-hidden rounded-xl sm:w-32">
-        <Link href={`/icerik/${content.slug}`}>
+        <Link href={`/icerikler/${content.slug}`}>
           {content.fotograf ? (
             <Image
               src={content.fotograf} // Supabase storage URL'si buraya tam gelmeli
@@ -56,7 +56,7 @@ export default function RatedContentCard({
       <div className="flex flex-1 flex-col gap-3">
         {/* Başlık ve Metadata */}
         <div>
-          <Link href={`/icerik/${content.slug}`}>
+          <Link href={`/icerikler/${content.slug}`}>
             <h3 className="line-clamp-1 text-xl font-bold text-white transition-colors hover:text-yellow-500">
               {content.isim}
             </h3>

@@ -21,7 +21,10 @@ const ContentCard = ({ data }: ContentCardProps) => {
   return (
     <div className="group relative flex flex-col gap-2">
       <div className="bg-primary-900 hover:border-secondary-1/50 hover:shadow-secondary-1/20 relative aspect-2/3 w-full overflow-hidden rounded-xl border border-white/5 shadow-lg transition-all duration-300 group-hover:scale-[1.02]">
-        <Link href={`/izle/${slug}`} className="block h-full w-full">
+        <Link
+          href={`/izle${tur === "film" ? `/film/${slug}` : `/dizi/${slug}`} `}
+          className="block h-full w-full"
+        >
           <Image
             src={fotograf}
             alt={isim}

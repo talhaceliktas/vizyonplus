@@ -14,9 +14,6 @@ export default function NavbarWrapper({
 
   return pathName.split("/")[1] === "admin" ||
     pathName.split("/")[1] === "izle" ? null : (
-    <>
-      <Navbar settings={settings} />
-      <ThemeSwitcher />
-    </>
+    <Navbar settings={settings} />
   );
 }

@@ -1,7 +1,6 @@
 import Link from "next/link";
 import { FaRegBookmark, FaFilm } from "react-icons/fa6"; // Kalp yerine Bookmark ikonu
 import { getWatchList } from "@/features/users/services/userService";
-// Yolunu kendi projene göre kontrol et
 import SavedContentCard from "../profile/SavedContentCard";
 
 export default async function WatchList() {

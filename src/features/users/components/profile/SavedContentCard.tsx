@@ -3,22 +3,17 @@ import Link from "next/link";
 import { FaPlay } from "react-icons/fa6";
 import AddToFavoritesButton from "@/shared/components/ui/AddToFavoritesButton";
 import AddToWatchLaterButton from "../../../../shared/components/ui/AddToWatchLaterButton"; // Yolunu kontrol et
+import { Table } from "@/types";
 
 interface SavedContentCardProps {
-  data: {
-    id: number;
-    isim: string;
-    fotograf: string;
-    tur: string;
-    turler: string[];
-    aciklama: string;
-  };
+  data: Table<"icerikler">;
   type: "favorite" | "watchLater";
 }
 
 const SavedContentCard = ({ data, type }: SavedContentCardProps) => {
-  const { id, isim, fotograf, tur, turler, aciklama } = data;
-  const linkHref = tur === "film" ? `/izle/film/${id}` : `/izle/dizi/${id}`;
+  const { id, isim, fotograf, tur, turler, aciklama, slug } = data;
+
+  const linkHref = tur === "film" ? `/izle/film/${slug}` : `/izle/dizi/${slug}`;
 
   return (
     <div className="group border-primary-800 bg-primary-900 hover:border-secondary-1/50 relative flex w-full flex-col overflow-hidden rounded-xl border transition-all hover:shadow-2xl sm:h-48 sm:flex-row">
