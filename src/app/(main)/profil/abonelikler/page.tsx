@@ -1,15 +1,11 @@
+import { Suspense } from "react";
 import { CreditCard } from "lucide-react";
 import supabaseServer from "@/lib/supabase/server";
-// Import yolunu servisi oluşturduğumuz yer ile eşleştirdim
-import { getCurrentUserSubscription } from "@/features/subscriptions/services/subscriptionService";
 
-// Bileşenler
-import SubscriptionCard from "@/features/subscriptions/components/SubscriptionCard";
-import SubscriptionActions from "@/features/subscriptions/components/SubscriptionActions";
-import EmptySubscriptionState from "@/features/subscriptions/components/EmptySubscriptionState";
+import SubscriptionContent from "@/features/subscriptions/components/SubscriptionContent";
+import SubscriptionPageSkeleton from "@/features/subscriptions/components/skeletons/SubscriptionPageSkeleton";
 
 export default async function SubscriptionPage() {
-  // 1. Kullanıcıyı ve Aboneliği Çek
   const supabase = await supabaseServer();
   const {
     data: { user },
@@ -17,11 +13,9 @@ export default async function SubscriptionPage() {
 
   if (!user) return null;
 
-  const subscription = await getCurrentUserSubscription(user.id);
-
   return (
     <div className="w-full flex-1">
-      {/* --- BAŞLIK ALANI --- */}
+      {/* --- BAŞLIK ALANI (Statik - Anında Yüklenir) --- */}
       <div className="border-primary-800 mb-8 flex items-center gap-4 border-b pb-6">
         <div className="bg-primary-900 text-secondary-1 border-primary-700 flex h-12 w-12 items-center justify-center rounded-full border">
           <CreditCard className="h-5 w-5" />
@@ -36,21 +30,18 @@ export default async function SubscriptionPage() {
         </div>
       </div>
 
-      {/* --- İÇERİK ALANI --- */}
-      {subscription ? (
-        <div className="flex flex-col gap-8 lg:flex-row">
-          {/* SOL: PAKET KARTI */}
-          {/* Kart bileşeni tüm abonelik objesini alıyor */}
-          <SubscriptionCard subscription={subscription} />
+      {/* --- İÇERİK ALANI (Streaming - Yüklenirken Skeleton Gösterir) --- */}
+      <Suspense fallback={<ContentSkeletonWrapper />}>
+        <SubscriptionContent userId={user.id} />
+      </Suspense>
+    </div>
+  );
+}
 
-          {/* SAĞ: AKSİYONLAR */}
-          {/* YENİ: Otomatik yenileme bilgisini prop olarak geçiyoruz */}
-          <SubscriptionActions isRenewing={subscription.otomatik_yenileme} />
-        </div>
-      ) : (
-        // --- BOŞ DURUM ---
-        <EmptySubscriptionState />
-      )}
+function ContentSkeletonWrapper() {
+  return (
+    <div className="-mt-[120px] overflow-hidden">
+      <SubscriptionPageSkeleton />
     </div>
   );
 }
