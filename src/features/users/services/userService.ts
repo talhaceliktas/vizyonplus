@@ -170,7 +170,6 @@ export async function getWatchHistory() {
         type: kayit.film_id ? "film" : "dizi",
       });
     }
-    console.log(temizListe);
   }
 
   return temizListe;

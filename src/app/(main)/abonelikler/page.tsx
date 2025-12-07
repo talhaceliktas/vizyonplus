@@ -57,7 +57,7 @@ export default async function SubscriptionsPage() {
               </div>
 
               <Link
-                href="/profil/abonelik" // Profil altındaki abonelik sayfasına yönlendir
+                href="/profil/abonelikler" // Profil altındaki abonelik sayfasına yönlendir
                 className="group flex items-center gap-2 rounded-xl bg-green-500 px-6 py-3 font-bold text-black transition-all hover:bg-green-400 hover:shadow-lg hover:shadow-green-500/20 active:scale-95"
               >
                 <Settings size={18} />
