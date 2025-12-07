@@ -1,22 +1,47 @@
 "use client";
 
 import { useState } from "react";
-import { Lock, CreditCard, Calendar, User } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { Lock, CreditCard, Calendar, User, Loader2 } from "lucide-react";
+import toast from "react-hot-toast";
+// Önceki adımda oluşturduğumuz action'ı buradan çağırıyoruz
+import { createMockSubscription } from "@/features/subscriptions/actions/payment-actions";
 
-export default function PaymentForm() {
+interface PaymentFormProps {
+  planId: number;
+}
+
+export default function PaymentForm({ planId }: PaymentFormProps) {
   const [loading, setLoading] = useState(false);
+  const router = useRouter();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    // Simüle edilmiş ödeme işlemi
-    await new Promise((resolve) => setTimeout(resolve, 2000));
-    alert("Ödeme Başarılı! (Mock)");
-    setLoading(false);
+
+    try {
+      // 1. Yapay gecikme (Kart işleniyor hissi vermek için)
+      await new Promise((resolve) => setTimeout(resolve, 2000));
+
+      // 2. Server Action ile aboneliği başlat (Mock)
+      const res = await createMockSubscription(planId);
+
+      if (res.success) {
+        toast.success("Ödeme başarılı! Aboneliğiniz başlatıldı. 🎉");
+        router.push("/profil"); // Başarılı işlem sonrası profil sayfasına yönlendir
+      } else {
+        toast.error(res.error || "Ödeme sırasında bir hata oluştu.");
+      }
+    } catch (error) {
+      toast.error("Bağlantı hatası. Lütfen tekrar deneyin.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
     <div className="rounded-2xl border border-white/10 bg-white/5 p-6 backdrop-blur-sm lg:p-8">
+      {/* Başlık ve Güvenlik İkonu */}
       <div className="mb-6 flex items-center justify-between">
         <h2 className="text-xl font-bold text-white">Kart Bilgileri</h2>
         <div className="flex items-center gap-2 text-xs text-green-400">
@@ -26,7 +51,7 @@ export default function PaymentForm() {
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-5">
-        {/* Kart Sahibi */}
+        {/* 1. Kart Üzerindeki İsim */}
         <div className="space-y-2">
           <label className="text-sm font-medium text-gray-400">
             Kart Üzerindeki İsim
@@ -45,7 +70,7 @@ export default function PaymentForm() {
           </div>
         </div>
 
-        {/* Kart Numarası */}
+        {/* 2. Kart Numarası */}
         <div className="space-y-2">
           <label className="text-sm font-medium text-gray-400">
             Kart Numarası
@@ -65,8 +90,9 @@ export default function PaymentForm() {
           </div>
         </div>
 
+        {/* 3. Son Kullanma Tarihi ve CVC (Yan Yana) */}
         <div className="grid grid-cols-2 gap-5">
-          {/* Son Kullanma Tarihi */}
+          {/* Son Kullanma */}
           <div className="space-y-2">
             <label className="text-sm font-medium text-gray-400">
               Son Kullanma
@@ -111,9 +137,15 @@ export default function PaymentForm() {
         <button
           type="submit"
           disabled={loading}
-          className="mt-4 w-full rounded-xl bg-yellow-500 py-4 font-bold text-black shadow-lg shadow-yellow-500/20 transition-all hover:scale-[1.02] hover:bg-yellow-400 active:scale-95 disabled:cursor-not-allowed disabled:opacity-70"
+          className="mt-4 flex w-full items-center justify-center gap-2 rounded-xl bg-yellow-500 py-4 font-bold text-black shadow-lg shadow-yellow-500/20 transition-all hover:scale-[1.02] hover:bg-yellow-400 active:scale-95 disabled:cursor-not-allowed disabled:opacity-70"
         >
-          {loading ? "İşleniyor..." : "Ödemeyi Tamamla"}
+          {loading ? (
+            <>
+              <Loader2 className="animate-spin" size={20} /> İşleniyor...
+            </>
+          ) : (
+            "Ödemeyi Tamamla"
+          )}
         </button>
       </form>
     </div>

@@ -70,3 +70,19 @@ export async function getCurrentUserSubscription(
     paket: data.paket as unknown as AbonelikPaketi, // Tip zorlaması (Supabase tipleri bazen array dönebilir)
   };
 }
+
+export async function getSubscriptionPlanById(id: number) {
+  const supabase = await supabaseServer();
+
+  const { data, error } = await supabase
+    .from("abonelik_paketleri")
+    .select("*")
+    .eq("id", id)
+    .single();
+
+  if (error || !data) {
+    return null;
+  }
+
+  return data as AbonelikPaketi;
+}
