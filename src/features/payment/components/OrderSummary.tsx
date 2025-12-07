@@ -3,15 +3,15 @@ import { AbonelikPaketi } from "@/types";
 
 interface OrderSummaryProps {
   plan: AbonelikPaketi;
+  customPrice?: number; // YENİ: Yükseltme durumunda ödenecek özel fiyat
 }
 
-export default function OrderSummary({ plan }: OrderSummaryProps) {
-  // Veritabanından gelen fiyat üzerinden hesaplama
-  const fiyat = Number(plan.fiyat);
-  const kdv = fiyat * 0.2; // %20 KDV varsayımı
-  // Genelde DB fiyatı KDV dahil olur, ona göre mantık kurabilirsin.
-  // Burada Fiyat = Toplam varsayıyoruz, kdv içinden ayrılıyor gibi gösterelim.
-  const araToplam = fiyat - kdv;
+export default function OrderSummary({ plan, customPrice }: OrderSummaryProps) {
+  // Eğer customPrice varsa onu kullan, yoksa normal fiyatı kullan
+  const finalPrice = customPrice !== undefined ? customPrice : plan.fiyat;
+
+  const kdv = finalPrice * 0.2;
+  const araToplam = finalPrice - kdv;
 
   return (
     <div className="h-fit rounded-2xl border border-yellow-500/20 bg-linear-to-b from-yellow-500/10 to-transparent p-6 lg:p-8">
@@ -25,11 +25,21 @@ export default function OrderSummary({ plan }: OrderSummaryProps) {
           <h4 className="text-xl font-bold text-yellow-500">
             {plan.paket_adi}
           </h4>
-          <span className="text-sm text-gray-400">Aylık Abonelik</span>
+          <span className="text-sm text-gray-400">
+            {customPrice !== undefined
+              ? "Paket Yükseltme Farkı"
+              : "Aylık Abonelik"}
+          </span>
         </div>
-        <div className="text-right">
+        <div className="flex flex-col items-end text-right">
+          {/* Eğer indirim/fark varsa eski fiyatı çiz */}
+          {customPrice !== undefined && (
+            <span className="text-sm text-gray-500 line-through decoration-red-500 decoration-2">
+              {plan.fiyat} ₺
+            </span>
+          )}
           <div className="text-2xl font-bold text-white">
-            {fiyat.toFixed(2)} ₺
+            {finalPrice.toFixed(2)} ₺
           </div>
         </div>
       </div>
@@ -37,7 +47,7 @@ export default function OrderSummary({ plan }: OrderSummaryProps) {
       {/* Özellikler */}
       <ul className="mb-8 space-y-3">
         {plan.ozellikler
-          .filter((f) => f.included) // Sadece dahil olan özellikleri göster
+          .filter((f) => f.included)
           .map((feature, i) => (
             <li
               key={i}
@@ -62,9 +72,9 @@ export default function OrderSummary({ plan }: OrderSummaryProps) {
           <span>{kdv.toFixed(2)} ₺</span>
         </div>
         <div className="mt-4 flex justify-between border-t border-white/10 pt-4">
-          <span className="text-lg font-bold text-white">Genel Toplam</span>
+          <span className="text-lg font-bold text-white">Ödenecek Tutar</span>
           <span className="text-2xl font-bold text-yellow-500">
-            {fiyat.toFixed(2)} ₺
+            {finalPrice.toFixed(2)} ₺
           </span>
         </div>
       </div>

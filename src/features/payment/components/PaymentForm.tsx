@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { Lock, CreditCard, Calendar, User, Loader2 } from "lucide-react";
 import toast from "react-hot-toast";
 // Önceki adımda oluşturduğumuz action'ı buradan çağırıyoruz
-import { createMockSubscription } from "@/features/payment/services/payment-actions";
+import { createMockSubscription } from "@/features/payment/actions/payment-actions";
 
 interface PaymentFormProps {
   planId: number;

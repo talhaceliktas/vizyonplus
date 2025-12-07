@@ -1,34 +1,42 @@
 "use client";
 
-import { Check, X, Loader2, CheckCircle2 } from "lucide-react";
+import { Check, X, Loader2, CheckCircle2, ArrowUpCircle } from "lucide-react";
 import { AbonelikPaketi } from "@/types";
 import { useState } from "react";
 import toast from "react-hot-toast";
+import { useRouter } from "next/navigation"; // Yönlendirme için
 
 interface PricingCardProps {
   plan: AbonelikPaketi;
   isPopular?: boolean;
   isCurrent?: boolean;
-  hasActiveSubscription?: boolean; // YENİ: Kullanıcının herhangi bir aktif aboneliği var mı?
+  hasActiveSubscription?: boolean;
+  currentPlanPrice?: number; // YENİ: Mevcut plan fiyatı
 }
 
 export default function PricingCard({
   plan,
   isPopular,
   isCurrent,
-  hasActiveSubscription = false, // Varsayılan false
+  hasActiveSubscription = false,
+  currentPlanPrice = 0,
 }: PricingCardProps) {
   const [loading, setLoading] = useState(false);
+  const router = useRouter();
+
+  const isUpgrade =
+    hasActiveSubscription && !isCurrent && plan.fiyat > currentPlanPrice;
+
+  const isDowngradeOrSame =
+    hasActiveSubscription && !isCurrent && plan.fiyat <= currentPlanPrice;
 
   const handleSubscribe = async () => {
-    // Eğer herhangi bir aktif abonelik varsa işlem yapma
-    if (hasActiveSubscription) return;
+    // Mevcut plan veya düşürme durumu ise işlem yapma
+    if (isCurrent || isDowngradeOrSame) return;
 
     setLoading(true);
-    // Demo işlem
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-    toast.success(`${plan.paket_adi} paketi seçildi!`);
-    setLoading(false);
+
+    router.push(`/odeme?plan=${plan.id}`);
   };
 
   // Kartın stil mantığı
@@ -41,8 +49,8 @@ export default function PricingCard({
   return (
     <div
       className={`relative flex flex-col rounded-2xl border p-6 transition-all duration-300 ${containerClasses} ${
-        // Aktif abonelik varsa ve bu kart o değilse, biraz soluk göster
-        hasActiveSubscription && !isCurrent ? "opacity-75 grayscale-[0.5]" : ""
+        // Düşük paketleri soluk göster
+        isDowngradeOrSame ? "opacity-60 grayscale-[0.5]" : ""
       }`}
     >
       {/* --- ETİKETLER --- */}
@@ -111,28 +119,35 @@ export default function PricingCard({
       {/* Buton */}
       <button
         onClick={handleSubscribe}
-        // Eğer herhangi bir aktif abonelik varsa buton disabled olur
-        disabled={loading || hasActiveSubscription}
-        className={`w-full rounded-xl py-3 font-bold shadow-sm transition-all ${
+        // Mevcut plan veya daha düşük plan ise buton devre dışı
+        disabled={loading || isCurrent || isDowngradeOrSame}
+        className={`flex w-full items-center justify-center gap-2 rounded-xl py-3 font-bold shadow-sm transition-all ${
           isCurrent
             ? // Mevcut Plan: Yeşil ve Pasif
               "cursor-default border border-green-500/50 bg-green-100 text-green-700 dark:bg-green-500/20 dark:text-green-400"
-            : hasActiveSubscription
-              ? // Başka Plan Aktif: Gri ve Pasif (Tıklanamaz)
-                "cursor-not-allowed border border-gray-200 bg-gray-100 text-gray-400 dark:border-white/5 dark:bg-white/5 dark:text-gray-500"
-              : isPopular
-                ? // Normal Durum (Popüler): Sarı
-                  "bg-yellow-500 text-black hover:bg-yellow-400 hover:shadow-lg hover:shadow-yellow-500/20"
-                : // Normal Durum (Standart): Siyah/Beyaz
-                  "bg-gray-900 text-white hover:bg-gray-800 dark:bg-white dark:text-black dark:hover:bg-gray-200"
+            : isUpgrade
+              ? // Yükseltme: Mavi/Mor (Dikkat çekici)
+                "bg-blue-600 text-white hover:bg-blue-500 hover:shadow-lg hover:shadow-blue-500/20"
+              : isDowngradeOrSame
+                ? // Düşük Paket: Gri ve Pasif
+                  "cursor-not-allowed border border-gray-200 bg-gray-100 text-gray-400 dark:border-white/5 dark:bg-white/5 dark:text-gray-500"
+                : isPopular
+                  ? // Normal Popüler: Sarı
+                    "bg-yellow-500 text-black hover:bg-yellow-400 hover:shadow-lg hover:shadow-yellow-500/20"
+                  : // Normal Standart: Siyah/Beyaz
+                    "bg-gray-900 text-white hover:bg-gray-800 dark:bg-white dark:text-black dark:hover:bg-gray-200"
         }`}
       >
         {loading ? (
           <Loader2 className="mx-auto h-5 w-5 animate-spin" />
         ) : isCurrent ? (
           "Aktif Paket"
-        ) : hasActiveSubscription ? (
-          "Üyelik Mevcut" // Kullanıcıya neden tıklayamadığını belirten mesaj
+        ) : isUpgrade ? (
+          <>
+            <ArrowUpCircle size={18} /> Yükselt
+          </>
+        ) : isDowngradeOrSame ? (
+          "Kapsam Dışı" // veya "Daha Düşük Plan"
         ) : (
           "Abone Ol"
         )}

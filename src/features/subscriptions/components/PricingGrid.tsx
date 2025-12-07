@@ -10,6 +10,12 @@ export default function PricingGrid({
   plans,
   currentPlanId,
 }: PricingGridProps) {
+  // Mevcut planın fiyatını bul (varsa)
+  const currentPlanPrice = currentPlanId
+    ? plans.find((p) => p.id === currentPlanId)?.fiyat || 0
+    : 0;
+
+  // Kullanıcının aktif bir planı var mı?
   const hasActiveSubscription = !!currentPlanId;
 
   return (
@@ -21,6 +27,7 @@ export default function PricingGrid({
           isPopular={plan.paket_adi === "Standart"}
           isCurrent={currentPlanId === plan.id}
           hasActiveSubscription={hasActiveSubscription}
+          currentPlanPrice={currentPlanPrice} // YENİ: Mevcut plan fiyatını iletiyoruz
         />
       ))}
     </div>
