@@ -5,7 +5,6 @@ export default function RatingsListSkeleton() {
     <div className="w-full">
       {/* --- HEADER SKELETON --- */}
       <div className="mb-8 flex items-center gap-3 border-b border-white/10 pb-4">
-        {/* Başlık: "Puanlamalarım" */}
         <Skeleton className="h-8 w-48 rounded-lg" />
         {/* Badge: Sayı */}
         <Skeleton className="h-6 w-16 rounded-full" />

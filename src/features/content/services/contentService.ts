@@ -25,8 +25,8 @@ export async function getContents(
 
   const selectQuery =
     tur === "film"
-      ? "isim, fotograf, tur, turler, id, film_ucretleri(satin_alma_ucreti, indirim_orani, ogrenci_indirim_orani)"
-      : "isim, fotograf, tur, turler, id, dizi(sezon_numarasi)";
+      ? "isim, fotograf, tur, turler, id, slug, film_ucretleri(satin_alma_ucreti, indirim_orani, ogrenci_indirim_orani)"
+      : "isim, fotograf, tur, turler, id, slug, dizi(sezon_numarasi)";
 
   let query = supabase.from("icerikler").select(selectQuery).eq("tur", tur);
 

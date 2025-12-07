@@ -15,4 +15,5 @@ export interface Content {
   isim: string;
   fotograf: string;
   tur: "film" | "dizi" | string;
+  slug: string;
 }

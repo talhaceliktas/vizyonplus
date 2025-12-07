@@ -10,7 +10,7 @@ export default async function WatchHistoryPage() {
     <div className="w-full flex-1">
       {/* BAŞLIK ALANI */}
       <div className="border-primary-800 mb-8 flex items-center gap-4 border-b pb-6">
-        <div className="bg-primary-800 text-secondary-1 border-primary-700 flex h-12 w-12 items-center justify-center rounded-full border">
+        <div className="bg-primary-900 text-secondary-1 border-primary-700 flex h-12 w-12 items-center justify-center rounded-full border">
           <FaHistory className="h-5 w-5" />
         </div>
         <div>

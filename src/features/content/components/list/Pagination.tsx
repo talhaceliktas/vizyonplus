@@ -30,30 +30,40 @@ export default function Pagination({ totalCount }: PaginationProps) {
     }
   };
 
+  const buttonClass =
+    "flex h-10 w-10 items-center justify-center rounded-full border transition-all disabled:opacity-30 disabled:cursor-not-allowed " +
+    "bg-white border-gray-200 text-gray-700 hover:bg-gray-100 disabled:hover:bg-white " +
+    "dark:bg-white/5 dark:border-white/10 dark:text-white dark:hover:bg-white/10 dark:disabled:hover:bg-transparent";
+
   return (
     <div className="mt-12 flex justify-center gap-2">
+      {/* --- ÖNCEKİ BUTONU --- */}
       <button
         onClick={() => handlePageChange(currentPage - 1)}
         disabled={currentPage === 1}
-        className="flex h-10 w-10 items-center justify-center rounded-full border border-white/10 bg-white/5 text-white transition-all hover:bg-white/10 disabled:opacity-30 disabled:hover:bg-transparent"
+        className={buttonClass}
+        aria-label="Önceki Sayfa"
       >
-        <FaChevronLeft />
+        <FaChevronLeft className="h-4 w-4" />
       </button>
 
-      <div className="flex items-center gap-2 rounded-full border border-white/10 bg-black/20 px-4 py-2">
-        <span className="text-secondary-1 text-sm font-bold">
+      <div className="flex items-center gap-2 rounded-full border border-gray-200 bg-gray-50 px-4 py-2 dark:border-white/10 dark:bg-black/20">
+        <span className="dark:text-secondary-1 text-sm font-bold text-gray-900">
           {currentPage}
         </span>
-        <span className="text-xs text-gray-500">/</span>
-        <span className="text-sm text-gray-400">{totalPages}</span>
+        <span className="text-xs text-gray-400 dark:text-gray-500">/</span>
+        <span className="text-sm text-gray-600 dark:text-gray-400">
+          {totalPages}
+        </span>
       </div>
 
       <button
         onClick={() => handlePageChange(currentPage + 1)}
         disabled={currentPage === totalPages}
-        className="flex h-10 w-10 items-center justify-center rounded-full border border-white/10 bg-white/5 text-white transition-all hover:bg-white/10 disabled:opacity-30 disabled:hover:bg-transparent"
+        className={buttonClass}
+        aria-label="Sonraki Sayfa"
       >
-        <FaChevronRight />
+        <FaChevronRight className="h-4 w-4" />
       </button>
     </div>
   );

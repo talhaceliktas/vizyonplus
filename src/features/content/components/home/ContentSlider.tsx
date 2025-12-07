@@ -41,9 +41,7 @@ const ContentSlider = ({ items }: ContentSliderProps) => {
         {items.map((item) => (
           <SwiperSlide key={item.id}>
             <div className="group relative aspect-619/919 w-full overflow-hidden rounded-md">
-              <Link
-                href={`/icerikler/${item.tur === "film" ? "filmler" : "diziler"}/${item.id}`}
-              >
+              <Link href={`/icerikler/${item.slug}`}>
                 <Image
                   src={item.fotograf}
                   alt={`${item.isim} posteri`}

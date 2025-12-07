@@ -11,7 +11,7 @@ export default function SortSelector({
 }: SortSelectorProps) {
   return (
     <div className="relative self-start md:self-auto">
-      <FaSort className="absolute top-1/2 left-3 -translate-y-1/2 text-gray-400" />
+      <FaSort className="text-primary-400 absolute top-1/2 left-3 -translate-y-1/2" />
       <select
         value={currentSort || "yeni"}
         onChange={(e) => onSortChange(e.target.value)}
