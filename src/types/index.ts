@@ -17,3 +17,18 @@ export type Update<T extends keyof Database["public"]["Tables"]> =
 // 4. Enum Tipi (Eğer veritabanında enum varsa)
 export type Enums<T extends keyof Database["public"]["Enums"]> =
   Database["public"]["Enums"][T];
+
+export interface Ozellik {
+  text: string;
+  included: boolean;
+}
+
+export interface AbonelikPaketi {
+  id: number;
+  paket_adi: string;
+  aciklama: string | null;
+  fiyat: number;
+  sure_gun: number;
+  aktif_mi: boolean;
+  ozellikler: Ozellik[];
+}
