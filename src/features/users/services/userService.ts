@@ -105,12 +105,12 @@ export async function getWatchHistory() {
       film_id,
       bolum_id,
       icerikler!izleme_gecmisi_film_id_fkey (
-        id, isim, fotograf, tur, video_url
+        id, isim, fotograf, tur, video_url, slug
       ),
       bolumler!izleme_gecmisi_bolum_id_fkey (
         id, sezon_numarasi, bolum_numarasi,
         dizi:icerikler ( 
-            id, isim, fotograf, tur
+            id, isim, fotograf, tur, slug
         )
       )
     `,
@@ -170,6 +170,7 @@ export async function getWatchHistory() {
         type: kayit.film_id ? "film" : "dizi",
       });
     }
+    console.log(temizListe);
   }
 
   return temizListe;

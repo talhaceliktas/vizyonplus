@@ -8,6 +8,7 @@ import { ImExit } from "react-icons/im";
 import { LuCalendarClock } from "react-icons/lu";
 import { MdOutlineSettings } from "react-icons/md";
 import LogoutButton from "@/features/auth/components/LogoutButton"; // Yolunu kontrol et
+import { History } from "lucide-react";
 
 type MenuItem = {
   href: string;
@@ -40,14 +41,14 @@ const ProfileSidebar = () => {
       icon: <FaStar />,
     },
     {
+      href: "/profil/son-izlenilenler",
+      label: "Son İzlenilenler",
+      icon: <History />,
+    },
+    {
       href: "/profil/abonelikler",
       label: "Abonelik & Plan",
       icon: <FaCreditCard />,
-    },
-    {
-      href: "/profil/son-izlenilenler",
-      label: "Son İzlenilenler",
-      icon: <MdOutlineSettings />,
     },
   ];
 

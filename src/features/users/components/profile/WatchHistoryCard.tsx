@@ -15,6 +15,7 @@ interface WatchHistoryCardProps {
       id: number;
       isim: string;
       fotograf: string;
+      slug: string;
     };
     detail: string;
     type: string;
@@ -25,7 +26,9 @@ const WatchHistoryCard = ({ item }: WatchHistoryCardProps) => {
   const { content, percentage, detail, type, updatedAt } = item;
 
   const href =
-    type === "film" ? `/izle/film/${content.id}` : `/izle/dizi/${content.id}`;
+    type === "film"
+      ? `/izle/film/${content.slug}`
+      : `/izle/dizi/${content.slug}`;
 
   return (
     <div className="group border-primary-800 bg-primary-900 hover:border-secondary-1/50 hover:bg-primary-800/50 relative flex gap-4 overflow-hidden rounded-xl border p-3 transition-all hover:shadow-lg">

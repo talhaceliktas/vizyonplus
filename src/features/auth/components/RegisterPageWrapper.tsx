@@ -10,21 +10,29 @@ export default function RegisterPageWrapper() {
   const [gonderilenEmail, setGonderilenEmail] = useState("");
 
   return (
-    <div className="h-screen w-full">
-      <div className="dis-kutu h-full w-full rounded-2xl bg-gray-50">
-        <div
-          className={`flex h-full w-full flex-col items-center justify-center gap-y-3 bg-cover bg-center p-5 ${openSans?.className || ""}`}
-          style={{ backgroundImage: "url('/loginBG.webp')" }}
-        >
-          {kayitTamamlandi ? (
-            <RegisterSuccess gonderilenEmail={gonderilenEmail} />
-          ) : (
-            <RegisterForm
-              setKayitTamamlandi={setKayitTamamlandi}
-              setGonderilenEmail={setGonderilenEmail}
-            />
-          )}
-        </div>
+    <div
+      className={`relative flex h-screen w-full items-center justify-center overflow-hidden bg-neutral-950 ${
+        openSans?.className || ""
+      }`}
+    >
+      <div
+        className="absolute inset-0 h-full w-full bg-cover bg-center bg-no-repeat"
+        style={{ backgroundImage: "url('/auth-movies-background.jpg')" }}
+      ></div>
+
+      <div className="absolute inset-0 bg-black/70 backdrop-blur-[2px]"></div>
+
+      <div className="absolute inset-0 bg-linear-to-t from-black via-transparent to-black/80 opacity-90"></div>
+
+      <div className="relative z-10 w-full max-w-md px-4">
+        {kayitTamamlandi ? (
+          <RegisterSuccess gonderilenEmail={gonderilenEmail} />
+        ) : (
+          <RegisterForm
+            setKayitTamamlandi={setKayitTamamlandi}
+            setGonderilenEmail={setGonderilenEmail}
+          />
+        )}
       </div>
     </div>
   );
