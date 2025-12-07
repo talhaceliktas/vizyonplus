@@ -91,7 +91,7 @@ const ProfileSidebar = () => {
 
         <LogoutButton
           icon={<ImExit className="text-xl md:text-2xl" />}
-          className="group flex flex-1 items-center justify-between gap-y-1 rounded-xl p-3 text-center text-red-400 transition-all duration-200 hover:bg-red-500/10 hover:text-red-500 md:w-full md:flex-row md:justify-start md:gap-x-4 md:px-4 md:py-3.5 md:text-left"
+          className="group flex flex-1 cursor-pointer items-center justify-between gap-y-1 rounded-xl p-3 text-center text-red-400 transition-all duration-200 hover:bg-red-500/10 hover:text-red-500 md:w-full md:flex-row md:justify-start md:gap-x-4 md:px-4 md:py-3.5 md:text-left"
         >
           Çıkış Yap
         </LogoutButton>

@@ -230,18 +230,19 @@ export async function getUserContentInteractions(
 export async function getContentAverageRating(contentId: number) {
   const supabase = await supabaseServer();
 
-  const { data, error } = await supabase.rpc("get_rating_stats", {
-    _icerik_id: contentId,
-  });
+  const { data, error } = await supabase
+    .from("icerik_puan_istatistikleri")
+    .select("*")
+    .eq("icerik_id", contentId)
+    .single();
 
   if (error) {
-    console.error("Puan hesaplama hatası:", error.message);
     return { average: 0, count: 0 };
   }
 
   return {
-    average: Number(data.average),
-    count: Number(data.count),
+    average: Number(data.toplam_puan / data.toplam_kullanici),
+    count: Number(data.toplam_kullanici),
   };
 }
 

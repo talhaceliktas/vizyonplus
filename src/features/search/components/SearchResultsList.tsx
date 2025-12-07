@@ -11,6 +11,7 @@ export interface SearchResult {
   isim?: string;
   aciklama?: string;
   tur?: string;
+  slug: string;
 }
 
 interface SearchResultsListProps {
@@ -38,7 +39,7 @@ const SearchResultsList = ({
         <Link
           key={item.id}
           onClick={onClose}
-          href={`/icerikler/${item.tur === "film" ? "filmler" : "diziler"}/${item.id}`}
+          href={`/icerikler/${item.slug}`}
           className="group flex items-center gap-3 rounded-lg p-2 transition-colors hover:bg-gray-100 dark:hover:bg-white/10"
         >
           {/* Görsel */}
