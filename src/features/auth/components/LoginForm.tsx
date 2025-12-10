@@ -3,8 +3,8 @@
 import Link from "next/link";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
+import toast from "react-hot-toast";
 
 // İkonlar
 import { FaLock } from "react-icons/fa6";
@@ -36,13 +36,15 @@ const LoginForm = () => {
     try {
       const result = await loginAction(data);
 
-      if (result?.error) {
-        toast.error(result.error);
+      if (!result.success) {
+        toast.error(result.error ?? "Giriş başarısız.");
         setIsLoading(false);
       } else {
         toast.success("Giriş başarılı! Yönlendiriliyorsunuz...");
-        router.refresh();
-        router.push("/profil");
+
+        setTimeout(() => {
+          window.location.href = "/profil";
+        }, 1000);
       }
     } catch (error) {
       toast.error("Bir hata oluştu.");
@@ -53,15 +55,15 @@ const LoginForm = () => {
   return (
     <div className="flex min-h-screen w-full items-center justify-center px-4 py-12">
       <form
-        className="/* --- LIGHT MODE --- */ /* --- DARK MODE --- */ dark:bg-primary-950/80 dark:border-primary-800 relative flex w-full max-w-md flex-col gap-y-6 rounded-3xl border border-white/50 bg-white/80 p-8 shadow-2xl backdrop-blur-xl transition-colors duration-300 md:p-10"
+        className="dark:bg-primary-950/80 dark:border-primary-800 relative flex w-full max-w-md flex-col gap-y-6 rounded-3xl border border-white/50 bg-white/80 p-8 shadow-2xl backdrop-blur-xl transition-colors duration-300 md:p-10"
         onSubmit={handleSubmit(onSubmit)}
       >
         {/* Başlık Alanı */}
         <div className="space-y-2 text-center">
-          <h3 className="text-primary-900 /* Light */ dark:text-primary-50 /* Dark */ text-3xl font-bold tracking-tight md:text-4xl">
+          <h3 className="text-primary-200 text-3xl font-bold tracking-tight md:text-4xl">
             Hoş Geldiniz
           </h3>
-          <p className="text-primary-500 /* Light */ dark:text-primary-400 /* Dark */ text-sm font-medium">
+          <p className="text-primary-500 dark:text-primary-400 text-sm font-medium">
             Devam etmek için lütfen giriş yapın.
           </p>
         </div>
@@ -124,7 +126,7 @@ const LoginForm = () => {
 
           <button
             type="button"
-            className="border-primary-200 text-primary-700 hover:bg-primary-50 dark:border-primary-700 dark:bg-primary-900/50 dark:text-primary-200 dark:hover:bg-primary-800 flex w-full cursor-pointer items-center justify-center gap-3 rounded-xl border bg-white py-3.5 text-sm font-medium transition-all active:scale-[0.98]"
+            className="border-primary-200 text-primary-200 bg-primary-900 dark:border-primary-700 dark:text-primary-200 hover:bg-primary-800 flex w-full cursor-pointer items-center justify-center gap-3 rounded-xl border py-3.5 text-sm font-medium transition-all active:scale-[0.98]"
           >
             <FcGoogle className="text-xl" />
             <span>Google ile devam et</span>

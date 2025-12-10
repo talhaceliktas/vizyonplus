@@ -29,7 +29,7 @@ const SearchResultsList = ({
 
   return (
     <div
-      className={`absolute z-50 mt-2 grid grid-cols-1 gap-1 overflow-scroll rounded-xl border border-gray-200 bg-white/95 p-2 shadow-2xl backdrop-blur-xl dark:border-white/10 dark:bg-black/90 ${
+      className={`absolute z-50 mt-2 grid grid-cols-1 gap-1 overflow-scroll overflow-x-hidden rounded-xl border border-gray-200 bg-white/95 p-2 shadow-2xl backdrop-blur-xl dark:border-white/10 dark:bg-black/90 ${
         isMobileView
           ? "right-0 left-0 max-h-[60vh] overflow-y-auto"
           : "custom-scrollbar right-0 max-h-112 w-[24rem] overflow-y-auto"

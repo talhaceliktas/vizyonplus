@@ -34,7 +34,7 @@ export const FormInput = ({
         <input
           type={inputType}
           placeholder={placeholder}
-          className={`w-full rounded-xl border py-3.5 text-sm font-medium transition-all duration-200 outline-none ${Icon ? "pl-12" : "pl-4"} ${isPassword ? "pr-12" : "pr-4"} /* --- LIGHT MODE --- */ text-primary-900 placeholder:text-primary-400 border-primary-200 /* --- DARK MODE --- */ dark:bg-primary-900/40 dark:text-primary-50 dark:placeholder:text-primary-500 dark:border-primary-700/50 /* --- ETKİLEŞİMLER (Focus & Hover) --- */ focus:border-secondary-1 focus:ring-secondary-1/10 dark:focus:border-secondary-1 dark:focus:ring-secondary-1/20 /* --- HATA DURUMU --- */ bg-white focus:ring-4 ${
+          className={`w-full rounded-xl border py-3.5 text-sm font-medium transition-all duration-200 outline-none ${Icon ? "pl-12" : "pl-4"} ${isPassword ? "pr-12" : "pr-4"} text-primary-200 placeholder:text-primary-400 border-primary-200 dark:bg-primary-900/40 dark:placeholder:text-primary-500 dark:border-primary-700/50 /* --- ETKİLEŞİMLER (Focus & Hover) --- */ focus:border-secondary-1 focus:ring-secondary-1/10 dark:focus:border-secondary-1 dark:focus:ring-secondary-1/20 bg-white focus:ring-4 ${
             error
               ? "border-red-500 text-red-600 focus:border-red-500 focus:ring-red-500/10 dark:border-red-500/50 dark:text-red-400"
               : "hover:border-primary-300 dark:hover:border-primary-600"

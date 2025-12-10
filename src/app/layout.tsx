@@ -6,6 +6,7 @@ import MaintenanceMode from "../features/settings/components/MaintenanceControl"
 import { Providers } from "../lib/providers/Providers";
 import { Table } from "../types";
 import NavbarWrapper from "../features/navigation/components/NavbarWrapper";
+import { Toaster } from "react-hot-toast";
 
 export const metadata: Metadata = {
   title: "Vizyon+ | Modern Dizi & Film Platformu",
@@ -42,6 +43,7 @@ export default async function RootLayout({
               {children}
             </>
           )}
+          <Toaster position="bottom-right" />
         </Providers>
       </body>
     </html>

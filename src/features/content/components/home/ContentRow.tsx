@@ -13,7 +13,7 @@ const ContentRow = async ({ type, category, title }: ContentRowProps) => {
 
   if (!contents || contents.length === 0) return null;
 
-  const listUrl = `/icerikler/${type === "film" ? "filmler" : "diziler"}?tur=${category}`;
+  const listUrl = `/icerikler/?tur=${type}&kategori=${category}`;
 
   const displayTitle =
     title || `${category} ${type === "film" ? "Filmleri" : "Dizileri"}`;
