@@ -56,7 +56,11 @@ export async function getFilteredContents(
   const from = (page - 1) * PAGE_SIZE;
   const to = from + PAGE_SIZE - 1;
 
-  let query = supabase.from("icerikler").select("*", { count: "exact" });
+  let query = supabase
+    .from("icerikler")
+    .select("*, icerik_puan_istatistikleri(*)", {
+      count: "exact",
+    });
 
   if (tur && tur !== "hepsi") {
     query = query.eq("tur", tur);
@@ -73,6 +77,15 @@ export async function getFilteredContents(
     case "a-z":
       query = query.order("isim", { ascending: true });
       break;
+    case "z-a":
+      query = query.order("isim", { ascending: false });
+      break;
+    case "ortalama_puan_azalan":
+      query = query.order("ortalama_puan", { ascending: false });
+      break;
+    case "ortalama_puan_artan":
+      query = query.order("ortalama_puan", { ascending: true });
+      break;
     case "yeni":
     default:
       query = query.order("yayinlanma_tarihi", { ascending: false });
@@ -82,6 +95,8 @@ export async function getFilteredContents(
   query = query.range(from, to);
 
   const { data: icerikler, error, count } = await query;
+
+  console.log(icerikler);
 
   if (error) {
     return { data: [], count: 0 };

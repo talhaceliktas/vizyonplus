@@ -6,6 +6,7 @@ import { Table } from "../../../../types";
 
 type IcerikData = Table<"icerikler"> & {
   isSaved: boolean;
+  icerik_puan_istatistikleri: Table<"icerik_puan_istatistikleri">;
 };
 
 interface ContentCardProps {
@@ -13,10 +14,24 @@ interface ContentCardProps {
 }
 
 const ContentCard = ({ data }: ContentCardProps) => {
-  const { id, isim, fotograf, tur, turler, yayinlanma_tarihi, slug, isSaved } =
-    data;
+  const {
+    id,
+    isim,
+    fotograf,
+    tur,
+    turler,
+    yayinlanma_tarihi,
+    slug,
+    isSaved,
+    icerik_puan_istatistikleri,
+  } = data;
 
   const yil = new Date(yayinlanma_tarihi).getFullYear();
+
+  const toplamPuan = icerik_puan_istatistikleri?.toplam_puan || 0;
+  const toplamKullanici = icerik_puan_istatistikleri?.toplam_kullanici || 0;
+
+  const ortalamaPuan = toplamKullanici > 0 ? toplamPuan / toplamKullanici : 0;
 
   return (
     <div className="group relative flex flex-col gap-2">
@@ -73,7 +88,7 @@ const ContentCard = ({ data }: ContentCardProps) => {
 
           <div className="text-secondary-1 flex items-center gap-1">
             <FaStar size={10} />
-            <span>8.5</span>
+            <span>{ortalamaPuan == 0 ? "—" : ortalamaPuan.toFixed(1)}</span>
           </div>
         </div>
       </div>

@@ -17,6 +17,12 @@ export default function SortSelector({
         onChange={(e) => onSortChange(e.target.value)}
         className="focus:border-secondary-1 text-primary-100 h-10 cursor-pointer appearance-none rounded-full border border-white/10 bg-black/20 pr-8 pl-9 text-sm font-medium transition-colors hover:border-white/20 focus:outline-none"
       >
+        <option value="ortalama_puan_azalan" className="bg-primary-900">
+          Puana Göre Azalan
+        </option>
+        <option value="ortalama_puan_artan" className="bg-primary-900">
+          Puana Göre Artan
+        </option>
         <option value="yeni" className="bg-primary-900">
           En Yeni Eklenen
         </option>
@@ -25,6 +31,9 @@ export default function SortSelector({
         </option>
         <option value="a-z" className="bg-primary-900">
           İsim (A-Z)
+        </option>
+        <option value="z-a" className="bg-primary-900">
+          İsim (Z-A)
         </option>
       </select>
     </div>
