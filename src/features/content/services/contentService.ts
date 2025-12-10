@@ -96,8 +96,6 @@ export async function getFilteredContents(
 
   const { data: icerikler, error, count } = await query;
 
-  console.log(icerikler);
-
   if (error) {
     return { data: [], count: 0 };
   }

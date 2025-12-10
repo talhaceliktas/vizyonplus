@@ -63,12 +63,12 @@ export async function updateWatchList(icerikId: number, ekle: boolean) {
 
   if (ekle) {
     const { error } = await supabase
-      .from("daha_sonra_izle") // Tablo adı değişti
+      .from("daha_sonra_izle")
       .insert([{ icerikler_id: icerikId, kullanici_id: user.id }]);
     if (error) throw error;
   } else {
     const { error } = await supabase
-      .from("daha_sonra_izle") // Tablo adı değişti
+      .from("daha_sonra_izle")
       .delete()
       .eq("icerikler_id", icerikId)
       .eq("kullanici_id", user.id);

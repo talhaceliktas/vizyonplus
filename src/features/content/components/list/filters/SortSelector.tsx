@@ -13,7 +13,7 @@ export default function SortSelector({
     <div className="relative self-start md:self-auto">
       <FaSort className="text-primary-400 absolute top-1/2 left-3 -translate-y-1/2" />
       <select
-        value={currentSort || "yeni"}
+        value={currentSort || "ortalama_puan_azalan"}
         onChange={(e) => onSortChange(e.target.value)}
         className="focus:border-secondary-1 text-primary-100 h-10 cursor-pointer appearance-none rounded-full border border-white/10 bg-black/20 pr-8 pl-9 text-sm font-medium transition-colors hover:border-white/20 focus:outline-none"
       >
