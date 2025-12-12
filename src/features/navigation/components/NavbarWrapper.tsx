@@ -12,9 +12,15 @@ export default function NavbarWrapper({
 }) {
   const pathName = usePathname();
 
-  return pathName.split("/")[1] === "admin" ||
-    pathName.split("/")[1] === "izle" ||
-    pathName.split("/")[1] === "odeme" ? null : (
-    <Navbar settings={settings} />
-  );
+  const hiddenPaths = ["/admin", "/izle", "/odeme"];
+
+  if (!pathName) return null;
+
+  const shouldHideNavbar = hiddenPaths.some((path) => pathName.startsWith(path));
+
+  if (shouldHideNavbar) {
+    return null;
+  }
+
+  return <Navbar settings={settings} />;
 }
