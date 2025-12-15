@@ -5,7 +5,7 @@ import { FaFilm } from "react-icons/fa6";
 
 interface Props {
   tur: string | null;
-  kategori: string | null;
+  kategori: string[] | null; // BURASI DEĞİŞTİ: Artık string dizisi bekliyor
   sirala: string | null;
   page: number;
 }
@@ -16,6 +16,7 @@ export default async function ContentGrid({
   sirala,
   page,
 }: Props) {
+  // Servise artık kategori dizisini gönderiyoruz
   const { data: icerikler, count } = await getFilteredContents(
     tur,
     kategori,

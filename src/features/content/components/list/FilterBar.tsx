@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo } from "react";
-import { useQueryState } from "nuqs";
+import { useQueryState } from "nuqs"; // parseAsArrayOf ve parseAsString parsers içinde tanımlı varsayıyorum
 import { parsers } from "@/features/content/params/parsers";
 import { MOVIE_GENRES, SERIES_GENRES } from "@/features/content/constants";
 
@@ -14,14 +14,18 @@ export default function FilterBar() {
     "tur",
     parsers.tur.withOptions({ shallow: false }),
   );
+
+  // ARTIK DİZİ (ARRAY) OLARAK ALIYORUZ
   const [kategori, setKategori] = useQueryState(
     "kategori",
     parsers.kategori.withOptions({ shallow: false }),
   );
+
   const [sirala, setSirala] = useQueryState(
     "sirala",
     parsers.sirala.withOptions({ shallow: false }),
   );
+
   const [_, setPage] = useQueryState(
     "page",
     parsers.page.withOptions({ shallow: false }),
@@ -43,18 +47,24 @@ export default function FilterBar() {
   const handleTypeChange = (newType: string | null) => {
     if (tur !== newType) {
       setTur(newType);
-      setKategori(null);
+      setKategori(null); // Tür değişince filtreleri sıfırla
       setPage(1);
     }
   };
 
-  const handleCategoryChange = (newCategory: string | null) => {
-    setKategori(newCategory);
-    setPage(1);
-  };
-
-  const handleSortChange = (newSort: string) => {
-    setSirala(newSort);
+  // ÇOKLU SEÇİM MANTIĞI (TOGGLE)
+  const handleCategoryChange = (genre: string) => {
+    setKategori((old) => {
+      const current = old || []; // null gelebilme ihtimaline karşı
+      if (current.includes(genre)) {
+        // Varsa çıkar
+        const next = current.filter((c) => c !== genre);
+        return next.length > 0 ? next : null; // Dizi boşsa null yap (URL temizlensin)
+      } else {
+        // Yoksa ekle
+        return [...current, genre];
+      }
+    });
     setPage(1);
   };
 
@@ -62,15 +72,21 @@ export default function FilterBar() {
     <div className="from-primary-900 to-primary-800 w-full rounded-2xl border border-white/5 bg-linear-to-r p-6 backdrop-blur-2xl transition-all duration-300">
       <div className="flex flex-col gap-6 md:flex-row md:items-center md:justify-between">
         <TypeSelector currentType={tur} onTypeChange={handleTypeChange} />
-        <SortSelector currentSort={sirala} onSortChange={handleSortChange} />
+        <SortSelector
+          currentSort={sirala}
+          onSortChange={(v) => {
+            setSirala(v);
+            setPage(1);
+          }}
+        />
       </div>
 
       <div className="my-5 h-px w-full bg-linear-to-r from-transparent via-white/10 to-transparent" />
 
       <GenreList
         genres={activeGenres}
-        selectedGenre={kategori}
-        onGenreSelect={handleCategoryChange}
+        selectedGenres={kategori || []} // Dizi gönderiyoruz
+        onGenreToggle={handleCategoryChange} // İsimlendirmeyi toggle yaptık
         typeLabel={typeLabel}
       />
     </div>

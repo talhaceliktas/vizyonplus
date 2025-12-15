@@ -5,15 +5,15 @@ import { FaCheck, FaChevronDown, FaChevronUp, FaFilter } from "react-icons/fa6";
 
 interface GenreListProps {
   genres: string[];
-  selectedGenre: string | null;
-  onGenreSelect: (genre: string | null) => void;
+  selectedGenres: string[]; // Değişti: string | null -> string[]
+  onGenreToggle: (genre: string) => void; // Değişti
   typeLabel: string;
 }
 
 export default function GenreList({
   genres,
-  selectedGenre,
-  onGenreSelect,
+  selectedGenres,
+  onGenreToggle,
   typeLabel,
 }: GenreListProps) {
   const [isExpanded, setIsExpanded] = useState(false);
@@ -26,20 +26,22 @@ export default function GenreList({
       <div className="text-primary-50 flex items-center gap-2 text-xs font-semibold tracking-wider uppercase">
         <FaFilter />
         <span>{typeLabel}</span>
-        {selectedGenre && (
+        {selectedGenres.length > 0 && (
           <span className="text-secondary-1 ml-1">
-            • {selectedGenre} Seçili
+            • {selectedGenres.length} Seçili
           </span>
         )}
       </div>
 
       <div className="flex flex-wrap gap-2 transition-all duration-500 ease-in-out">
         {visibleGenres.map((kat) => {
-          const isSelected = selectedGenre === kat;
+          // ÇOKLU SEÇİM KONTROLÜ
+          const isSelected = selectedGenres.includes(kat);
+
           return (
             <button
               key={kat}
-              onClick={() => onGenreSelect(isSelected ? null : kat)}
+              onClick={() => onGenreToggle(kat)}
               className={`group flex items-center gap-2 rounded-xl border px-3 py-1.5 text-xs font-medium transition-all active:scale-95 ${
                 isSelected
                   ? "border-secondary-2 bg-secondary-1-2 text-black shadow-md shadow-yellow-500/20"
@@ -60,11 +62,11 @@ export default function GenreList({
         >
           {isExpanded ? (
             <>
-              <FaChevronUp /> Daha Az Göster{" "}
+              <FaChevronUp /> Daha Az Göster
             </>
           ) : (
             <>
-              <FaChevronDown /> Tümünü Göster (+{genres.length - 12}){" "}
+              <FaChevronDown /> Tümünü Göster (+{genres.length - 12})
             </>
           )}
         </button>

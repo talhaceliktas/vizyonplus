@@ -46,7 +46,7 @@ export async function getContents(
 
 export async function getFilteredContents(
   tur: string | null,
-  kategori: string | null,
+  kategori: string[] | null, // DEĞİŞİKLİK 1: Artık string dizisi alıyor
   sirala: string | null,
   page: number = 1,
 ) {
@@ -62,14 +62,16 @@ export async function getFilteredContents(
       count: "exact",
     });
 
+  // Tür Filtresi
   if (tur && tur !== "hepsi") {
     query = query.eq("tur", tur);
   }
 
-  if (kategori) {
-    query = query.contains("turler", [kategori]);
+  if (kategori && kategori.length > 0) {
+    query = query.contains("turler", kategori);
   }
 
+  // Sıralama Mantığı (Aynı kaldı)
   switch (sirala) {
     case "eski":
       query = query.order("yayinlanma_tarihi", { ascending: true });
@@ -92,24 +94,29 @@ export async function getFilteredContents(
       break;
   }
 
+  // Sayfalama
   query = query.range(from, to);
 
   const { data: icerikler, error, count } = await query;
 
   if (error) {
+    console.error("İçerik getirme hatası:", error);
     return { data: [], count: 0 };
   }
 
+  // Kullanıcıya özel "Kaydedildi mi?" kontrolü
   try {
     const {
       data: { user },
     } = await supabase.auth.getUser();
 
+    // Kullanıcı yoksa direkt veriyi dön
     if (!user) {
       const safeData = icerikler.map((i) => ({ ...i, isSaved: false }));
       return { data: safeData, count: count || 0 };
     }
 
+    // Kullanıcı varsa 'daha_sonra_izle' tablosunu kontrol et
     const icerikIdleri = icerikler.map((i) => i.id);
     const { data: kayitliOlanlar } = await supabase
       .from("daha_sonra_izle")
@@ -126,6 +133,7 @@ export async function getFilteredContents(
 
     return { data: mergedData, count: count || 0 };
   } catch (err) {
+    // Auth hatası olursa bile içerikleri göstermeye devam et (isSaved: false olarak)
     return {
       data: icerikler.map((i) => ({ ...i, isSaved: false })),
       count: count || 0,
