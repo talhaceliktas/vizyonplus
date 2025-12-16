@@ -1,4 +1,5 @@
 import { FaHome, FaComments, FaUsers, FaCog } from "react-icons/fa";
+import { FaChartColumn } from "react-icons/fa6";
 
 export const ADMIN_MENU_ITEMS = [
   {
@@ -16,6 +17,11 @@ export const ADMIN_MENU_ITEMS = [
   //   href: "/admin/icerikEkle",
   //   icon: FaPlusCircle,
   // },
+  {
+    name: "İstatistikler",
+    href: "/admin/istatistikler",
+    icon: FaChartColumn,
+  },
   {
     name: "Yorum Yönetimi",
     href: "/admin/yorumlar",

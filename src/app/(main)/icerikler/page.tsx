@@ -3,6 +3,7 @@ import FilterBar from "@/features/content/components/list/FilterBar";
 import ContentCardSkeleton from "@/features/content/components/list/ContentCardSkeleton";
 import ContentGrid from "@/features/content/components/list/ContentGrid"; // Yeni bileşeni import et
 import { searchParamsCache } from "@/features/content/params/searchParams";
+import supabaseServer from "../../../lib/supabase/server";
 
 type PageProps = {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
@@ -14,6 +15,12 @@ export default async function ContentPage({ searchParams }: PageProps) {
     searchParamsCache.parse(resolvedParams);
 
   const suspenseKey = JSON.stringify({ tur, kategori, sirala, page });
+
+  const supabase = await supabaseServer();
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
 
   return (
     <div className="container mx-auto min-h-screen px-4 py-12 pt-40 md:px-8">

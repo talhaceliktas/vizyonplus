@@ -1,8 +1,8 @@
 import { getDashboardStats } from "@admin/services/dashboardService";
-import StatsGrid from "@admin/components/dashboard/StatsGrid";
-import ContentCharts from "@admin/components/dashboard/ContentCharts";
-import GenreBarChart from "@admin/components/dashboard/GenreBarChart";
-import RecentActivity from "@admin/components/dashboard/RecentActivity";
+import StatsGrid from "@/features/admin/components/home/StatsGrid";
+import ContentCharts from "@/features/admin/components/home/ContentCharts";
+import GenreBarChart from "@/features/admin/components/home/GenreBarChart";
+import RecentActivity from "@/features/admin/components/home/RecentActivity";
 
 export const revalidate = 0;
 export const dynamic = "force-dynamic";
