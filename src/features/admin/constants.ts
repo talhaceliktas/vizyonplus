@@ -1,11 +1,4 @@
-import {
-  FaHome,
-  FaFilm,
-  FaPlusCircle,
-  FaComments,
-  FaUsers,
-  FaCog,
-} from "react-icons/fa";
+import { FaHome, FaComments, FaUsers, FaCog } from "react-icons/fa";
 
 export const ADMIN_MENU_ITEMS = [
   {
