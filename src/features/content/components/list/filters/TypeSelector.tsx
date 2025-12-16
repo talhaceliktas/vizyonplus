@@ -11,6 +11,7 @@ export default function TypeSelector({
     { id: null, label: "Tümü" },
     { id: "film", label: "Filmler" },
     { id: "dizi", label: "Diziler" },
+    { id: "onerilenler", label: "Önerilenler" },
   ];
 
   return (

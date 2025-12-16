@@ -1,3 +1,4 @@
+import { useSearchParams } from "next/navigation";
 import { FaSort } from "react-icons/fa6";
 
 interface SortSelectorProps {
@@ -9,6 +10,9 @@ export default function SortSelector({
   currentSort,
   onSortChange,
 }: SortSelectorProps) {
+  const params = useSearchParams();
+  if (params.get("tur") === "onerilenler") return null;
+
   return (
     <div className="relative self-start md:self-auto">
       <FaSort className="text-primary-400 absolute top-1/2 left-3 -translate-y-1/2" />

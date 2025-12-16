@@ -1,5 +1,6 @@
 "use client";
 
+import { useSearchParams } from "next/navigation";
 import { useState } from "react";
 import { FaCheck, FaChevronDown, FaChevronUp, FaFilter } from "react-icons/fa6";
 
@@ -20,6 +21,10 @@ export default function GenreList({
 
   const visibleGenres = isExpanded ? genres : genres.slice(0, 12);
   const hasMore = genres.length > 12;
+
+  const params = useSearchParams();
+
+  if (params.get("tur") === "onerilenler") return null;
 
   return (
     <div className="flex flex-col gap-3">

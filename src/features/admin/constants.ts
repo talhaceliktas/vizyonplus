@@ -13,16 +13,16 @@ export const ADMIN_MENU_ITEMS = [
     href: "/admin",
     icon: FaHome,
   },
-  {
-    name: "İçerik Listesi",
-    href: "/admin/icerikler",
-    icon: FaFilm,
-  },
-  {
-    name: "İçerik Ekle",
-    href: "/admin/icerikEkle",
-    icon: FaPlusCircle,
-  },
+  // {
+  //   name: "İçerik Listesi",
+  //   href: "/admin/icerikler",
+  //   icon: FaFilm,
+  // },
+  // {
+  //   name: "İçerik Ekle",
+  //   href: "/admin/icerikEkle",
+  //   icon: FaPlusCircle,
+  // },
   {
     name: "Yorum Yönetimi",
     href: "/admin/yorumlar",

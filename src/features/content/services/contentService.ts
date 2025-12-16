@@ -50,7 +50,8 @@ export async function getFilteredContents(
   sirala: string | null,
   page: number = 1,
 ) {
-  const supabase = await supabaseStatic();
+  const supabase = await supabaseServer();
+  let filtrelenmisKategori = kategori;
 
   const PAGE_SIZE = Number(process.env.NEXT_PUBLIC_CONTENT_PAGE_SIZE!);
   const from = (page - 1) * PAGE_SIZE;
@@ -63,12 +64,18 @@ export async function getFilteredContents(
     });
 
   // Tür Filtresi
-  if (tur && tur !== "hepsi") {
+  if (tur === "onerilenler") {
+    filtrelenmisKategori = await kullaniciOnerilenTurlerOlustur();
+  } else if (tur && tur !== "hepsi") {
     query = query.eq("tur", tur);
   }
 
-  if (kategori && kategori.length > 0) {
-    query = query.contains("turler", kategori);
+  if (filtrelenmisKategori && filtrelenmisKategori.length > 0) {
+    if (kategori !== filtrelenmisKategori) {
+      query = query.overlaps("turler", filtrelenmisKategori);
+    } else {
+      query = query.contains("turler", filtrelenmisKategori);
+    }
   }
 
   // Sıralama Mantığı (Aynı kaldı)
@@ -95,6 +102,7 @@ export async function getFilteredContents(
   }
 
   // Sayfalama
+
   query = query.range(from, to);
 
   const { data: icerikler, error, count } = await query;
@@ -131,14 +139,62 @@ export async function getFilteredContents(
       isSaved: kayitliIdSeti.has(icerik.id),
     }));
 
-    return { data: mergedData, count: count || 0 };
+    return {
+      data:
+        kategori !== filtrelenmisKategori
+          ? mergedData.slice(0, 12)
+          : mergedData,
+      count: kategori !== filtrelenmisKategori ? 12 : count || 0,
+    };
   } catch (err) {
     // Auth hatası olursa bile içerikleri göstermeye devam et (isSaved: false olarak)
     return {
-      data: icerikler.map((i) => ({ ...i, isSaved: false })),
-      count: count || 0,
+      data:
+        kategori !== filtrelenmisKategori
+          ? icerikler.map((i) => ({ ...i, isSaved: false })).slice(0, 12)
+          : icerikler.map((i) => ({ ...i, isSaved: false })),
+      count: kategori !== filtrelenmisKategori ? 12 : count || 0,
     };
   }
+}
+
+export async function kullaniciOnerilenTurlerOlustur() {
+  const supabase = await supabaseServer();
+
+  // 1. Kullanıcı Kontrolü
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) return []; // Kullanıcı yoksa boş dön
+
+  // 2. Son Beğenilen 3 İçeriğin ID'sini Çek
+  const { data: begeniler, error: begeniHatasi } = await supabase
+    .from("begeniler")
+    .select("icerik_id")
+    .eq("kullanici_id", user.id)
+    .eq("durum", true)
+    .order("guncellenme_zamani", { ascending: false })
+    .limit(3);
+
+  if (begeniHatasi || !begeniler?.length) return [];
+
+  // ID'leri tek satırda array'e çevir: [101, 102, 103]
+  const icerikIdleri = begeniler.map((b) => b.icerik_id);
+
+  // 3. Bu ID'lere Ait Türleri Çek
+  const { data: icerikler, error: icerikHatasi } = await supabase
+    .from("icerikler")
+    .select("turler") // "turler" sütununun array döndürdüğünü varsayıyoruz
+    .in("id", icerikIdleri);
+
+  if (icerikHatasi || !icerikler) return [];
+
+  // 4. Türleri Birleştir ve Benzersiz Yap
+  // flatMap: [[A, B], [B, C]] şeklindeki yapıyı [A, B, B, C] yapar.
+  // Set: Tekrarlayanları (B'yi) otomatik siler.
+  const benzersizTurler = [...new Set(icerikler.flatMap((i) => i.turler))];
+
+  return benzersizTurler;
 }
 
 export async function getContentBySlug(slug: string) {

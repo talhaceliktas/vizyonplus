@@ -24,6 +24,8 @@ export default async function ContentGrid({
     page,
   );
 
+  console.log(count);
+
   if (icerikler.length === 0) {
     return (
       <div className="flex h-80 flex-col items-center justify-center rounded-3xl border border-dashed border-white/10 bg-white/5 text-center">
