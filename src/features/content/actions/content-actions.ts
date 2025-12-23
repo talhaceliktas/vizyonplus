@@ -1,8 +1,18 @@
+/**
+ * Bu dosya, içeriklerle ilgili Server Action'ları içerir (puanlama, beğenme, yorum yapma).
+ * Tüm fonksiyonlar sunucu tarafında çalışır (`use server`) ve veritabanı işlemlerini güvenli bir şekilde yapar.
+ */
+
 "use server";
 
 import supabaseServer from "@lib/supabase/server";
 import { revalidatePath } from "next/cache";
 
+/**
+ * İçeriği beğenme veya beğenmekten vazgeçme işlemi.
+ * @param contentId - Beğenilen içeriğin ID'si
+ * @param voteType - `true` (Like) | `false` (Dislike) | `null` (Nötr / Kaldır)
+ */
 export async function voteContent(contentId: number, voteType: boolean | null) {
   const supabase = await supabaseServer();
   const {
@@ -11,6 +21,7 @@ export async function voteContent(contentId: number, voteType: boolean | null) {
 
   if (!user) return { success: false, error: "Giriş yapmalısınız." };
 
+  // Eğer voteType null ise, mevcut beğeniyi sil
   if (voteType === null) {
     const { error } = await supabase
       .from("begeniler")
@@ -22,6 +33,7 @@ export async function voteContent(contentId: number, voteType: boolean | null) {
     return { success: true, removed: true };
   }
 
+  // Beğeni/Dislike ekle veya güncelle (Upsert)
   const { error } = await supabase.from("begeniler").upsert(
     {
       kullanici_id: user.id,
@@ -35,6 +47,9 @@ export async function voteContent(contentId: number, voteType: boolean | null) {
   return { success: true, removed: false };
 }
 
+/**
+ * İçeriğe Puan Verme (1-10 arası)
+ */
 export async function rateContent(contentId: number, rating: number) {
   const supabase = await supabaseServer();
   const {
@@ -59,6 +74,9 @@ export async function rateContent(contentId: number, rating: number) {
   return { success: true };
 }
 
+/**
+ * İçeriğe Yorum Yapma
+ */
 export async function postComment(
   icerikId: number,
   yorum: string,
@@ -90,11 +108,15 @@ export async function postComment(
   }
 
   // 3. Sayfayı Yenile (Cache Temizle)
+  // Böylece yeni yorum sayfada görünür
   revalidatePath(`/icerikler/${slug}`);
 
   return { success: true, message: "Yorumunuz paylaşıldı." };
 }
 
+/**
+ * Dizi Bölümüne Yorum Yapma
+ */
 export async function postEpisodeComment(
   episodeId: number,
   comment: string,

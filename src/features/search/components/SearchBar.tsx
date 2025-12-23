@@ -1,5 +1,12 @@
 "use client";
 
+/**
+ * Bu bileşen, kullanıcıların içerik araması yapmasını sağlayan arama çubuğudur.
+ * - Yazılan sorguya göre anlık arama yapar (useEffect ve AbortController ile).
+ * - Sonuçları `SearchResultsList` bileşeninde gösterir.
+ * - Dışarı tıklandığında sonuç penceresini kapatır (useClickOutside).
+ */
+
 import { useEffect, useRef, useState } from "react";
 import { HiOutlineMagnifyingGlass } from "react-icons/hi2";
 
@@ -7,18 +14,19 @@ import { HiOutlineMagnifyingGlass } from "react-icons/hi2";
 import { searchContent } from "@/features/search/services/SearchService";
 import useClickOutside from "@/shared/hooks/useClickOutside";
 
-// Yeni ayırdığımız bileşen
+// Sonuçları listeleyen alt bileşen
 import SearchResultsList, { SearchResult } from "./SearchResultsList";
 
 const SearchBar = () => {
-  const [query, setQuery] = useState("");
-  const [results, setResults] = useState<SearchResult[]>([]);
-  const [isMobileView, setIsMobileView] = useState(false);
+  const [query, setQuery] = useState(""); // Arama metni
+  const [results, setResults] = useState<SearchResult[]>([]); // Arama sonuçları
+  const [isMobileView, setIsMobileView] = useState(false); // Mobil görünüm kontrolü
 
-  const containerRef = useRef(null);
+  const containerRef = useRef(null); // Dışarı tıklamayı algılamak için ref
   const { isOpen, setIsOpen } = useClickOutside(containerRef);
 
-  // --- Mobil Kontrolü ---
+  // --- Mobil Görünüm Kontrolü ---
+  // Ekran boyutuna göre isMobileView state'ini günceller
   useEffect(() => {
     const checkIsMobile = () => setIsMobileView(window.innerWidth < 768);
     checkIsMobile();
@@ -27,15 +35,18 @@ const SearchBar = () => {
   }, []);
 
   // --- Arama Mantığı ---
+  // Query değiştiğinde çalışır. AbortController ile eski istekleri iptal eder.
   useEffect(() => {
     const controller = new AbortController();
 
     if (query.length >= 2) {
       const performSearch = async () => {
         try {
+          // Servis üzerinden arama yap (sinyal ile iptal edilebilir)
           const data = await searchContent(query, controller.signal);
           setResults(Array.isArray(data) ? data : []);
         } catch (err) {
+          // Eğer hata iptal hatası değilse sonuçları temizle
           if ((err as Error).name !== "AbortError") {
             setResults([]);
           }
@@ -43,13 +54,15 @@ const SearchBar = () => {
       };
       performSearch();
     } else {
+      // 2 karakterden azsa sonuçları temizle
       setResults([]);
     }
 
+    // Cleanup: Yeni efekt çalışmadan önce veya bileşen sökülürken isteği iptal et
     return () => controller.abort();
   }, [query]);
 
-  // Listeyi kapatma ve temizleme fonksiyonu
+  // Listeyi kapatma ve arama metnini temizleme fonksiyonu
   const handleClose = () => {
     setIsOpen(false);
     setQuery("");
@@ -61,7 +74,7 @@ const SearchBar = () => {
       ref={containerRef}
     >
       <div className="relative flex items-center">
-        {/* İkon */}
+        {/* Büyüteç İkonu (Sadece masaüstünde input içinde göster) */}
         {!isMobileView && (
           <div className="pointer-events-none absolute left-3 text-gray-500 dark:text-gray-400">
             <HiOutlineMagnifyingGlass className="h-5 w-5" />
@@ -76,10 +89,11 @@ const SearchBar = () => {
           placeholder={isMobileView ? "Ara..." : "İçerik ara..."}
           onChange={(e) => setQuery(e.target.value)}
           value={query}
-          onClick={() => setIsOpen(true)}
+          onClick={() => setIsOpen(true)} // Tıklayınca listeyi aç
         />
       </div>
 
+      {/* Sonuç Listesi (Eğer sonuç varsa ve pencere açıksa göster) */}
       {results.length > 0 && isOpen && (
         <SearchResultsList
           results={results}

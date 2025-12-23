@@ -1,3 +1,9 @@
+/**
+ * Bu bileşen, içerik detay sayfasında aksiyon butonlarını (Oynat, Listeme Ekle, Puanla vb.)
+ * ve kullanıcı etkileşimlerini organize eden sarmalayıcı bileşendir.
+ * Tüm etkileşim verilerini (interactions) alt bileşenlere dağıtır.
+ */
+
 import { Table } from "@/types";
 
 import WatchButton from "./WatchButton";
@@ -7,18 +13,18 @@ import ContentRate from "./ContentRate";
 
 interface ActionBarProps {
   content: Table<"icerikler"> & { film_ucretleri?: any[] };
-  user: any;
+  user: any; // Supabase User objesi
   interactions: {
-    isSubscribed: boolean;
-    userRating: number | null;
-    watchHistory: any;
-    voteStatus: boolean | null;
-    watchLater: boolean;
-    favorite: boolean;
+    isSubscribed: boolean; // Kullanıcının aktif aboneliği var mı?
+    userRating: number | null; // Kullanıcının verdiği puan
+    watchHistory: any; // İzleme geçmişi verisi (kaldığı yer vb.)
+    voteStatus: boolean | null; // Beğenme durumu (true: like, false: dislike)
+    watchLater: boolean; // İzleme listesinde mi?
+    favorite: boolean; // Favorilerde mi?
   };
   averageRating: {
-    average: number;
-    count: number;
+    average: number; // Ortalama puan
+    count: number; // Oy sayısı
   };
 }
 
@@ -32,6 +38,7 @@ export default function ActionBar({
 
   return (
     <div className="mt-8 flex flex-col gap-8">
+      {/* ÜST SATIR: Büyük Oynat Butonu */}
       <div className="flex flex-col gap-4 sm:flex-row">
         <div className="flex-1">
           <WatchButton
@@ -43,7 +50,9 @@ export default function ActionBar({
         </div>
       </div>
 
+      {/* ALT SATIR: Butonlar ve Puanlama */}
       <div className="grid grid-cols-1 items-center gap-6 md:grid-cols-2">
+        {/* SOL: Etkileşim Butonları */}
         <div className="flex items-center gap-x-4">
           <ContentButtons
             id={content.id}
@@ -55,6 +64,7 @@ export default function ActionBar({
           <ContentVote contentId={content.id} currentStatus={voteStatus} />
         </div>
 
+        {/* SAĞ: Puanlama Alanı (Sadece giriş yapmış kullanıcılar) */}
         {user && (
           <div className="flex justify-start md:justify-end">
             <ContentRate

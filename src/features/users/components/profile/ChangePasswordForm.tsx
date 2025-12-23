@@ -1,5 +1,10 @@
 "use client";
 
+/**
+ * Bu bileşen, kullanıcının şifresini değiştirmesini sağlayan formdur.
+ * Server Action (`changePasswordAction`) kullanarak işlemi gerçekleştirir.
+ */
+
 import { useState, useRef } from "react";
 import toast from "react-hot-toast";
 import { TiWarningOutline } from "react-icons/ti";
@@ -12,6 +17,10 @@ const ChangePasswordForm = () => {
   const [loading, setLoading] = useState(false);
   const formRef = useRef<HTMLFormElement>(null);
 
+  /**
+   * Form gönderildiğinde çalışır.
+   * formData'yı direkt Server Action'a iletir.
+   */
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setLoading(true);
@@ -23,7 +32,7 @@ const ChangePasswordForm = () => {
 
     if (result.success) {
       toast.success(result.message ?? "İşlem başarılı!");
-      formRef.current?.reset();
+      formRef.current?.reset(); // Formu temizle
     } else {
       toast.error(result.error ?? "Hata oluştu!");
     }
@@ -33,7 +42,7 @@ const ChangePasswordForm = () => {
 
   return (
     <form ref={formRef} onSubmit={handleSubmit} className="w-full">
-      {/* Uyarı Kutusu */}
+      {/* Güvenlik Uyarısı */}
       <div className="mb-8 flex items-start gap-4 rounded-xl border border-red-500/20 bg-red-500/5 p-4 text-red-400">
         <TiWarningOutline className="shrink-0 text-2xl" />
         <p className="text-sm leading-relaxed">
@@ -43,7 +52,7 @@ const ChangePasswordForm = () => {
       </div>
 
       <div className="grid gap-6 md:grid-cols-2">
-        {/* Mevcut Parola */}
+        {/* Mevcut Parola Alanı */}
         <div className="md:col-span-2">
           <label
             htmlFor="currentPassword"
@@ -53,7 +62,7 @@ const ChangePasswordForm = () => {
           </label>
           <input
             id="currentPassword"
-            name="currentPassword" // Action'da bu isimle karşılıyoruz
+            name="currentPassword" // Action'da bu isimle okuyoruz
             type="password"
             required
             className="border-primary-800 bg-primary-900 text-primary-50 focus:bg-primary-800 dark:border-primary-700 w-full rounded-lg border px-4 py-3 transition-all focus:border-red-500/50 focus:outline-none dark:text-white"
@@ -61,7 +70,7 @@ const ChangePasswordForm = () => {
           />
         </div>
 
-        {/* Yeni Parola */}
+        {/* Yeni Parola Alanı */}
         <div>
           <label
             htmlFor="newPassword"
@@ -71,7 +80,7 @@ const ChangePasswordForm = () => {
           </label>
           <input
             id="newPassword"
-            name="newPassword" // Action'da bu isimle karşılıyoruz
+            name="newPassword"
             type="password"
             required
             minLength={8}
@@ -80,7 +89,7 @@ const ChangePasswordForm = () => {
           />
         </div>
 
-        {/* Yeni Parola Tekrar */}
+        {/* Yeni Parola Tekrar Alanı */}
         <div>
           <label
             htmlFor="confirmPassword"
@@ -90,7 +99,7 @@ const ChangePasswordForm = () => {
           </label>
           <input
             id="confirmPassword"
-            name="confirmPassword" // Action'da bu isimle karşılıyoruz
+            name="confirmPassword"
             type="password"
             required
             minLength={8}
@@ -100,7 +109,7 @@ const ChangePasswordForm = () => {
         </div>
       </div>
 
-      {/* Buton */}
+      {/* Kaydet Butonu */}
       <div className="mt-8 flex justify-end">
         <button
           type="submit"

@@ -1,3 +1,8 @@
+/**
+ * Bu bileşen, yorum yapmaya çalışan ancak GİRİŞ YAPMAMIŞ kullanıcılara gösterilen uyarı kutusudur.
+ * Kullanıcıyı giriş sayfasına (`/giris`) yönlendiren bir buton içerir.
+ */
+
 import Link from "next/link";
 import { HiOutlineLogin } from "react-icons/hi";
 

@@ -1,3 +1,8 @@
+/**
+ * Bu bileşen, yeni üye kayıtları kapatıldığında gösterilen bilgilendirme ekranıdır.
+ * Admin panelinden kayıtlar kapatıldığında devreye girer.
+ */
+
 import Link from "next/link";
 import { FaDoorClosed } from "react-icons/fa";
 

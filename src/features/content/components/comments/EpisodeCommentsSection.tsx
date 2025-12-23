@@ -1,8 +1,13 @@
+/**
+ * Bu bileşen, dizi BÖLÜMLERİ için özelleştirilmiş yorum alanıdır.
+ * `EpisodeCommentForm` ve yorum listesini içerir.
+ * Bölüm izleme sayfasında sidebar içinde kullanılır.
+ */
+
 import { BiCommentDetail } from "react-icons/bi";
 import supabaseServer from "@/lib/supabase/server";
 import { getEpisodeComments } from "../../services/commentService";
 
-// Mevcut CommentItem bileşenini tekrar kullanıyoruz (Tasarım aynı)
 import CommentItem from "./CommentItem";
 import EpisodeCommentForm from "./EpisodeCommentForm";
 import AuthOverlay from "./AuthOverlay";
@@ -23,7 +28,7 @@ export default async function EpisodeCommentsSection({ episodeId }: Props) {
 
   return (
     <div className="flex h-full flex-col">
-      {/* LİSTE ALANI (Scrollable) */}
+      {/* LİSTE ALANI (Yukarıda kalır ve scroll edilebilir) */}
       <div className="scrollbar-thin scrollbar-track-transparent scrollbar-thumb-white/10 flex-1 overflow-y-auto p-4">
         {!user ? (
           <div className="flex h-full items-center justify-center">
@@ -47,7 +52,7 @@ export default async function EpisodeCommentsSection({ episodeId }: Props) {
         )}
       </div>
 
-      {/* FORM ALANI (Sticky Bottom) */}
+      {/* FORM ALANI (Sticky Bottom - En alta yapışık) */}
       {user && (
         <div className="border-t border-white/10 bg-neutral-900 p-4">
           <EpisodeCommentForm episodeId={episodeId} />

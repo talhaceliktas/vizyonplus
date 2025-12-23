@@ -1,6 +1,11 @@
+/**
+ * Ödeme sayfasının üst kısmında görünen başlık ve açıklama bileşeni.
+ * Satın alma türüne (Yükseltme veya Yeni Abonelik) göre metni dinamikleştirir.
+ */
+
 interface Props {
-  planName: string;
-  isUpgrade: boolean;
+  planName: string; // Seçilen planın adı
+  isUpgrade: boolean; // İşlem bir yükseltme (upgrade) işlemi mi?
 }
 
 export default function PaymentHeader({ planName, isUpgrade }: Props) {

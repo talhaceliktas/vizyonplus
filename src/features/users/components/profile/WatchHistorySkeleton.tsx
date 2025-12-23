@@ -1,3 +1,8 @@
+/**
+ * Bu bileşen, izleme geçmişi yüklenirken gösterilen yer tutucu (skeleton) animasyonudur.
+ * Sayfa yapısındaki zıplamaları (layout shift) önlemek için sayfa düzenini taklit eder.
+ */
+
 import { FaHistory } from "react-icons/fa";
 import Skeleton from "@shared/components/ui/Skeleton";
 
@@ -18,7 +23,7 @@ export default function WatchHistorySkeleton() {
         </div>
       </div>
 
-      {/* --- LİSTE GRID SKELETON --- */}
+      {/* --- LİSTE SKELETON (4 adet kart) --- */}
       <div className="grid gap-6 md:grid-cols-1 lg:grid-cols-2">
         {[1, 2, 3, 4].map((i) => (
           <div

@@ -1,5 +1,10 @@
 "use client";
 
+/**
+ * Bu bileşen, tek bir abonelik paketinin fiyat ve özellik bilgilerini gösteren karttır.
+ * Kullanıcının mevcut durumuna göre (aktif abonelik, yükseltme, düşürme) kartın görünümü ve buton işlevi değişir.
+ */
+
 import { Check, X, Loader2, CheckCircle2, ArrowUpCircle } from "lucide-react";
 import { AbonelikPaketi } from "@/types";
 import { useState } from "react";
@@ -7,11 +12,11 @@ import toast from "react-hot-toast";
 import { useRouter } from "next/navigation"; // Yönlendirme için
 
 interface PricingCardProps {
-  plan: AbonelikPaketi;
-  isPopular?: boolean;
-  isCurrent?: boolean;
-  hasActiveSubscription?: boolean;
-  currentPlanPrice?: number; // YENİ: Mevcut plan fiyatı
+  plan: AbonelikPaketi; // Gösterilecek paket verisi
+  isPopular?: boolean; // "En Popüler" etiketi gösterilsin mi? (Sunucudan gelen bilgiye göre)
+  isCurrent?: boolean; // Kullanıcının şu anki aktif paketi mi?
+  hasActiveSubscription?: boolean; // Kullanıcının herhangi bir aktif aboneliği var mı?
+  currentPlanPrice?: number; // Kullanıcının mevcut paketinin fiyatı (Yükseltme/Düşürme kontrolü için)
 }
 
 export default function PricingCard({
@@ -24,27 +29,34 @@ export default function PricingCard({
   const [loading, setLoading] = useState(false);
   const router = useRouter();
 
+  // Yükseltme mi? (Aktif abonelik var, bu paket mevcut değil VE fiyatı mevcut paketten yüksek)
   const isUpgrade =
     hasActiveSubscription && !isCurrent && plan.fiyat > currentPlanPrice;
 
+  // Düşürme veya Aynı Fiyat mı? (Aktif abonelik var, bu paket mevcut değil VE fiyatı mevcut pakete eşit veya düşük)
   const isDowngradeOrSame =
     hasActiveSubscription && !isCurrent && plan.fiyat <= currentPlanPrice;
 
+  /**
+   * "Abone Ol" butonuna tıklandığında çalışır.
+   * Kullanıcıyı ödeme sayfasına yönlendirir.
+   */
   const handleSubscribe = async () => {
-    // Mevcut plan veya düşürme durumu ise işlem yapma
+    // Mevcut plan veya düşürme durumu ise işlem yapma (Buton zaten disabled olmalı ama güvenlik için)
     if (isCurrent || isDowngradeOrSame) return;
 
     setLoading(true);
 
+    // Ödeme sayfasına, seçilen planın ID'si ile yönlendir
     router.push(`/odeme?plan=${plan.id}`);
   };
 
-  // Kartın stil mantığı
+  // Kartın stil mantığı (Duruma göre renk ve gölge değişimi)
   const containerClasses = isCurrent
-    ? "border-green-500 bg-green-50 shadow-xl shadow-green-500/10 scale-105 z-20 ring-1 ring-green-500 dark:bg-green-500/5 dark:shadow-green-500/10"
+    ? "border-green-500 bg-green-50 shadow-xl shadow-green-500/10 scale-105 z-20 ring-1 ring-green-500 dark:bg-green-500/5 dark:shadow-green-500/10" // Mevcut Plan
     : isPopular
-      ? "border-yellow-500 bg-white shadow-xl shadow-yellow-500/20 md:scale-110 md:z-10 dark:bg-white/10 dark:shadow-yellow-500/10"
-      : "border-gray-200 bg-white hover:border-gray-300 dark:border-white/10 dark:bg-white/5 dark:hover:border-white/20";
+      ? "border-yellow-500 bg-white shadow-xl shadow-yellow-500/20 md:scale-110 md:z-10 dark:bg-white/10 dark:shadow-yellow-500/10" // Popüler
+      : "border-gray-200 bg-white hover:border-gray-300 dark:border-white/10 dark:bg-white/5 dark:hover:border-white/20"; // Standart
 
   return (
     <div

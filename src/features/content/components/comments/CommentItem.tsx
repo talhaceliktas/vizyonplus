@@ -1,3 +1,9 @@
+/**
+ * Bu bileşen, tek bir yorum satırını render eder.
+ * Kullanıcı avatarı, ismi, tarihi ve yorum metnini gösterir.
+ * Eğer yorum SPOILER içeriyorsa, başlangıçta gizlenir ve kullanıcı "Göster" diyerek açabilir.
+ */
+
 "use client";
 
 import { useState } from "react";
@@ -12,8 +18,9 @@ interface CommentItemProps {
 
 export default function CommentItem({
   yorum,
-  currentUserId,
+  // currentUserId, // Gelecekte kendi yorumunu silme/düzenleme için eklendi
 }: CommentItemProps) {
+  // Eğer spoiler varsa kapalı başla (!yorum.spoiler_mi -> spoiler ise false, yani kapalı)
   const [isRevealed, setIsRevealed] = useState(!yorum.spoiler_mi);
 
   const avatarUrl = yorum.profiller?.profil_fotografi || "/default-avatar.png";
@@ -21,6 +28,7 @@ export default function CommentItem({
 
   return (
     <div className="group flex gap-4">
+      {/* Avatar */}
       <div className="shrink-0">
         <div className="relative h-10 w-10 overflow-hidden rounded-full border border-gray-200 dark:border-white/10">
           <Image src={avatarUrl} alt={userName} fill className="object-cover" />
@@ -28,13 +36,14 @@ export default function CommentItem({
       </div>
 
       <div className="flex-1 space-y-1">
+        {/* Üst Bilgi: İsim, Tarih, Spoiler Etiketi */}
         <div className="flex items-center gap-2">
           <span className="text-sm font-bold text-gray-900 dark:text-gray-200">
             {userName}
           </span>
           <span className="text-xs text-gray-500">
             {formatDistanceToNow(new Date(yorum.olusturulma_zamani), {
-              addSuffix: true,
+              addSuffix: true, // "3 gün önce"
               locale: tr,
             })}
           </span>
@@ -54,10 +63,12 @@ export default function CommentItem({
           }`}
         >
           {isRevealed ? (
+            // Yorum açıkken
             <p className="wrap-break-words whitespace-pre-wrap">
               {yorum.yorum}
             </p>
           ) : (
+            // Spoiler kapalıyken gösterilen uyarı kutusu
             <div className="rounded-lg border border-red-200 bg-red-50 p-3 dark:border-red-500/20 dark:bg-red-900/10">
               <p className="mb-2 font-medium text-red-500 dark:text-red-400">
                 Bu yorum spoiler içermektedir.

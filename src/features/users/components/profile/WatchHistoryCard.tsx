@@ -1,30 +1,36 @@
+/**
+ * Bu bileşen, tek bir izleme geçmişi öğesini (Film veya Dizi Bölümü) gösteren karttır.
+ * İlerleme çubuğu (progress bar) ve "kaldığın yerden devam et" linki içerir.
+ */
+
 import Image from "next/image";
 import Link from "next/link";
-import { FaPlay, FaClock } from "react-icons/fa6"; // Lucide yerine React Icons (Tutarlılık için)
+import { FaPlay, FaClock } from "react-icons/fa6";
 import { formatDistanceToNow } from "date-fns";
 import { tr } from "date-fns/locale";
 
 interface WatchHistoryCardProps {
   item: {
     historyId: number;
-    updatedAt: string;
+    updatedAt: string; // Son izlenme zamanı
     watchedSeconds: number;
     totalSeconds: number;
-    percentage: number;
+    percentage: number; // İlerleme yüzdesi (%0-100)
     content: {
       id: number;
       isim: string;
       fotograf: string;
       slug: string;
     };
-    detail: string;
-    type: string;
+    detail: string; // Dizi için "S1.B1" gibi detay
+    type: string; // "film" veya "dizi"
   };
 }
 
 const WatchHistoryCard = ({ item }: WatchHistoryCardProps) => {
   const { content, percentage, detail, type, updatedAt } = item;
 
+  // Link oluşturma
   const href =
     type === "film"
       ? `/izle/film/${content.slug}`
@@ -51,6 +57,7 @@ const WatchHistoryCard = ({ item }: WatchHistoryCardProps) => {
       {/* Bilgi Alanı */}
       <div className="flex flex-1 flex-col justify-between py-1">
         <div>
+          {/* Başlık ve Tür Etiketi */}
           <div className="flex items-start justify-between gap-2">
             <h3 className="text-primary-50 group-hover:text-secondary-1 line-clamp-1 text-lg font-bold transition-colors">
               {content.isim}
@@ -67,11 +74,12 @@ const WatchHistoryCard = ({ item }: WatchHistoryCardProps) => {
             </p>
           )}
 
+          {/* Son İzlenme Zamanı */}
           <div className="text-primary-500 mt-2 flex items-center gap-2 text-xs">
             <FaClock className="h-3 w-3" />
             <span>
               {formatDistanceToNow(new Date(updatedAt), {
-                addSuffix: true,
+                addSuffix: true, // "önce" ekini ekler
                 locale: tr,
               })}{" "}
               izlendi
@@ -79,7 +87,7 @@ const WatchHistoryCard = ({ item }: WatchHistoryCardProps) => {
           </div>
         </div>
 
-        {/* Progress Bar */}
+        {/* İlerleme Çubuğu (Progress Bar) */}
         <div className="mt-3">
           <div className="mb-1.5 flex items-center justify-between text-xs">
             <span className="text-primary-400">Kalan Süre</span>
@@ -95,6 +103,7 @@ const WatchHistoryCard = ({ item }: WatchHistoryCardProps) => {
             />
           </div>
 
+          {/* Tüm karta tıklanabilir alan ekler */}
           <Link href={href} className="absolute inset-0 z-10" />
         </div>
       </div>

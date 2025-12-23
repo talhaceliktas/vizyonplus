@@ -1,3 +1,8 @@
+/**
+ * Bu bileşen, Profil Ayarları sayfasının yüklenme durumunda gösterilen iskelet (skeleton) yapısıdır.
+ * Form inputları ve kart yapısını taklit ederek kullanıcıya yükleniyor hissi verir.
+ */
+
 import React from "react";
 import Skeleton from "@shared/components/ui/Skeleton";
 

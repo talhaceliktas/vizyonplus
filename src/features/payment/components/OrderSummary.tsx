@@ -1,15 +1,22 @@
+/**
+ * Bu bileşen, ödeme sayfasında gösterilen sipariş özetidir.
+ * Seçilen paketin adını, fiyatını, KDV detaylarını ve ödenecek toplam tutarı gösterir.
+ * Yükseltme durumunda özel fiyat (`customPrice`) desteği sunar.
+ */
+
 import { Check } from "lucide-react";
 import { AbonelikPaketi } from "@/types";
 
 interface OrderSummaryProps {
-  plan: AbonelikPaketi;
-  customPrice?: number; // YENİ: Yükseltme durumunda ödenecek özel fiyat
+  plan: AbonelikPaketi; // Satın alınan paket
+  customPrice?: number; // Yükseltme durumunda hesaplanan özel fiyat (varsa)
 }
 
 export default function OrderSummary({ plan, customPrice }: OrderSummaryProps) {
-  // Eğer customPrice varsa onu kullan, yoksa normal fiyatı kullan
+  // Eğer özel bir fiyat belirtilmişse (upgrade farkı gibi) onu kullan, yoksa paketin normal fiyatını al
   const finalPrice = customPrice !== undefined ? customPrice : plan.fiyat;
 
+  // Vergi hesaplaması (Basit %20 KDV örneği)
   const kdv = finalPrice * 0.2;
   const araToplam = finalPrice - kdv;
 
@@ -19,7 +26,7 @@ export default function OrderSummary({ plan, customPrice }: OrderSummaryProps) {
         Sipariş Özeti
       </h3>
 
-      {/* Paket Detayı */}
+      {/* Paket Başlığı ve Fiyatı */}
       <div className="mb-6 flex items-center justify-between border-b border-white/10 pb-6">
         <div>
           <h4 className="text-xl font-bold text-yellow-500">
@@ -32,7 +39,7 @@ export default function OrderSummary({ plan, customPrice }: OrderSummaryProps) {
           </span>
         </div>
         <div className="flex flex-col items-end text-right">
-          {/* Eğer indirim/fark varsa eski fiyatı çiz */}
+          {/* Eğer özel fiyat varsa (indirim/upgrade), orijinal fiyatı çizili göster */}
           {customPrice !== undefined && (
             <span className="text-sm text-gray-500 line-through decoration-red-500 decoration-2">
               {plan.fiyat} ₺
@@ -44,7 +51,7 @@ export default function OrderSummary({ plan, customPrice }: OrderSummaryProps) {
         </div>
       </div>
 
-      {/* Özellikler */}
+      {/* Paket Özellikleri Listesi */}
       <ul className="mb-8 space-y-3">
         {plan.ozellikler
           .filter((f) => f.included)
@@ -61,7 +68,7 @@ export default function OrderSummary({ plan, customPrice }: OrderSummaryProps) {
           ))}
       </ul>
 
-      {/* Toplam */}
+      {/* Fiyat Detayları (Ara Toplam, KDV, Genel Toplam) */}
       <div className="space-y-3">
         <div className="flex justify-between text-sm text-gray-500">
           <span>Ara Toplam</span>

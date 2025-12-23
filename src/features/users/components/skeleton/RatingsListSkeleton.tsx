@@ -1,3 +1,8 @@
+/**
+ * Bu bileşen, Puanlamalar sayfasının yüklenme durumunu gösterir.
+ * Liste elemanlarını (RatedContentCard) taklit eder.
+ */
+
 import Skeleton from "@shared/components/ui/Skeleton";
 
 export default function RatingsListSkeleton() {

@@ -1,3 +1,8 @@
+/**
+ * Bu bileşen, başarılı bir kayıt işleminden sonra gösterilen onay ekranıdır.
+ * Kullanıcıya e-posta doğrulama linkinin gönderildiğini bildirir.
+ */
+
 import Image from "next/image";
 import Link from "next/link";
 
@@ -5,12 +10,12 @@ const RegisterSuccess = ({ gonderilenEmail }: { gonderilenEmail: string }) => {
   return (
     <div className="border-primary-800/50 bg-primary-700/70 text-primary-50 animate-in fade-in zoom-in flex flex-col items-center gap-y-14 rounded-2xl border p-8 shadow-2xl backdrop-blur-sm duration-500">
       <div className="relative aspect-4/1 h-16">
-        {/* Logo yolunu public klasörüne göre ayarladığından emin ol */}
         <Image
           src="/logo.png"
           alt="Vizyon Plus logosu"
           fill
           className="object-contain"
+          priority
         />
       </div>
       <div className="flex flex-col gap-y-1 text-center">

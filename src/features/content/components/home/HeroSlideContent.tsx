@@ -1,3 +1,8 @@
+/**
+ * Bu bileşen, Ana Sayfa slider'ındaki metin ve butonları içerir.
+ * Başlık, kategori, süre, açıklama ve "Filme Git" butonunu gösterir.
+ */
+
 "use client";
 
 import Link from "next/link";

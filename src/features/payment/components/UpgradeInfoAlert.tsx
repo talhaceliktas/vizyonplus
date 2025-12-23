@@ -1,8 +1,13 @@
+/**
+ * Kullanıcı paketini yükseltiyorsa gösterilen bilgilendirme uyarısı.
+ * Hangi paketten hangi pakete geçildiğini açıkça belirtir.
+ */
+
 import { ArrowUpCircle } from "lucide-react";
 
 interface Props {
-  currentPlanName: string;
-  newPlanName: string;
+  currentPlanName: string; // Eski paket adı
+  newPlanName: string; // Yeni paket adı
 }
 
 export default function UpgradeInfoAlert({

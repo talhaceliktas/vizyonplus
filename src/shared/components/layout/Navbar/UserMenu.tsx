@@ -4,33 +4,40 @@ import { useEffect, useState, useRef } from "react";
 import Image from "next/image";
 import { FaUserCircle } from "react-icons/fa";
 import { User } from "@supabase/supabase-js";
-import supabaseBrowserClient from "@/lib/supabase/client"; // Path'i kontrol et
+import supabaseBrowserClient from "@/lib/supabase/client";
 import ProfileDropdown from "./ProfileDropdown";
 import useClickOutside from "@hooks/useClickOutside";
+
+// BU DOSYA NE İŞE YARAR?
+// Kullanıcı profil menüsü (Avatar).
+// Giriş yapmışsa avatarını gösterir, tıklayınca menü açar.
+// Profil fotoğrafı değişirse CANLI olarak güncellenir (Realtime).
 
 export const UserMenu = () => {
   const [user, setUser] = useState<User | null>(null);
   const [profilFoto, setProfilFoto] = useState<string | null>(null);
 
+  // Menünün açık/kapalı durumunu yöneten hook için referans
   const dropdownRef = useRef<HTMLDivElement>(null);
-
-  // Hook'u çağırıyoruz
   const { isOpen, setIsOpen } = useClickOutside(dropdownRef);
 
-  // 1. Auth Dinleme
+  // 1. AUTH DURUMUNU DİNLE
+  // Kullanıcı giriş/çıkış yaptığında otomatik tetiklenir.
   useEffect(() => {
     const {
       data: { subscription },
     } = supabaseBrowserClient.auth.onAuthStateChange((_event, session) => {
       setUser(session?.user ?? null);
-      if (!session?.user) setIsOpen(false);
+      if (!session?.user) setIsOpen(false); // Çıkış yapınca menüyü kapat
     });
     return () => subscription.unsubscribe();
   }, [setIsOpen]);
 
-  // 2. Profil Fotoğrafı (Aynı kalıyor...)
+  // 2. PROFİL FOTOĞRAFINI ÇEK VE DİNLE
   useEffect(() => {
     if (!user) return;
+
+    // İlk yüklemede fotoğrafı getir
     const fetchProfilePhoto = async () => {
       const { data } = await supabaseBrowserClient
         .from("profiller")
@@ -38,10 +45,14 @@ export const UserMenu = () => {
         .eq("id", user.id)
         .single();
       if (data?.profil_fotografi) {
+        // Cache busting için ?t=... ekliyoruz (Tarayıcı önbelleğini atlatmak için)
         setProfilFoto(`${data.profil_fotografi}?t=${Date.now()}`);
       }
     };
     fetchProfilePhoto();
+
+    // REALTIME SUBSCRIPTION (Canlı Takip)
+    // "profiller" tablosunda bu kullanıcının satırı değişirse (UPDATE) tetiklenir.
     const channel = supabaseBrowserClient
       .channel("navbar-profile-changes")
       .on(
@@ -50,21 +61,23 @@ export const UserMenu = () => {
           event: "UPDATE",
           schema: "public",
           table: "profiller",
-          filter: `id=eq.${user.id}`,
+          filter: `id=eq.${user.id}`, // Sadece benim ID'm değişirse haber ver
         },
         (payload) => {
+          // Yeni fotoğrafı state'e at
           setProfilFoto(`${payload.new.profil_fotografi}?t=${Date.now()}`);
         },
       )
       .subscribe();
+
+    // Cleanup: Bileşen ölürken kanalı kapat
     return () => {
       supabaseBrowserClient.removeChannel(channel);
     };
   }, [user]);
 
   return (
-    // Ref'i buraya veriyoruz. Burası "İçerisi" sayılır.
-    // Bunun dışına tıklanırsa kapanacak.
+    // useClickOutside hook'u bu div'in dışına tıklanıp tıklanmadığını izler.
     <div className="relative" ref={dropdownRef}>
       <button
         onClick={() => setIsOpen(!isOpen)}
@@ -79,6 +92,7 @@ export const UserMenu = () => {
               height={40}
               className="rounded-full object-cover"
             />
+            {/* Mobilde gizle, desktopta göster */}
             <p className="text-primary-200 hidden font-semibold sm:block dark:text-white">
               {user.user_metadata.display_name}
             </p>
@@ -92,7 +106,6 @@ export const UserMenu = () => {
         <ProfileDropdown
           user={user}
           avatarUrl={profilFoto}
-          // 🔥 DÜZELTİLEN KISIM BURASI:
           onClose={() => setIsOpen(false)}
         />
       )}

@@ -1,6 +1,14 @@
+/**
+ * Bu dosya, kullanıcıyla ilgili verileri (profil, favoriler, izleme geçmişi vb.)
+ * veritabanından çekmek için kullanılan servis fonksiyonlarını içerir.
+ */
+
 import supabaseServer from "@lib/supabase/server";
 import { Table } from "@/types";
 
+/**
+ * Belirli bir kullanıcının profil detaylarını çeker.
+ */
 export async function getUserProfile(userId: string) {
   const supabase = await supabaseServer();
 
@@ -18,6 +26,9 @@ export async function getUserProfile(userId: string) {
   return data;
 }
 
+/**
+ * Mevcut kullanıcının favori listesini (filmler ve diziler) getirir.
+ */
 export async function getFavorites() {
   const supabase = await supabaseServer();
 
@@ -52,6 +63,9 @@ export async function getFavorites() {
   return data;
 }
 
+/**
+ * Mevcut kullanıcının "Daha Sonra İzle" listesini getirir.
+ */
 export async function getWatchList() {
   const supabase = await supabaseServer();
 
@@ -86,6 +100,10 @@ export async function getWatchList() {
   return data;
 }
 
+/**
+ * Mevcut kullanıcının izleme geçmişini getirir ve formatlar.
+ * Film ve Dizi bölümlerini ayırt ederek, en son izlenenleri (deduplication yaparak) listeler.
+ */
 export async function getWatchHistory() {
   const supabase = await supabaseServer();
   const {
@@ -94,6 +112,7 @@ export async function getWatchHistory() {
 
   if (!user) return [];
 
+  // Karmaşık sorgu: Hem filmleri hem de dizi bölümlerini ilişkili tablolarla çek
   const { data, error } = await supabase
     .from("izleme_gecmisi")
     .select(
@@ -123,6 +142,7 @@ export async function getWatchHistory() {
     return [];
   }
 
+  // Frontend'de göstermek için veriyi temizle ve tekilleştir
   const islenenIcerikler = new Set();
   const temizListe = [];
 
@@ -131,6 +151,7 @@ export async function getWatchHistory() {
     let icerikBilgisi: Table<"icerikler"> | null = null;
     let detay = "";
 
+    // A. FİLM İSE
     if (kayit.film_id && kayit.icerikler) {
       const filmData = Array.isArray(kayit.icerikler)
         ? kayit.icerikler[0]
@@ -138,7 +159,9 @@ export async function getWatchHistory() {
 
       uniqueId = `film-${filmData.id}`;
       icerikBilgisi = filmData as Table<"icerikler">;
-    } else if (kayit.bolum_id && kayit.bolumler) {
+    }
+    // B. DİZİ BÖLÜMÜ İSE
+    else if (kayit.bolum_id && kayit.bolumler) {
       const bolumData = Array.isArray(kayit.bolumler)
         ? kayit.bolumler[0]
         : kayit.bolumler;
@@ -152,10 +175,11 @@ export async function getWatchHistory() {
 
         uniqueId = `dizi-${diziAnaBilgisi.id}`;
         icerikBilgisi = diziAnaBilgisi;
-        detay = `S${bolumData.sezon_numarasi}.B${bolumData.bolum_numarasi}`;
+        detay = `S${bolumData.sezon_numarasi}.B${bolumData.bolum_numarasi}`; // Örn: S1.B1
       }
     }
 
+    // Listede daha önce eklenmemişse ekle (Tekilleştirme)
     if (uniqueId && icerikBilgisi && !islenenIcerikler.has(uniqueId)) {
       islenenIcerikler.add(uniqueId);
 
@@ -164,7 +188,7 @@ export async function getWatchHistory() {
         updatedAt: kayit.updated_at,
         watchedSeconds: kayit.kalinan_saniye,
         totalSeconds: kayit.toplam_saniye,
-        percentage: (kayit.kalinan_saniye / (kayit.toplam_saniye || 1)) * 100,
+        percentage: (kayit.kalinan_saniye / (kayit.toplam_saniye || 1)) * 100, // İlerleme yüzdesi
         content: icerikBilgisi,
         detail: detay,
         type: kayit.film_id ? "film" : "dizi",
@@ -175,6 +199,9 @@ export async function getWatchHistory() {
   return temizListe;
 }
 
+/**
+ * Kullanıcının puanladığı içerikleri getirir (Oylamalarım).
+ */
 export async function getUserRatings() {
   const supabase = await supabaseServer();
   const {
@@ -210,7 +237,7 @@ export async function getUserRatings() {
   }
 
   // Veriyi düzgün bir formata çevirip dönelim
-  // null gelen içerikleri filtreleyelim
+  // (Silinmiş içerikler null gelebilir, bunları filtreliyoruz)
   return data
     .filter((item) => item.icerik !== null)
     .map((item) => ({

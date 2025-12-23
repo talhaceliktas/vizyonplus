@@ -10,7 +10,13 @@ import toast from "react-hot-toast";
 import { registerAction } from "@auth/actions/auth-actions";
 import { FormInput } from "@shared/components/ui/FormInput";
 
+// BU DOSYA NE İŞE YARAR?
+// Kullanıcı kayıt formunu yöneten Client Component.
+// Şifre eşleşme kontrolü ve kayıt işlemi burada yapılır.
+
 type KayitOlProps = {
+  // State Set Fonksiyonlarının Tipleri
+  // Üst bileşenden (page.tsx veya Wrapper) gelen fonksiyonlar.
   setGonderilenEmail: React.Dispatch<React.SetStateAction<string>>;
   setKayitTamamlandi: React.Dispatch<React.SetStateAction<boolean>>;
 };
@@ -26,20 +32,26 @@ const RegisterForm = ({
   setGonderilenEmail,
   setKayitTamamlandi,
 }: KayitOlProps) => {
+  // useForm Hook
   const {
     register,
     handleSubmit,
+    // isSubmitting: Form gönderilirken otomatik true olur, bitince false.
+    // Loading state için ekstra useState kullanmaya gerek kalmaz.
     formState: { errors, isSubmitting },
-    getValues,
+    getValues, // Anlık form değerlerini okumak için (Şifre tekrarı kontrolü)
   } = useForm<KayitFormu>();
 
   async function onSubmit(data: KayitFormu) {
     const { isim, email, parola1 } = data;
+
+    // Server Action Çağrısı
     const veri = await registerAction(isim, email, parola1);
 
     if (veri?.durum === "basarisiz") {
       toast.error(veri.message);
     } else {
+      // Başarılı olursa üst bileşenin state'ini güncelle
       setGonderilenEmail(veri?.message ?? "");
       setKayitTamamlandi(true);
       toast.success("Kayıt işlemi başarılı!");
@@ -99,6 +111,7 @@ const RegisterForm = ({
             error={errors.parola2?.message}
             registration={register("parola2", {
               required: "Doğrulama gereklidir",
+              // Şifre tekrar kontrolü
               validate: (val) =>
                 val === getValues("parola1") || "Şifreler eşleşmiyor",
             })}

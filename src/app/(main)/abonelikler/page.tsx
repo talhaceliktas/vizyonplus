@@ -1,6 +1,12 @@
+/**
+ * Bu sayfa, kullanıcıların ABONELİK PAKETLERİNİ incelediği ve satın aldığı sayfadır (`/abonelikler`).
+ * Eğer kullanıcı zaten abone ise, mevcut abonelik bilgisini gösterir.
+ * Değilse, tüm paketleri karşılaştırmalı olarak listeler.
+ */
+
 import { Suspense } from "react";
 import Link from "next/link";
-import { Settings, CheckCircle } from "lucide-react"; // İkonlar
+import { Settings, CheckCircle } from "lucide-react";
 import supabaseServer from "@/lib/supabase/server";
 import LoadingSpinner from "@shared/components/ui/LoadingSpinner";
 
@@ -18,9 +24,10 @@ export default async function SubscriptionsPage() {
     data: { user },
   } = await supabase.auth.getUser();
 
+  // Paralel Veri Çekme (Daha hızlı yükleme için)
   const [plans, subscription] = await Promise.all([
-    getSubscriptionPlans(),
-    user ? getCurrentUserSubscription(user.id) : Promise.resolve(null),
+    getSubscriptionPlans(), // Tüm planları çek
+    user ? getCurrentUserSubscription(user.id) : Promise.resolve(null), // Kullanıcı varsa aboneliğini çek
   ]);
 
   const currentPlanId = subscription?.paket?.id;
@@ -38,7 +45,7 @@ export default async function SubscriptionsPage() {
           </p>
         </div>
 
-        {/* --- ABONELİK YÖNETİM BİLGİSİ (Varsa Göster) --- */}
+        {/* --- MEVCUT ABONELİK BİLGİSİ (Varsa Göster) --- */}
         {subscription && (
           <div className="animate-in fade-in slide-in-from-bottom-4 mx-auto mb-16 max-w-3xl">
             <div className="flex flex-col items-center justify-between gap-4 rounded-2xl border border-green-500/20 bg-green-500/10 p-6 backdrop-blur-sm md:flex-row md:px-8">
@@ -56,8 +63,9 @@ export default async function SubscriptionsPage() {
                 </div>
               </div>
 
+              {/* Yönetim Butonu */}
               <Link
-                href="/profil/abonelikler" // Profil altındaki abonelik sayfasına yönlendir
+                href="/profil/abonelikler"
                 className="group flex items-center gap-2 rounded-xl bg-green-500 px-6 py-3 font-bold text-black transition-all hover:bg-green-400 hover:shadow-lg hover:shadow-green-500/20 active:scale-95"
               >
                 <Settings size={18} />
@@ -67,10 +75,12 @@ export default async function SubscriptionsPage() {
           </div>
         )}
 
+        {/* --- PAKET LİSTESİ --- */}
         <Suspense fallback={<LoadingSpinner />}>
           <PricingGrid plans={plans} currentPlanId={currentPlanId} />
         </Suspense>
 
+        {/* Alt Bilgi */}
         <div className="text-primary-500 mt-16 text-center text-sm dark:text-gray-500">
           <p>
             * HD ve Ultra HD kullanılabilirliği internet hizmetinize ve cihaz

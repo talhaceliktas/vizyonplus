@@ -1,3 +1,9 @@
+/**
+ * Bu bileşen, Ana Sayfa slider'ının sağ alt köşesindeki KÜÇÜK ÖNİZLEME (Thumbnail) listesidir.
+ * Swiper'ın `thumbs` modülü ile ana slider'ı kontrol eder.
+ * Kullanıcı buradan bir resme tıklayınca ana slider o içeriğe geçer.
+ */
+
 "use client";
 
 import Image from "next/image";

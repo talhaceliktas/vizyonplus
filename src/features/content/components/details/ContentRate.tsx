@@ -1,3 +1,9 @@
+/**
+ * Bu bileşen, kullanıcıların içeriği 1-10 arasında puanlamasını sağlar.
+ * Ayrıca içeriğin genel ortalamasını ve toplam oy sayısını gösterir.
+ * Optimistic UI (iyimser arayüz) pattern'i kullanarak anlık tepki verir.
+ */
+
 "use client";
 
 import { useState } from "react";
@@ -7,7 +13,7 @@ import { rateContent } from "../../actions/content-actions";
 
 interface ContentRateProps {
   contentId: number;
-  userRating: number | null;
+  userRating: number | null; // Kullanıcının önceki puanı
   averageRating?: {
     average: number;
     count: number;
@@ -19,22 +25,19 @@ export default function ContentRate({
   userRating,
   averageRating,
 }: ContentRateProps) {
-  const [hoverRating, setHoverRating] = useState(0);
-  // Başlangıç değerimiz
-  const [selectedRating, setSelectedRating] = useState(userRating || 0);
+  const [hoverRating, setHoverRating] = useState(0); // Mouse ile üzerinde gezilen puan
+  const [selectedRating, setSelectedRating] = useState(userRating || 0); // Seçili (kalıcı) puan
 
   const handleRate = async (rating: number) => {
-    // 1. Snapshot: Mevcut değeri hafızaya al (Hata olursa buraya döneceğiz)
+    // 1. Snapshot: Mevcut değeri sakla (Rollback için)
     const previousRating = selectedRating;
 
-    // 2. Optimistic Update: UI'ı anında güncelle (Loading falan yok!)
+    // 2. Optimistic Update: UI'ı beklemeden güncelle
     setSelectedRating(rating);
-
-    // Küçük bir UX dokunuşu: Hover'ı sıfırla ki kullanıcı tıkladığını net görsün
-    setHoverRating(0);
+    setHoverRating(0); // Hover efektini kaldır
 
     try {
-      // 3. İsteği arkadan gönder
+      // 3. Server Action çağrısı
       toast.success("Puanın kaydedildi", { id: "rate-success" });
       const res = await rateContent(contentId, rating);
 
@@ -42,6 +45,7 @@ export default function ContentRate({
         throw new Error(res.error);
       }
     } catch (error: any) {
+      // 4. Hata durumunda Rollback yap
       setSelectedRating(previousRating);
       toast.error(error.message || "Puanlama başarısız oldu");
     }
@@ -49,7 +53,7 @@ export default function ContentRate({
 
   return (
     <div className="flex flex-col gap-4 rounded-xl border border-gray-200 bg-gray-50 p-5 transition-colors dark:border-white/10 dark:bg-white/5 dark:backdrop-blur-sm dark:hover:bg-white/10">
-      {/* GENEL ORTALAMA KISMI (Değişiklik yok) */}
+      {/* --- GENEL ORTALAMA ALANI --- */}
       {averageRating && (
         <div className="flex items-center justify-between border-b border-gray-200 pb-4 dark:border-white/10">
           <div>
@@ -85,7 +89,7 @@ export default function ContentRate({
         </div>
       )}
 
-      {/* KULLANICI PUANLAMASI */}
+      {/* --- KULLANICI PUANLAMA ALANI --- */}
       <div className="flex flex-col gap-2">
         <div className="flex items-center justify-between">
           <span className="text-sm font-bold text-gray-700 dark:text-gray-300">
@@ -105,21 +109,20 @@ export default function ContentRate({
           </span>
         </div>
 
-        {/* YILDIZLAR */}
+        {/* Yıldız Etkileşimi */}
         <div
           className="flex items-center justify-between gap-1"
           onMouseLeave={() => setHoverRating(0)}
         >
           {[...Array(10)].map((_, i) => {
             const ratingValue = i + 1;
-            // Mantık: Hover varsa onu göster, yoksa seçili olanı göster
+            // Puan, hover veya seçili değerden büyük/eşitse dolu göster
             const isFilled = ratingValue <= (hoverRating || selectedRating);
 
             return (
               <button
                 key={i}
                 type="button"
-                // disabled={loading} KALDIRDIK -> Kullanıcıyı engellemek yok
                 className="group cursor-pointer focus:outline-none"
                 onMouseEnter={() => setHoverRating(ratingValue)}
                 onClick={() => handleRate(ratingValue)}
@@ -127,8 +130,8 @@ export default function ContentRate({
                 <Star
                   className={`h-4 w-4 transition-all duration-200 sm:h-5 sm:w-5 ${
                     isFilled
-                      ? "scale-110 fill-yellow-500 text-yellow-500 drop-shadow-[0_0_8px_rgba(234,179,8,0.4)]" // Biraz parlasın
-                      : "scale-100 fill-transparent text-gray-300 group-hover:text-yellow-500/50 dark:text-gray-600" // Hoverda hafif sararsın
+                      ? "scale-110 fill-yellow-500 text-yellow-500 drop-shadow-[0_0_8px_rgba(234,179,8,0.4)]"
+                      : "scale-100 fill-transparent text-gray-300 group-hover:text-yellow-500/50 dark:text-gray-600"
                   }`}
                 />
               </button>

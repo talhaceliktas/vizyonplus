@@ -1,3 +1,9 @@
+/**
+ * Bu sayfa, kullanıcının PROFIL AYARLARI'nı görüntülediği ana sayfadır (`/profil`).
+ * İçerik Sunucu Bileşeni olan `ProfileSettings` üzerinden yüklenir.
+ * Yükleme esnasında `ProfileSettingsSkeleton` gösterilir.
+ */
+
 import { Suspense } from "react";
 import ProfileSettings from "@/features/users/components/profile/ProfileSettings";
 import ProfileSettingsSkeleton from "../../../features/users/components/skeleton/ProfileSettingsSkeleton";

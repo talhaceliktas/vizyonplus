@@ -1,3 +1,8 @@
+/**
+ * Bu bileşen, dizilerde belirli bir bölüme ait yorumları gösteren kenar çubuğudur.
+ * `EpisodeCommentsSection` bileşenini sarar ve başlık/tasarım ekler.
+ */
+
 import EpisodeCommentsSection from "@content/components/comments/EpisodeCommentsSection";
 
 interface Props {

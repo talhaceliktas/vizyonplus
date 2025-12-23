@@ -1,3 +1,7 @@
+/**
+ * Site ayarlarının tip tanımı.
+ * Veritabanındaki `ayarlar` tablosuyla uyumludur.
+ */
 export interface SiteSettings {
   duyuru_aktif: boolean;
   duyuru_metni: string;

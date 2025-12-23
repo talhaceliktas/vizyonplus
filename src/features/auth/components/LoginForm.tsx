@@ -15,35 +15,56 @@ import { IoMdMail } from "react-icons/io";
 import { loginAction } from "@/features/auth/actions/auth-actions";
 import { FormInput } from "@shared/components/ui/FormInput";
 
+// BU DOSYA NE İŞE YARAR?
+// Kullanıcı giriş formunu yöneten Client Component'tir.
+// Form validasyonu, hata gösterimi ve sunucu ile iletişim (Server Action) burada yapılır.
+
+// Neden "use client"?
+// Bu bileşen kullanıcının tarayıcısında çalışır (interaktiflik, useState, onClick vb. içerir).
+// Bu yüzden "use client" direktifi zorunludur.
+
 export interface LoginFormInputs {
   email: string;
   sifre: string;
 }
 
 const LoginForm = () => {
+  // HOOK KULLANIMLARI
+  // useRouter: Sayfa yönlendirmesi yapmak için (Giriş başarılıysa profil sayfasına git).
   const router = useRouter();
+
+  // useState: Yükleniyor durumunu tutmak için. (Butonu disable etmek vs.)
   const [isLoading, setIsLoading] = useState(false);
 
+  // useForm: React Hook Form kütüphanesi.
+  // Form işlemlerini (state yönetimi, validasyon, hata takibi) çok kolaylaştırır.
   const {
-    register,
-    handleSubmit,
-    formState: { errors },
+    register, // Inputları forma kaydetmek için
+    handleSubmit, // Form gönderildiğinde çalışacak fonksiyonu sarmalar
+    formState: { errors }, // Hata mesajlarını tutan obje
   } = useForm<LoginFormInputs>();
 
+  // FORM GÖNDERME FONKSİYONU
   const onSubmit = async (data: LoginFormInputs) => {
     setIsLoading(true);
 
     try {
+      // SERVER ACTION ÇAĞRISI
+      // Sunucu tarafındaki (src/features/auth/actions/auth-actions.ts) fonksiyonu çağırır.
+      // E-posta ve şifreyi sunucuya gönderir.
       const result = await loginAction(data);
 
       if (!result.success) {
+        // HATA DURUMU
         toast.error(result.error ?? "Giriş başarısız.");
         setIsLoading(false);
       } else {
+        // BAŞARILI DURUM
         toast.success("Giriş başarılı! Yönlendiriliyorsunuz...");
 
+        // Yönlendirme (biraz bekleyip efektin görülmesini sağlıyoruz)
         setTimeout(() => {
-          window.location.href = "/profil";
+          window.location.href = "/profil"; // window.location full refresh yapar, bazen auth cookie'lerin oturması için daha garantidir.
         }, 1000);
       }
     } catch (error) {
@@ -75,6 +96,8 @@ const LoginForm = () => {
             placeholder="E-posta Adresi"
             icon={IoMdMail}
             error={errors.email?.message}
+            // REGISTER FONKSİYONU
+            // Inputu hook form'a tanıtır ve validasyon kurallarını belirler.
             registration={register("email", {
               required: "E-posta adresi gereklidir",
               pattern: {

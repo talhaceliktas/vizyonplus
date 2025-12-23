@@ -1,14 +1,20 @@
+/**
+ * Bu bileşen, DİZİ BÖLÜMLERİ için yorum yazma formudur.
+ * `CommentForm` ile benzerdir ancak specifically `postEpisodeComment` action'ını kullanır.
+ * Emoji seçici ve spoiler toggle içerir.
+ */
+
 "use client";
 
 import { useRef, useState } from "react";
 import dynamic from "next/dynamic";
-import { usePathname } from "next/navigation"; // Path'i almak için
+import { usePathname } from "next/navigation";
 import { RiEmojiStickerLine, RiSendPlaneFill } from "react-icons/ri";
 import { IoEyeOffOutline, IoEyeOutline } from "react-icons/io5";
 import { Loader2 } from "lucide-react";
 import toast from "react-hot-toast";
 import useClickOutside from "@hooks/useClickOutside";
-import { postEpisodeComment } from "@/features/content/actions/content-actions"; // Yeni action
+import { postEpisodeComment } from "@/features/content/actions/content-actions";
 
 const EmojiPicker = dynamic(() => import("emoji-picker-react"), { ssr: false });
 
@@ -21,7 +27,7 @@ export default function EpisodeCommentForm({ episodeId }: Props) {
   const [isSpoiler, setIsSpoiler] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  const pathname = usePathname(); // Mevcut sayfa yolu (/izle/dizi/...)
+  const pathname = usePathname(); // Revalidate için mevcut path gerekli
   const emojiPickerRef = useRef<HTMLDivElement>(null);
   const { isOpen, setIsOpen } = useClickOutside(emojiPickerRef);
 
@@ -33,7 +39,7 @@ export default function EpisodeCommentForm({ episodeId }: Props) {
     if (comment.trim().length <= 3) return;
 
     setLoading(true);
-    // Bölüm ID ve mevcut path'i gönderiyoruz
+    // Action çağrısı: Bölüm yorumu ekle
     const result = await postEpisodeComment(
       episodeId,
       comment,

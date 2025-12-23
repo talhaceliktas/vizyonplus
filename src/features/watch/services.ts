@@ -9,6 +9,7 @@ export async function getEpisodeBySlug(
   const supabase = await supabaseServer();
 
   // 1. Önce Slug'dan İçerik ID'sini ve detaylarını bulalım
+  // Bu işlem diziye ait genel bilgiyi (Adı, Resmi vb.) verir.
   const { data: content, error: contentError } = await supabase
     .from("icerikler")
     .select("id, isim, yan_fotograf")
@@ -17,7 +18,7 @@ export async function getEpisodeBySlug(
 
   if (contentError || !content) return null;
 
-  // 2. Şimdi bu ID'yi kullanarak bölümü çekelim
+  // 2. Şimdi bu ID'yi kullanarak spesifik BÖLÜMÜ çekelim
   const { data: episode, error: episodeError } = await supabase
     .from("bolumler")
     .select("*")
@@ -29,13 +30,18 @@ export async function getEpisodeBySlug(
   if (episodeError || !episode) return null;
 
   // 3. Navigasyon Kontrolü (Önceki/Sonraki var mı?)
+  // İzleyiciye "Sonraki Bölüm" butonunu gösterip göstermeyeceğimize karar vermek için
+  // bir önceki ve bir sonraki bölümün varlığını kontrol ediyoruz.
   const [prevCheck, nextCheck] = await Promise.all([
+    // Önceki bölüm var mı? (bolum_numarasi - 1)
     supabase
       .from("bolumler")
       .select("id")
       .eq("icerik_id", content.id)
       .match({ sezon_numarasi: sezonNo, bolum_numarasi: bolumNo - 1 })
       .single(),
+
+    // Sonraki bölüm var mı? (bolum_numarasi + 1)
     supabase
       .from("bolumler")
       .select("id")
@@ -53,6 +59,7 @@ export async function getEpisodeBySlug(
 }
 
 // İzleme süresini getir
+// Kullanıcı bu videoyu daha önce neresinde bırakmış?
 export async function getEpisodeWatchTime(userId: string, episodeId: number) {
   const supabase = await supabaseServer();
   const { data } = await supabase

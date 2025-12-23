@@ -1,3 +1,9 @@
+/**
+ * Bu bileşen, Kayıt Ol sayfasının ana kapsayıcısıdır.
+ * Arka plan görselini ve overlay katmanlarını yönetir.
+ * Kayıt durumuna göre `RegisterForm` veya `RegisterSuccess` bileşenini gösterir.
+ */
+
 "use client";
 
 import { useState } from "react";
@@ -15,15 +21,17 @@ export default function RegisterPageWrapper() {
         openSans?.className || ""
       }`}
     >
+      {/* Arka Plan Görseli */}
       <div
         className="absolute inset-0 h-full w-full bg-cover bg-center bg-no-repeat"
         style={{ backgroundImage: "url('/auth-movies-background.jpg')" }}
       ></div>
 
+      {/* Karartma Katmanı (Backdrop) */}
       <div className="absolute inset-0 bg-black/70 backdrop-blur-[2px]"></div>
-
       <div className="absolute inset-0 bg-linear-to-t from-black via-transparent to-black/80 opacity-90"></div>
 
+      {/* İçerik Alanı */}
       <div className="relative z-10 w-full max-w-md px-4">
         {kayitTamamlandi ? (
           <RegisterSuccess gonderilenEmail={gonderilenEmail} />

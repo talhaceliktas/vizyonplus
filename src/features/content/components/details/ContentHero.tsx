@@ -1,20 +1,25 @@
+/**
+ * Bu bileşen, içerik detay sayfasının en üstünde yer alan kahraman (hero) bölümüdür.
+ * İçeriğin posterini, başlığını, meta verilerini (yıl, süre, tür), açıklamasını ve künye (yönetmen vb.) bilgilerini gösterir.
+ */
+
 import Image from "next/image";
-import { Calendar, Clock, Clapperboard } from "lucide-react"; // İkonlar
-import { Table } from "@/types"; // Tip yolunu kontrol et
+import { Calendar, Clock, Clapperboard } from "lucide-react";
+import { Table } from "@/types";
 
 interface ContentHeroProps {
   content: Table<"icerikler">;
 }
 
 export default function ContentHero({ content }: ContentHeroProps) {
-  // Yıl bilgisi
+  // Tarih string'inden yılı çek
   const releaseYear = new Date(content.yayinlanma_tarihi).getFullYear();
 
   return (
     <div className="flex flex-col gap-x-10 gap-y-10 md:flex-row">
-      {/* --- SOL: POSTER --- */}
+      {/* --- SOL: POSTER ALANI --- */}
       <div className="group relative aspect-9/16 w-full max-w-[350px] shrink-0 overflow-hidden rounded-2xl shadow-2xl transition-transform duration-500 hover:scale-[1.01] md:max-w-[400px]">
-        {/* Gölge Efekti */}
+        {/* Gölge Efekti (Overlay) */}
         <div className="absolute inset-0 z-10 bg-linear-to-t from-black/60 via-transparent to-transparent opacity-60" />
 
         <Image
@@ -23,11 +28,11 @@ export default function ContentHero({ content }: ContentHeroProps) {
           className="object-cover"
           fill
           priority
-          sizes="(max-width: 768px) 100vw, 400px"
+          sizes="(max-width: 768px) 100vw, 400px" // Responsive image optimization
         />
       </div>
 
-      {/* --- SAĞ: BİLGİLER --- */}
+      {/* --- SAĞ: BİLGİLER ALANI --- */}
       <div className="flex w-full flex-col justify-center gap-y-6">
         <div>
           {/* Başlık */}
@@ -35,7 +40,7 @@ export default function ContentHero({ content }: ContentHeroProps) {
             {content.isim}
           </h1>
 
-          {/* Meta Veriler (Yıl, Süre, Tür) */}
+          {/* Meta Veriler (Yıl, Süre, Tür Rozeti) */}
           <div className="mt-4 flex flex-wrap items-center gap-3 text-sm font-medium text-gray-600 sm:text-base dark:text-gray-300">
             {/* İçerik Türü Rozeti (FİLM / DİZİ) */}
             <span className="flex items-center gap-1.5 rounded bg-gray-200 px-2 py-0.5 text-xs font-bold tracking-wider text-gray-800 uppercase dark:bg-white/20 dark:text-white">
@@ -43,7 +48,7 @@ export default function ContentHero({ content }: ContentHeroProps) {
               {content.tur}
             </span>
 
-            {/* Ayıraç */}
+            {/* Ayıraç (Nokta) */}
             <span className="hidden text-gray-300 sm:inline dark:text-gray-600">
               •
             </span>
@@ -54,7 +59,7 @@ export default function ContentHero({ content }: ContentHeroProps) {
               <span>{releaseYear}</span>
             </div>
 
-            {/* Süre */}
+            {/* Süre (Eğer varsa) */}
             {content.sure && (
               <>
                 <span className="hidden text-gray-300 sm:inline dark:text-gray-600">
@@ -68,7 +73,7 @@ export default function ContentHero({ content }: ContentHeroProps) {
             )}
           </div>
 
-          {/* TÜRLER (GENRES) */}
+          {/* TÜRLER LISTESI (Etiketler) */}
           {content.turler && content.turler.length > 0 && (
             <div className="mt-4 flex flex-wrap gap-2">
               {content.turler.map((tur: string, index: number) => (
@@ -83,12 +88,12 @@ export default function ContentHero({ content }: ContentHeroProps) {
           )}
         </div>
 
-        {/* Açıklama */}
+        {/* İçerik Açıklaması */}
         <p className="max-w-3xl text-lg leading-relaxed text-gray-700 dark:text-gray-300">
           {content.aciklama}
         </p>
 
-        {/* Ekstra Bilgiler (Yönetmen / Oyuncular vb.) */}
+        {/* Ekstra Künye Bilgileri */}
         <div className="flex flex-col gap-2 border-l-4 border-yellow-500 pl-4">
           {content.yonetmen && (
             <div className="text-sm">
@@ -100,12 +105,6 @@ export default function ContentHero({ content }: ContentHeroProps) {
               </span>
             </div>
           )}
-
-          {/* İleride oyuncular eklenirse buraya gelir */}
-          {/* <div className="text-sm">
-                <span className="font-bold text-gray-900 dark:text-gray-200">Oyuncular:</span>{" "}
-                <span className="text-gray-600 dark:text-gray-400">Haluk Bilginer, Cansu Dere...</span>
-                </div> */}
         </div>
       </div>
     </div>

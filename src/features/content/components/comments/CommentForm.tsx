@@ -1,3 +1,8 @@
+/**
+ * Bu bileşen, kullanıcıların yorum yazıp göndermesini sağlayan formdur.
+ * Emoji seçici, Spoiler işaretleme ve karakter limiti kontrolü içerir.
+ */
+
 "use client";
 
 import { useRef, useState } from "react";
@@ -9,6 +14,7 @@ import toast from "react-hot-toast";
 import useClickOutside from "@hooks/useClickOutside";
 import { postComment } from "../../actions/content-actions";
 
+// Emoji Picker'ı sadece client-side yükle (SSR hatasını önler)
 const EmojiPicker = dynamic(() => import("emoji-picker-react"), { ssr: false });
 
 interface CommentFormProps {
@@ -22,6 +28,7 @@ export default function CommentForm({ icerikId, slug }: CommentFormProps) {
   const [loading, setLoading] = useState(false);
 
   const emojiPickerRef = useRef<HTMLDivElement>(null);
+  // Dışarı tıklayınca emoji picker'ı kapatan hook
   const { isOpen, setIsOpen } = useClickOutside(emojiPickerRef);
 
   const handleEmojiClick = (emojiData: any) => {
@@ -55,9 +62,9 @@ export default function CommentForm({ icerikId, slug }: CommentFormProps) {
       />
 
       <div className="mt-3 flex items-center justify-between">
-        {/* SOL ARAÇLAR */}
+        {/* SOL ARAÇLAR: Emoji ve Spoiler */}
         <div className="flex items-center gap-2">
-          {/* Emoji */}
+          {/* Emoji Butonu */}
           <div className="relative" ref={emojiPickerRef}>
             <button
               onClick={() => setIsOpen(!isOpen)}
@@ -70,11 +77,12 @@ export default function CommentForm({ icerikId, slug }: CommentFormProps) {
               <RiEmojiStickerLine size={22} />
             </button>
 
+            {/* Emoji Picker Popup */}
             {isOpen && (
               <div className="animate-in zoom-in-95 absolute bottom-10 left-0 z-50 duration-200">
                 <div className="overflow-hidden rounded-xl border border-gray-200 shadow-2xl dark:border-white/10 dark:shadow-black/50">
                   <EmojiPicker
-                    theme={"auto" as any} // Otomatik tema (Açık/Koyu)
+                    theme={"auto" as any}
                     onEmojiClick={handleEmojiClick}
                     width={300}
                     height={400}
@@ -85,7 +93,7 @@ export default function CommentForm({ icerikId, slug }: CommentFormProps) {
             )}
           </div>
 
-          {/* Spoiler Toggle */}
+          {/* Spoiler Toggle Butonu */}
           <button
             onClick={() => setSpoilerVar(!spoilerVar)}
             className={`flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-bold transition-all ${

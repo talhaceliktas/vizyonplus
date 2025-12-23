@@ -1,3 +1,9 @@
+/**
+ * Bu bileşen, içerik detay sayfalarında (Film/Dizi) yorumların listelendiği ana bölümdür.
+ * Yorumları sunucudan çeker (`getContentComments`), site ayarlarını kontrol eder (kilitli mi?)
+ * ve kullanıcı durumuna göre Form veya Giriş Yap uyarısı (`AuthOverlay`) gösterir.
+ */
+
 import { BiCommentDetail } from "react-icons/bi";
 import supabaseServer from "@/lib/supabase/server";
 import { getCachedSettings } from "@settings/services/settingsService";
@@ -18,6 +24,7 @@ export default async function CommentsSection({
 }: CommentsSectionProps) {
   const supabase = await supabaseServer();
 
+  // Paralel veri çekimi: Kullanıcı, Yorumlar, Ayarlar
   const [userResponse, yorumlar, settings] = await Promise.all([
     supabase.auth.getUser(),
     getContentComments(icerikId),
@@ -25,19 +32,19 @@ export default async function CommentsSection({
   ]);
 
   const user = userResponse.data.user;
+  // Admin panelden yorumlar kapatıldıysa true döner
   const isLocked = settings?.yorumlar_kilitli;
 
   return (
     <div className="flex flex-col gap-8" id="yorumlar">
       {/* BAŞLIK */}
       <div className="flex items-center justify-between">
-        {/* Rengi dinamik yaptık */}
         <h3 className="text-xl font-bold text-gray-900 dark:text-white">
           Yorumlar ({yorumlar.length})
         </h3>
       </div>
 
-      {/* YORUM FORMU KAPLAYICISI */}
+      {/* YORUM FORMU ALANI */}
       <div
         className={`relative transition-all duration-300 ${
           !user ? "pointer-events-none opacity-50 blur-[1px] select-none" : ""
@@ -52,7 +59,7 @@ export default async function CommentsSection({
         )}
       </div>
 
-      {/* LİSTE / UYARI */}
+      {/* YORUM LİSTESİ veya GİRİŞ UYARISI */}
       {!user ? (
         <div className="mt-4 flex justify-center">
           <AuthOverlay />
@@ -68,6 +75,7 @@ export default async function CommentsSection({
               />
             ))
           ) : (
+            // Boş Durum (Empty State)
             <div className="flex flex-col items-center justify-center py-20 text-gray-500">
               <BiCommentDetail className="mb-4 text-6xl opacity-20" />
               <p className="text-lg">Henüz yorum yapılmamış.</p>

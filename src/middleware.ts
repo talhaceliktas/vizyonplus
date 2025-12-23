@@ -10,6 +10,8 @@ export async function middleware(request: NextRequest) {
   });
 
   // 2. Supabase Client Oluşturma
+  // Middleware içinde Supabase kullanmak için createServerClient kullanılır.
+  // Bu, çerezleri (cookies) düzgün bir şekilde yönetmemizi sağlar.
   const supabase = createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
@@ -34,6 +36,8 @@ export async function middleware(request: NextRequest) {
   );
 
   // 3. Kullanıcı Oturumunu Kontrol Et
+  // getUser() fonksiyonu, veritabanına sorgu atar ve güvenli bir şekilde kullanıcıyı doğrular.
+  // getSession() yerine getUser() kullanılması önerilir çünkü getSession() manipüle edilebilir.
   const {
     data: { user },
   } = await supabase.auth.getUser();
@@ -41,7 +45,7 @@ export async function middleware(request: NextRequest) {
   const path = request.nextUrl.pathname;
 
   // --- KURAL 1: GİRİŞ YAPMAMIŞ KULLANICI KORUMASI ---
-  // /profil, /izle ve /admin rotaları için giriş şart
+  // /profil, /izle ve /admin rotaları için giriş şarttır.
   if (
     !user &&
     (path.startsWith("/profil") ||
@@ -49,17 +53,18 @@ export async function middleware(request: NextRequest) {
       path.startsWith("/admin"))
   ) {
     const url = new URL("/giris", request.url);
-    url.searchParams.set("next", path); // Geri dönüş için path'i sakla
+    url.searchParams.set("next", path); // Kullanıcı giriş yapınca kaldığı yere dönsün
     return NextResponse.redirect(url);
   }
 
   // --- KURAL 2: GİRİŞ YAPMIŞ KULLANICIYI ENGELLEME ---
-  // Giriş yapmışsa /giris veya /kayitol sayfasına gidemez
+  // Zaten giriş yapmışsa /giris veya /kayitol sayfasına girmesine gerek yok, profile yönlendir.
   if (user && (path.startsWith("/giris") || path.startsWith("/kayitol"))) {
     return NextResponse.redirect(new URL("/profil", request.url));
   }
 
   // --- KURAL 3: ADMIN KORUMASI ---
+  // Sadece 'admin' rolüne sahip kullanıcılar admin paneline girebilir.
   if (path.startsWith("/admin")) {
     if (user?.app_metadata?.role !== "admin") {
       return NextResponse.redirect(new URL("/", request.url));
@@ -67,31 +72,28 @@ export async function middleware(request: NextRequest) {
   }
 
   // --- KURAL 4: İZLEME (WATCH) KORUMASI ---
-  // SADECE ABONELİK KONTROLÜ
+  // /izle rotasına giren kullanıcının aktif bir aboneliği olup olmadığını kontrol eder.
   if (path.startsWith("/izle")) {
-    // Aktif Abonelik Kontrolü
-    // Bitiş tarihi şu andan ileri bir tarih olmalı
     const { data: abonelik } = await supabase
       .from("kullanici_abonelikleri")
       .select("id")
       .eq("kullanici_id", user?.id)
-      .gte("bitis_tarihi", new Date().toISOString())
+      .gte("bitis_tarihi", new Date().toISOString()) // Tarihi kontrol et
       .maybeSingle();
 
     // Eğer aktif aboneliği YOKSA, abonelik sayfasına yönlendir
     if (!abonelik) {
       const url = new URL("/abonelikler", request.url);
-      url.searchParams.set("error", "subscription_required"); // Kullanıcıya mesaj göstermek için
+      url.searchParams.set("error", "subscription_required"); // UI'da hata mesajı göstermek için
       return NextResponse.redirect(url);
     }
-
-    // Abonelik varsa devam et (return response)
   }
 
   return response;
 }
 
 export const config = {
+  // Middleware'in çalışacağı yollar
   matcher: [
     "/profil/:path*",
     "/giris",

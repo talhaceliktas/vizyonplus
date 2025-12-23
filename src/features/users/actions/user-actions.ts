@@ -1,8 +1,17 @@
 "use server";
 
+/**
+ * Bu dosya, kullanıcı profili ve kimlik doğrulama işlemleri için Server Actions içerir.
+ * Profil güncelleme, şifre değiştirme gibi hassas işlemler burada güvenli bir şekilde yapılır.
+ */
+
 import { revalidatePath } from "next/cache";
 import supabaseServer from "@lib/supabase/server";
 
+/**
+ * Kullanıcı profil bilgilerini (isim, cinsiyet vb.) günceller.
+ * Hem Supabase Auth metadata'sını hem de `profiller` tablosunu senkronize olarak günceller.
+ */
 export async function updateProfileAction(formData: FormData) {
   const supabase = await supabaseServer();
 
@@ -27,6 +36,7 @@ export async function updateProfileAction(formData: FormData) {
 
   try {
     // 3. Supabase Auth (Meta Data) Güncelleme
+    // Bu, `auth.users` tablosundaki raw_user_meta_data alanını günceller.
     const { error: authError } = await supabase.auth.updateUser({
       data: { display_name: adSoyad },
     });
@@ -36,6 +46,7 @@ export async function updateProfileAction(formData: FormData) {
     }
 
     // 4. Profil Tablosu (Database) Güncelleme
+    // Bu, bizim oluşturduğumuz `profiller` tablosunu günceller.
     const { error: dbError } = await supabase
       .from("profiller")
       .update({
@@ -50,7 +61,7 @@ export async function updateProfileAction(formData: FormData) {
 
     // 5. Cache Temizleme
     revalidatePath("/profil"); // Profil sayfasını yenile
-    revalidatePath("/", "layout"); // Navbar'daki ismi yenilemek için tüm siteyi etkile
+    revalidatePath("/", "layout"); // Navbar'daki ismi tak güncellemek için tüm siteyi etkile
 
     return {
       success: true,
@@ -65,6 +76,10 @@ export async function updateProfileAction(formData: FormData) {
   }
 }
 
+/**
+ * Kullanıcının şifresini güvenli bir şekilde değiştirir.
+ * Önce mevcut şifreyi doğrular, ardından yenisini atar.
+ */
 export async function changePasswordAction(formData: FormData) {
   const supabase = await supabaseServer();
 
@@ -99,7 +114,7 @@ export async function changePasswordAction(formData: FormData) {
   }
 
   // 4. Mevcut Şifreyi Doğrula (SignIn Denemesi ile)
-  // Supabase'de eski şifreyi doğrulamanın en güvenli yolu budur.
+  // Supabase'de eski şifreyi doğrulamanın en güvenli yolu, o şifreyle yeniden giriş yapmayı denemektir.
   const { error: signInError } = await supabase.auth.signInWithPassword({
     email: user.email,
     password: currentPassword,

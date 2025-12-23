@@ -1,3 +1,8 @@
+/**
+ * Bu bileşen, kullanıcının İZLEME LİSTESİ (Daha Sonra İzle) sayfasındaki içerikleri listeler.
+ * `SavedContentCard` bileşenini kullanır ancak "watchLater" modunda çalıştırır (Bookmark ikonu vb.).
+ */
+
 import Link from "next/link";
 import { FaRegBookmark, FaFilm } from "react-icons/fa6"; // Kalp yerine Bookmark ikonu
 import { getWatchList } from "@/features/users/services/userService";
@@ -39,11 +44,11 @@ export default async function WatchList() {
   // --- LİSTE DURUMU ---
   return (
     <div className="w-full">
-      {/* BAŞLIK ALANI - Renkler Düzeltildi */}
+      {/* BAŞLIK ALANI */}
       <div className="border-primary-800 mb-6 flex items-center gap-3 border-b pb-4">
         <h1 className="text-primary-50 text-2xl font-bold">İzleme Listem</h1>
 
-        {/* Sayı Rozeti: Okunabilir Kontrast */}
+        {/* Sayı Rozeti */}
         <span className="bg-primary-800 text-secondary-1 border-primary-700 rounded-full border px-3 py-1 text-xs font-bold tracking-wide">
           {watchList.length} İçerik
         </span>
@@ -58,7 +63,7 @@ export default async function WatchList() {
             <SavedContentCard
               key={item.icerikler_id}
               data={item.icerikler as any}
-              type="watchLater" // Tipi watchLater olarak ayarladık
+              type="watchLater"
             />
           );
         })}

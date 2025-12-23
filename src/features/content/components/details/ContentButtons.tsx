@@ -1,3 +1,8 @@
+/**
+ * Bu bileşen, "Favorilere Ekle" ve "Listeme Ekle" butonlarını yan yana gösterir.
+ * Kullanıcı giriş yapmamışsa, bu butonlar sembolik olarak görünür ve tıklanınca giriş sayfasına yönlendirir.
+ */
+
 import Link from "next/link";
 import { FaRegBookmark, FaRegHeart } from "react-icons/fa6";
 import { User } from "@supabase/supabase-js";
@@ -21,11 +26,13 @@ export default function ContentButtons({
   return (
     <div className="flex justify-end gap-x-2">
       {user ? (
+        // Giriş yapmış kullanıcı için işlevsel butonlar
         <>
           <AddToFavoritesButton contentId={id} initialState={favorite} />
           <AddToWatchLaterButton contentId={id} initialState={watchLater} />
         </>
       ) : (
+        // Giriş yapmamış kullanıcı için yönlendirme butonları
         <>
           <Link
             href="/giris"

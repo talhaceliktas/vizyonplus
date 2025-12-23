@@ -1,8 +1,13 @@
+/**
+ * Bu bileşen, kullanıcının mevcut aktif aboneliğinin detaylarını gösteren karttır.
+ * Abonelik durumu (Aktif/İptal Edilmiş), bitiş tarihi ve paket özelliklerini içerir.
+ */
+
 import { Calendar, CheckCircle2, Clock, AlertTriangle } from "lucide-react";
 import { UserSubscription } from "../services/subscriptionService";
 
 interface SubscriptionCardProps {
-  subscription: UserSubscription;
+  subscription: UserSubscription; // Gösterilecek abonelik verisi
 }
 
 export default function SubscriptionCard({
@@ -13,6 +18,7 @@ export default function SubscriptionCard({
   // otomatik_yenileme FALSE ise -> İptal edilmiş ama süresi var (Sona Eriyor)
   const isRenewing = subscription.otomatik_yenileme;
 
+  // Tarih formatlama yardımcısı
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString("tr-TR", {
       day: "numeric",
@@ -36,7 +42,7 @@ export default function SubscriptionCard({
 
         {/* DURUM ROZETİ */}
         {isRenewing ? (
-          // DURUM: AKTİF
+          // DURUM: AKTİF (Otomatik yenileme açık)
           <div className="flex items-center gap-2 rounded-full border border-green-500/20 bg-green-500/10 px-4 py-1.5 text-sm font-bold text-green-500">
             <CheckCircle2 size={16} />
             <span>Aktif</span>
@@ -78,6 +84,7 @@ export default function SubscriptionCard({
 
         {/* Tarih Bilgileri */}
         <div className="bg-primary-900 mb-8 grid gap-4 rounded-xl p-4 md:grid-cols-2">
+          {/* Başlangıç Tarihi */}
           <div className="flex items-start gap-3">
             <div className="bg-primary-800 text-primary-200 flex h-8 w-8 items-center justify-center rounded-lg">
               <Calendar size={16} />
@@ -89,6 +96,8 @@ export default function SubscriptionCard({
               </p>
             </div>
           </div>
+
+          {/* Bitiş/Yenilenme Tarihi */}
           <div className="flex items-start gap-3">
             <div className="bg-primary-800 text-primary-200 flex h-8 w-8 items-center justify-center rounded-lg">
               <Calendar size={16} />
@@ -114,7 +123,7 @@ export default function SubscriptionCard({
           </p>
           <ul className="grid gap-2 sm:grid-cols-2">
             {subscription.paket.ozellikler
-              .filter((oz) => oz.included)
+              .filter((oz) => oz.included) // Sadece dahil olan özellikleri listele
               .map((ozellik, i) => (
                 <li
                   key={i}

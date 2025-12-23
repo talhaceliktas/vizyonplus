@@ -1,3 +1,8 @@
+/**
+ * Bu bileşen, kullanıcının oturumu kapatmasını sağlar.
+ * Supabase `signOut` fonksiyonunu çağırır ve ardından kullanıcıyı belirtilen sayfaya (varsayılan: `/giris`) yönlendirir.
+ */
+
 "use client";
 
 import { useRouter } from "next/navigation";
@@ -22,13 +27,15 @@ const LogoutButton = ({
 
   const handleLogout = async () => {
     try {
+      // Supabase oturumunu sonlandır (Browser tarafında)
       await supabaseBrowserClient.auth.signOut();
 
       toast.success("Başarıyla çıkış yapıldı");
 
+      // Sayfayı yenile (Server Component'lerin user durumunu güncellemesi için)
       router.refresh();
 
-      // 4. Yönlendir
+      // Yönlendir
       router.push(href);
     } catch (error) {
       console.error("Çıkış hatası:", error);

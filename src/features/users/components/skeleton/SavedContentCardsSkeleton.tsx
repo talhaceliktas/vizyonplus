@@ -1,3 +1,8 @@
+/**
+ * Bu bileşen, Favoriler ve İzleme Listesi yüklenirken gösterilen skeleton yapısıdır.
+ * Grid yapısındaki kartları (poster + bilgi) taklit eder.
+ */
+
 import Skeleton from "@shared/components/ui/Skeleton";
 
 export default function SavedContentCardsSkeleton() {

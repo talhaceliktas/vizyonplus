@@ -1,3 +1,9 @@
+/**
+ * Bu bileşen, kullanıcının daha önce puanladığı içerikleri listeler.
+ * Sunucu Bileşenidir (Server Component).
+ * `userService` üzerinden puanları çeker ve `RatedContentCard` ile listeler.
+ */
+
 import Link from "next/link";
 import { Star, Film } from "lucide-react";
 import { getUserRatings } from "@/features/users/services/userService";
@@ -6,6 +12,7 @@ import RatedContentCard from "./RatedContentCard";
 export default async function RatingsList() {
   const ratings = await getUserRatings();
 
+  // --- BOŞ DURUM (EMPTY STATE) ---
   if (!ratings || ratings.length === 0) {
     return (
       <div className="flex h-[60vh] flex-col items-center justify-center text-center">

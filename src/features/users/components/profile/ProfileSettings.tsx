@@ -1,3 +1,9 @@
+/**
+ * Bu bileşen, Profil > Ayarlar sayfasının ana içeriğidir.
+ * Sunucu Bileşenidir (Server Component).
+ * Kullanıcının mevcut bilgilerini çeker ve düzenlenebilir form bileşenlerine dağıtır.
+ */
+
 import { getUserProfile } from "@users/services/userService";
 import ProfileDetailsForm from "./ProfileDetailsForm";
 import ChangePasswordForm from "./ChangePasswordForm";
@@ -7,6 +13,7 @@ import supabaseServer from "@lib/supabase/server";
 export default async function ProfileSettings() {
   const supabase = await supabaseServer();
 
+  // 1. Auth Kullanıcısını Çek (E-posta, Metadata vb.)
   const {
     data: { user },
   } = await supabase.auth.getUser();
@@ -15,6 +22,7 @@ export default async function ProfileSettings() {
     throw new Error("Kullanıcı bulunamadı");
   }
 
+  // 2. Profil Tablosundan Ek Bilgileri Çek (Avatar, Cinsiyet vb.)
   const userProfile = await getUserProfile(user.id);
 
   const {
@@ -32,6 +40,7 @@ export default async function ProfileSettings() {
         </h2>
 
         <div className="flex flex-col gap-10 lg:flex-row lg:items-start lg:gap-16">
+          {/* Avatar Yükleme Alanı */}
           <div className="flex flex-col items-center gap-4">
             {/* Resim Çerçevesi: border-primary-800 */}
             {/* Hover: Senin tanımladığın secondary renk */}
@@ -48,6 +57,7 @@ export default async function ProfileSettings() {
             </p>
           </div>
 
+          {/* Profil Detay Formu */}
           <div className="w-full flex-1">
             <ProfileDetailsForm user={user} profile={userProfile} />
           </div>

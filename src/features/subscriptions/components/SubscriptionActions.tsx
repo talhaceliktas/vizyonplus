@@ -1,5 +1,11 @@
 "use client";
 
+/**
+ * Bu bileşen, abonelik yönetimi için aksiyon butonlarını (İptal Et, Yenile, Plan Değiştir) içerir.
+ * İşlemlerden önce kullanıcıdan onay almak için `ConfirmationModal` kullanır.
+ * İstemci tarafında çalışır (use client) çünkü kullanıcı etkileşimi ve state yönetimi gerektirir.
+ */
+
 import { useState, useRef } from "react";
 import Link from "next/link";
 import { ArrowRight, AlertTriangle, RefreshCcw, Loader2 } from "lucide-react";
@@ -11,7 +17,7 @@ import useClickOutside from "@shared/hooks/useClickOutside";
 import ConfirmationModal from "@shared/components/ui/ConfirmationModal";
 
 interface SubscriptionActionsProps {
-  isRenewing: boolean;
+  isRenewing: boolean; // Abonelik şu an otomatik yenilenme modunda mı?
 }
 
 export default function SubscriptionActions({
@@ -19,19 +25,23 @@ export default function SubscriptionActions({
 }: SubscriptionActionsProps) {
   const [loading, setLoading] = useState(false);
 
-  // 1. Ref oluşturuyoruz (Modal kutusu için)
+  // 1. Ref oluşturuyoruz (Modal kutusunun referansı, dışarı tıklama tespiti için)
   const modalRef = useRef<HTMLDivElement>(null);
 
-  // 2. Hook'u kullanıyoruz (Ref'i vererek)
+  // 2. Custom Hook'u kullanıyoruz (Modalın açık/kapalı durumunu yönetir)
   const { isOpen, setIsOpen } = useClickOutside(modalRef);
 
+  /**
+   * Modaldaki "Onayla" butonuna basınca çalışır.
+   * Abonelik yenileme durumunu tersine çevirir (İptalse Aktif eder, Aktifse İptal eder).
+   */
   const handleConfirmAction = async () => {
     setLoading(true);
     try {
       const res = await toggleSubscriptionRenewal();
       if (res.success) {
         toast.success(res.message ?? "İşlem başarılı!");
-        setIsOpen(false); // Başarılıysa modalı kapat
+        setIsOpen(false); // Başarılı işlem sonrası modalı kapat
       } else {
         toast.error(res.error || "Bir hata oluştu.");
       }
@@ -42,31 +52,31 @@ export default function SubscriptionActions({
     }
   };
 
-  // Butona basınca modalı aç
+  // Butona basınca modalı açan fonksiyon
   const handleOpenModal = () => setIsOpen(true);
 
-  // Duruma göre metinleri ayarla
+  // Modal içeriğini mevcut duruma göre (İptal mi Yenileme mi?) hazırla
   const modalContent = isRenewing
     ? {
         title: "Aboneliği İptal Et",
         message:
           "Aboneliğini iptal etmek üzeresin. Dönem sonuna kadar izlemeye devam edebileceksin ancak sonraki ay yenilenmeyecek. Emin misin?",
         confirmText: "Evet, İptal Et",
-        variant: "danger" as const,
+        variant: "danger" as const, // Tehlikeli işlem (Kırmızı)
       }
     : {
         title: "Aboneliği Yenile",
         message:
           "Aboneliğini tekrar başlatmak üzeresin. Kartından bir sonraki dönemde otomatik çekim yapılacak. Onaylıyor musun?",
         confirmText: "Yenile ve Devam Et",
-        variant: "success" as const,
+        variant: "success" as const, // Olumlu işlem (Yeşil)
       };
 
   return (
     <>
-      {/* --- MODAL --- */}
+      {/* --- ONAY MODALI --- */}
       <ConfirmationModal
-        ref={modalRef} // Hook'un takip edeceği ref'i buraya bağlıyoruz
+        ref={modalRef} // Hook'un takip edeceği ref
         isOpen={isOpen}
         onClose={() => setIsOpen(false)}
         onConfirm={handleConfirmAction}
@@ -77,9 +87,9 @@ export default function SubscriptionActions({
         variant={modalContent.variant}
       />
 
-      {/* --- NORMAL İÇERİK --- */}
+      {/* --- ANA İÇERİK (BUTONLAR) --- */}
       <div className="flex w-full flex-col gap-6 lg:w-80">
-        {/* Yükseltme Karti */}
+        {/* 1. Plan Yükseltme/Değiştirme Kartı */}
         <div className="border-primary-800 bg-primary-900/30 rounded-xl border p-6">
           <h3 className="text-primary-50 mb-2 font-bold">Planı Değiştir</h3>
           <p className="text-primary-400 mb-6 text-sm">
@@ -93,9 +103,9 @@ export default function SubscriptionActions({
           </Link>
         </div>
 
-        {/* İptal / Geri Alma Bilgisi */}
+        {/* 2. İptal Etme veya Yeniden Başlatma Kartı */}
         {isRenewing ? (
-          // DURUM: AKTİF -> İptal Etme Seçeneği
+          // DURUM: AKTİF -> İptal Etme Seçeneği Göster
           <div className="border-primary-800 bg-primary-900/30 rounded-xl border p-6">
             <div className="mb-2 flex items-center gap-2 text-red-400">
               <AlertTriangle size={18} />
@@ -112,7 +122,7 @@ export default function SubscriptionActions({
             </button>
           </div>
         ) : (
-          // DURUM: İPTAL EDİLMİŞ -> Geri Alma Seçeneği
+          // DURUM: İPTAL EDİLMİŞ -> Geri Alma (Yenileme) Seçeneği Göster
           <div className="rounded-xl border border-green-500/20 bg-green-500/5 p-6">
             <div className="mb-2 flex items-center gap-2 text-green-500">
               <RefreshCcw size={18} />

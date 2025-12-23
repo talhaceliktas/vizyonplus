@@ -1,5 +1,11 @@
 "use client";
 
+/**
+ * Bu bileşen, kullanıcı genel bilgilerini (Ad Soyad, Cinsiyet) güncellemek için kullanılır.
+ * Email alanı salt okunur olarak gösterilir (değiştirilemez).
+ * İşlemler `updateProfileAction` sunucu eylemiyle yapılır.
+ */
+
 import { useState } from "react";
 import toast from "react-hot-toast";
 import { Loader2 } from "lucide-react";
@@ -8,8 +14,8 @@ import { User } from "@supabase/supabase-js";
 import { updateProfileAction } from "@users/actions/user-actions";
 
 interface ProfileDetailsFormProps {
-  user: User;
-  profile: any;
+  user: User; // Auth kullanıcısı (Email ve metadata için)
+  profile: any; // Profil tablosundan gelen ek bilgiler (Cinsiyet vb.)
 }
 
 const ProfileDetailsForm = ({ user, profile }: ProfileDetailsFormProps) => {
@@ -26,7 +32,7 @@ const ProfileDetailsForm = ({ user, profile }: ProfileDetailsFormProps) => {
 
     const formData = new FormData(event.currentTarget);
 
-    // Server action'ı çağır
+    // Server Action'ı çağır
     const result = await updateProfileAction(formData);
 
     if (result.success) {
@@ -42,7 +48,7 @@ const ProfileDetailsForm = ({ user, profile }: ProfileDetailsFormProps) => {
 
   return (
     <form onSubmit={handleSubmit} className="w-full space-y-6">
-      {/* --- AD SOYAD --- */}
+      {/* --- AD SOYAD ALANI --- */}
       <div className="group relative">
         <label
           htmlFor="adSoyad"
@@ -61,7 +67,7 @@ const ProfileDetailsForm = ({ user, profile }: ProfileDetailsFormProps) => {
         />
       </div>
 
-      {/* --- EMAIL (DISABLED) --- */}
+      {/* --- EMAIL ALANI (Değiştirilemez) --- */}
       <div className="group relative opacity-70">
         <label
           htmlFor="email"
@@ -81,7 +87,7 @@ const ProfileDetailsForm = ({ user, profile }: ProfileDetailsFormProps) => {
         </span>
       </div>
 
-      {/* --- CİNSİYET --- */}
+      {/* --- CİNSİYET SEÇİMİ --- */}
       <div className="group relative">
         <label
           htmlFor="cinsiyet"
@@ -94,7 +100,6 @@ const ProfileDetailsForm = ({ user, profile }: ProfileDetailsFormProps) => {
             id="cinsiyet"
             name="cinsiyet"
             className="border-primary-800 bg-primary-900 text-primary-50 focus:border-secondary-1 focus:bg-primary-800 dark:border-primary-700 w-full appearance-none rounded-lg border px-4 py-3 transition-all focus:outline-none dark:text-white"
-            // profile prop'unu burada kullanıyoruz
             defaultValue={profile?.cinsiyet || ""}
           >
             <option
@@ -116,7 +121,7 @@ const ProfileDetailsForm = ({ user, profile }: ProfileDetailsFormProps) => {
               Kadın
             </option>
           </select>
-          {/* Custom Chevron İkonu */}
+          {/* Özel Tasarım Ok İkonu */}
           <div className="text-primary-500 pointer-events-none absolute top-1/2 right-4 -translate-y-1/2 text-xs">
             ▼
           </div>

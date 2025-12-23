@@ -1,3 +1,8 @@
+/**
+ * Bu dosya, izleme geçmişini güncellemek için kullanılan Server Action'dır.
+ * Kullanıcının videoda kaldığı yeri veritabanına kaydeder (Upsert işlemi).
+ */
+
 "use server";
 
 import supabaseServer from "@lib/supabase/server";
@@ -25,10 +30,12 @@ export async function updateWatchHistory({
   } = await supabase.auth.getUser();
   if (!user) return;
 
+  // 2. İzlenme oranını hesapla (>%95 ise bitmiş say)
   const izlenmeOrani = time / totalDuration;
   const bittiMi = izlenmeOrani > 0.95;
 
   // 3. Veritabanına kaydet (Upsert)
+  // Hem film hem dizi için aynı tabloyu (izleme_gecmisi) kullanıyoruz.
   const { error } = await supabase.from("izleme_gecmisi").upsert(
     {
       kullanici_id: user.id,

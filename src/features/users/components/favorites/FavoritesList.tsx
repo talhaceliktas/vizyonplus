@@ -1,3 +1,9 @@
+/**
+ * Bu bileşen, kullanıcının FAVORİLER sayfasındaki içerik listesini oluşturur.
+ * Sunucudan (`getFavorites`) veriyi çeker ve `SavedContentCard` bileşenlerini listeler.
+ * Liste boşsa, kullanıcıya öneri sunan bir "Boş Durum (Empty State)" ekranı gösterir.
+ */
+
 import Link from "next/link";
 import { FaHeart, FaFilm } from "react-icons/fa6";
 import { getFavorites } from "@/features/users/services/userService";

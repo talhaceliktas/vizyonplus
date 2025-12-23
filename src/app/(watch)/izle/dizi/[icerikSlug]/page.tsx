@@ -1,3 +1,9 @@
+/**
+ * Bu sayfa, DİZİ DETAY sayfasıdır (İzleme sayfası DEĞİLDİR).
+ * Diziye ait bölümleri listeler, genel bilgileri (ContentHero) ve kullanıcı aksiyonlarını gösterir.
+ * Bu sayfadan bir bölüme tıklandığında Bölüm İzleme sayfasına (`/izle/dizi/.../...`) gidilir.
+ */
+
 import { Suspense } from "react";
 import { notFound } from "next/navigation";
 import LoadingSpinner from "@shared/components/ui/LoadingSpinner";
@@ -14,7 +20,8 @@ import ContentHero from "@/features/content/components/details/ContentHero";
 import ActionBar from "@/features/content/components/details/ActionBar";
 import EpisodesList from "@/features/content/components/details/EpisodesList";
 import Yorumlar from "@/features/content/components/comments/CommentsSection";
-import Navbar from "../../../../../shared/components/layout/Navbar";
+// Navbar component yolu düzeltildi (alias kullanımı önerilir)
+import Navbar from "@/shared/components/layout/Navbar";
 
 interface PageProps {
   params: Promise<{ icerikSlug: string }>;
@@ -47,7 +54,6 @@ export default async function ContentPage({ params }: PageProps) {
     watchLater: false,
   };
 
-  // Promise dizisi yerine direkt değişkenlere atıyoruz, çok daha okunaklı.
   const averageRatingPromise = getContentAverageRating(content.id);
 
   const interactionsPromise = user
@@ -57,7 +63,7 @@ export default async function ContentPage({ params }: PageProps) {
   const episodesPromise =
     content.tur === "dizi"
       ? getContentEpisodes(content.id)
-      : Promise.resolve([]); // Film ise boş dizi dön, veritabanını yorma
+      : Promise.resolve([]); // Film ise boş dizi dön
 
   // 3. Hepsini Tek Seferde Bekle (Waterfall Önleme)
   const [averageRating, interactions, episodes] = await Promise.all([
@@ -72,8 +78,10 @@ export default async function ContentPage({ params }: PageProps) {
         <Navbar />
         <div className="mx-auto flex h-full w-full max-w-[1360px] flex-col gap-y-16 px-4 md:gap-y-20">
           <div className="animate-in fade-in slide-in-from-bottom-4 duration-700">
+            {/* Üst Kısım: Poster ve Bilgiler */}
             <ContentHero content={content} />
 
+            {/* Aksiyon Butonları (Oynat, Listeme Ekle, Puanla) */}
             <ActionBar
               content={content}
               user={user}
@@ -82,7 +90,7 @@ export default async function ContentPage({ params }: PageProps) {
             />
           </div>
 
-          {/* DİZİ BÖLÜMLERİ (Sadece veri geldiyse render et) */}
+          {/* DİZİ BÖLÜMLERİ LİSTESİ */}
           {episodes.length > 0 && (
             <div className="border-t border-gray-200 pt-10 dark:border-white/10">
               <div className="mb-6 flex items-center gap-2">
@@ -100,7 +108,7 @@ export default async function ContentPage({ params }: PageProps) {
             </div>
           )}
 
-          {/* ALT KISIM (Yorumlar) */}
+          {/* YORUMLAR (Dizi genel yorumları) */}
           <div className="border-t border-gray-200 pt-10 dark:border-white/10">
             <Yorumlar icerikId={content.id} slug={icerikSlug} />
           </div>

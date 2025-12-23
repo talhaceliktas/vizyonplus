@@ -1,3 +1,8 @@
+/**
+ * Bu sayfa, kullanıcının ABONELİK durumunu detaylıca gördüğü ve yönettiği profil alt sayfasıdır.
+ * Ana abonelik sayfasından farklı olarak burası sadece mevcut durumu ve ödeme geçmişi/yöntemlerini (teorik olarak) odaklar.
+ */
+
 import { Suspense } from "react";
 import { CreditCard } from "lucide-react";
 import supabaseServer from "@/lib/supabase/server";
@@ -15,7 +20,7 @@ export default async function SubscriptionPage() {
 
   return (
     <div className="w-full flex-1">
-      {/* --- BAŞLIK ALANI (Statik - Anında Yüklenir) --- */}
+      {/* --- BAŞLIK ALANI (Statik) --- */}
       <div className="border-primary-800 mb-8 flex items-center gap-4 border-b pb-6">
         <div className="bg-primary-900 text-secondary-1 border-primary-700 flex h-12 w-12 items-center justify-center rounded-full border">
           <CreditCard className="h-5 w-5" />
@@ -30,7 +35,7 @@ export default async function SubscriptionPage() {
         </div>
       </div>
 
-      {/* --- İÇERİK ALANI (Streaming - Yüklenirken Skeleton Gösterir) --- */}
+      {/* --- İÇERİK ALANI (Dinamik - Yükleniyor durumu var) --- */}
       <Suspense fallback={<ContentSkeletonWrapper />}>
         <SubscriptionContent userId={user.id} />
       </Suspense>
@@ -38,6 +43,7 @@ export default async function SubscriptionPage() {
   );
 }
 
+// Layout kaymasını önlemek için Skeleton sarmalayıcı
 function ContentSkeletonWrapper() {
   return (
     <div className="-mt-[120px] overflow-hidden">

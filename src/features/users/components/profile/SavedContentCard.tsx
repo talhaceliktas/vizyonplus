@@ -1,23 +1,29 @@
+/**
+ * Bu bileşen, kullanıcının kaydettiği içerikleri (Favoriler veya Daha Sonra İzle) gösteren karttır.
+ * `type` prop'una göre ("favorite" veya "watchLater") ilgili butonu ve işlevselliği sunar.
+ */
+
 import Image from "next/image";
 import Link from "next/link";
 import { FaPlay } from "react-icons/fa6";
 import AddToFavoritesButton from "@/shared/components/ui/AddToFavoritesButton";
-import AddToWatchLaterButton from "../../../../shared/components/ui/AddToWatchLaterButton"; // Yolunu kontrol et
+import AddToWatchLaterButton from "../../../../shared/components/ui/AddToWatchLaterButton";
 import { Table } from "@/types";
 
 interface SavedContentCardProps {
-  data: Table<"icerikler">;
-  type: "favorite" | "watchLater";
+  data: Table<"icerikler">; // Gösterilecek içerik verisi
+  type: "favorite" | "watchLater"; // Hangi listede olduğunu belirtir
 }
 
 const SavedContentCard = ({ data, type }: SavedContentCardProps) => {
   const { id, isim, fotograf, tur, turler, aciklama, slug } = data;
 
+  // İçerik türüne göre izleme linkini oluştur
   const linkHref = tur === "film" ? `/izle/film/${slug}` : `/izle/dizi/${slug}`;
 
   return (
     <div className="group border-primary-800 bg-primary-900 hover:border-secondary-1/50 relative flex w-full flex-col overflow-hidden rounded-xl border transition-all hover:shadow-2xl sm:h-48 sm:flex-row">
-      {/* SOL: Resim */}
+      {/* SOL: Resim Alanı */}
       <Link
         href={linkHref}
         className="relative block h-40 w-full shrink-0 sm:h-full sm:w-36"
@@ -29,7 +35,7 @@ const SavedContentCard = ({ data, type }: SavedContentCardProps) => {
           className="object-cover transition-transform duration-500 group-hover:scale-105"
         />
 
-        {/* Play Overlay */}
+        {/* Play Overlay (Hover'da görünür) */}
         <div className="bg-primary-50/20 absolute inset-0 flex items-center justify-center opacity-0 backdrop-blur-[2px] transition-opacity duration-300 group-hover:opacity-100">
           <div className="bg-secondary-2 text-primary-50 flex h-10 w-10 items-center justify-center rounded-full shadow-lg transition-transform duration-300 group-hover:scale-110">
             <FaPlay className="pl-1 text-sm" />
@@ -38,9 +44,8 @@ const SavedContentCard = ({ data, type }: SavedContentCardProps) => {
       </Link>
 
       {/* SAĞ: Bilgiler ve Buton */}
-      {/* justify-between ve p-4 buradan kaldırıldı, içeriye dağıtıldı */}
       <div className="flex flex-1 flex-col">
-        {/* ÜST: Metin İçerikleri (Padding burada) */}
+        {/* ÜST: Metin İçerikleri */}
         <div className="flex-1 p-4 pb-0">
           <Link href={linkHref}>
             <h3 className="text-primary-50 group-hover:text-secondary-1 line-clamp-1 text-lg font-bold transition-colors">
@@ -48,7 +53,7 @@ const SavedContentCard = ({ data, type }: SavedContentCardProps) => {
             </h3>
           </Link>
 
-          {/* Türler */}
+          {/* Türler Etiketi */}
           <div className="mt-2 flex gap-2">
             {turler?.slice(0, 2).map((t, i) => (
               <span
@@ -67,7 +72,7 @@ const SavedContentCard = ({ data, type }: SavedContentCardProps) => {
         </div>
 
         {/* ALT: Buton Alanı (Footer) */}
-        {/* mt-auto: İçerik az olsa bile butonu en alta iter */}
+        {/* mt-auto ile her zaman kartın altına yaslanır */}
         <div className="border-primary-800 mt-auto flex justify-end border-t px-4 py-3">
           {type === "favorite" ? (
             <AddToFavoritesButton contentId={id} initialState={true} />

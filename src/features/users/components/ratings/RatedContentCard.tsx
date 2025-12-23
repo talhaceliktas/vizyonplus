@@ -1,3 +1,8 @@
+/**
+ * Bu bileşen, kullanıcının puanladığı tek bir içeriğin kartını oluşturur.
+ * İçerik bilgileri (poster, isim, yıl) ve verilen puanı (`ContentRate`) gösterir.
+ */
+
 "use client";
 
 import Image from "next/image";
@@ -25,6 +30,7 @@ export default function RatedContentCard({
   ratedAt,
   content,
 }: RatedContentCardProps) {
+  // Tarih formatlama (Türkçe)
   const formattedDate = new Date(ratedAt).toLocaleDateString("tr-TR", {
     year: "numeric",
     month: "long",
@@ -33,7 +39,7 @@ export default function RatedContentCard({
 
   return (
     <div className="group relative flex flex-col gap-4 overflow-hidden rounded-2xl bg-white p-4 shadow-sm ring-1 ring-gray-200 transition-all hover:bg-gray-50 sm:flex-row sm:items-start dark:bg-white/5 dark:shadow-none dark:ring-white/10 dark:hover:bg-white/10">
-      {/* 1. RESİM ALANI */}
+      {/* 1. RESİM ALANI (POSTER) */}
       <div className="relative aspect-2/3 w-full shrink-0 overflow-hidden rounded-xl bg-gray-100 sm:w-32 dark:bg-gray-800">
         <Link href={`/icerikler/${content.slug}`}>
           {content.fotograf ? (
@@ -80,7 +86,7 @@ export default function RatedContentCard({
           {content.aciklama || "Açıklama bulunmuyor."}
         </p>
 
-        {/* Alt Bilgi: Tarih */}
+        {/* Alt Bilgi: Puanlama Tarihi */}
         <div className="mt-auto flex items-center gap-1.5 text-xs text-gray-400 dark:text-gray-500">
           <Clock className="h-3 w-3" />
           <span>{formattedDate} tarihinde puanladın</span>
@@ -88,11 +94,12 @@ export default function RatedContentCard({
       </div>
 
       {/* 3. PUANLAMA ALANI */}
+      {/* ContentRate bileşeni puanı gösterir ve değiştirmeyi sağlar */}
       <div className="w-full sm:w-auto sm:min-w-[200px]">
         <ContentRate
           contentId={content.id}
           userRating={rating}
-          averageRating={undefined}
+          averageRating={undefined} // Ortalama puana burada gerek yok, sadece kullanıcı puanı önemli
         />
       </div>
     </div>

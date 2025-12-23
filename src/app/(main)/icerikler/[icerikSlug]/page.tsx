@@ -1,3 +1,15 @@
+/**
+ * Bu sayfa, tek bir içeriğin (Film veya Dizi) DETAY SAYFASIDIR.
+ * Dinamik route yapısı kullanır: `/icerikler/[icerikSlug]`
+ *
+ * YAPILAN İŞLEMLER:
+ * 1. URL'den `icerikSlug` parametresini alır.
+ * 2. `getContentBySlug` ile içeriğin detaylarını Supabase'den çeker.
+ * 3. Kullanıcı giriş yapmışsa `getUserContentInteractions` ile etkileşimlerini (beğeni, puan, liste vb.) çeker.
+ * 4. `Promise.all` kullanarak verileri paralel çeker (Waterfall'ı önler).
+ * 5. Yorumları bu sayfada sunucudan ÇEKMEZ, Client Component olan `CommentsSection` içinde çeker (Suspense ile).
+ */
+
 import { Suspense } from "react";
 import { notFound } from "next/navigation";
 import supabaseServer from "@/lib/supabase/server";
@@ -18,6 +30,7 @@ interface PageProps {
 }
 
 export default async function ContentPage({ params }: PageProps) {
+  // Next.js 15: params artık bir Promise, await ile çözümlenmeli
   const { icerikSlug } = await params;
   const supabase = await supabaseServer();
 
@@ -32,6 +45,7 @@ export default async function ContentPage({ params }: PageProps) {
   const user = userResponse.data.user;
 
   // 2. AKSİYON BAR VERİLERİ (Hızlı gelir, bekleyebiliriz)
+  // Kullanıcı varsa etkileşimlerini çek, yoksa boş obje dön
   const interactionsPromise = user
     ? getUserContentInteractions(user.id, content.id, content.tur)
     : Promise.resolve({
@@ -40,12 +54,15 @@ export default async function ContentPage({ params }: PageProps) {
 
   const averageRatingPromise = getContentAverageRating(content.id);
 
+  // Etkileşimler ve ortalama puanı paralel bekle
   const [interactions, averageRating] = await Promise.all([
     interactionsPromise,
     averageRatingPromise,
   ]);
 
   // DİKKAT: Yorumları burada ÇEKMİYORUZ!
+  // Yorumlar sayfanın en altında olduğu için, sayfa yükleme hızını düşürmemek adına
+  // onları CommentsSection içinde ayrı bir fetch ile yapıyoruz ve Streaming (Suspense) kullanıyoruz.
 
   return (
     <main className="text-primary-50 min-h-screen px-4 pt-40 pb-20">
@@ -61,6 +78,7 @@ export default async function ContentPage({ params }: PageProps) {
           />
         </div>
 
+        {/* YORUMLAR BÖLÜMÜ (Streaming - Skeleton ile yükleniyor gösterir) */}
         <div className="border-t border-white/10 pt-10">
           <Suspense
             fallback={

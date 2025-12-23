@@ -1,15 +1,21 @@
+/**
+ * Bu bileşen, kullanıcının izleme geçmişini listeler.
+ * Sunucu Bileşenidir (Server Component).
+ * `userService` üzerinden veriyi çeker ve tarihçeyi kartlar halinde gösterir.
+ */
+
 import Link from "next/link";
 import { FaHistory, FaPlay } from "react-icons/fa";
 import { getWatchHistory } from "@/features/users/services/userService";
 import WatchHistoryCard from "@/features/users/components/profile/WatchHistoryCard";
 
 export default async function WatchHistoryList() {
-  // Veriyi burada çekiyoruz
+  // İzleme geçmişi verisini çek
   const watchHistory = await getWatchHistory();
 
   return (
     <div className="w-full flex-1">
-      {/* BAŞLIK ALANI */}
+      {/* --- BAŞLIK ALANI --- */}
       <div className="border-primary-800 mb-8 flex items-center gap-4 border-b pb-6">
         <div className="bg-primary-900 text-secondary-1 border-primary-700 flex h-12 w-12 items-center justify-center rounded-full border">
           <FaHistory className="h-5 w-5" />
@@ -28,7 +34,7 @@ export default async function WatchHistoryList() {
         </div>
       </div>
 
-      {/* LİSTE */}
+      {/* --- LİSTE --- */}
       {watchHistory.length > 0 ? (
         <div className="grid gap-6 md:grid-cols-1 lg:grid-cols-2">
           {watchHistory.map((item) => (
@@ -36,7 +42,7 @@ export default async function WatchHistoryList() {
           ))}
         </div>
       ) : (
-        // --- BOŞ DURUM ---
+        // --- BOŞ DURUM (EMPTY STATE) ---
         <div className="border-primary-800 bg-primary-900/50 flex flex-col items-center justify-center gap-4 rounded-xl border border-dashed py-20 text-center">
           <div className="relative">
             <div className="bg-secondary-1/10 absolute inset-0 animate-pulse rounded-full blur-xl"></div>
