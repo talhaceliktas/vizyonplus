@@ -32,3 +32,4 @@ export interface AbonelikPaketi {
   aktif_mi: boolean;
   ozellikler: Ozellik[];
 }
+

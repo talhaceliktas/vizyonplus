@@ -9,7 +9,6 @@ import {
   FaBullhorn,
 } from "react-icons/fa";
 
-import { SiteSettings } from "@settings/types/settings.types";
 import { Table } from "@/types";
 
 interface AnnouncementBarProps {
