@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useState } from "react";
+// 1. Suspense eklendi
+import { useEffect, useState, Suspense } from "react";
 import { parseAsInteger, useQueryState } from "nuqs";
 import {
   kullanicilariCekAdmin,
@@ -11,7 +12,6 @@ import LoadingSpinner from "../../../shared/components/ui/LoadingSpinner";
 import UserCard from "../../../features/admin/components/users/UserCard";
 import Pagination from "../../../features/content/components/list/Pagination";
 
-// 1. TİP TANIMLAMASI (Best Practice)
 interface User {
   id: string;
   isim: string | null;
@@ -22,15 +22,15 @@ interface User {
 
 const PAGE_SIZE = Number(process.env.NEXT_PUBLIC_CONTENT_PAGE_SIZE!) || 10;
 
-export default function KullanicilarPage() {
-  // 2. STATE TİP GÜVENLİĞİ EKLENDİ (<User[]>)
+// --- 2. ASIL MANTIK BİLEŞENİ (İsmi değişti ve export default kaldırıldı) ---
+function KullanicilarContent() {
   const [kullanicilar, setKullanicilar] = useState<User[]>([]);
   const [totalCount, setTotalCount] = useState(0);
   const [loading, setLoading] = useState(true);
 
+  // nuqs burada kullanılıyor, bu yüzden bu bileşen Suspense içinde olmalı
   const [page] = useQueryState("page", parseAsInteger.withDefault(1));
 
-  // --- VERİ ÇEKME ---
   useEffect(() => {
     const veriGetir = async () => {
       setLoading(true);
@@ -44,8 +44,9 @@ export default function KullanicilarPage() {
       if (durum === "basarisiz") {
         alert("Kullanıcılar alınamadı!");
       } else {
-        // Artık burası hata vermez çünkü state User[] bekliyor
         setKullanicilar(data as User[]);
+        // DÜZELTME: API'den gelen toplam sayıyı state'e işlemeyi unutmuşsunuz, ekledim.
+        if (count) setTotalCount(count); 
       }
       setLoading(false);
     };
@@ -53,7 +54,6 @@ export default function KullanicilarPage() {
     veriGetir();
   }, [page]);
 
-  // --- BAN İŞLEMİ ---
   const handleBanToggle = async (id: string, suankiDurum: boolean) => {
     const onayMesaji = suankiDurum
       ? "Bu kullanıcının yasağını kaldırmak istiyor musun?"
@@ -64,7 +64,6 @@ export default function KullanicilarPage() {
     const { durum } = await kullaniciBanDurumuDegistir(id, suankiDurum);
 
     if (durum === "basarili") {
-      // Buradaki 'any'leri kaldırdık, artık tip güvenli
       setKullanicilar((users) =>
         users.map((u) =>
           u.id === id ? { ...u, yasakli_mi: !suankiDurum } : u,
@@ -73,7 +72,6 @@ export default function KullanicilarPage() {
     }
   };
 
-  // --- İSİM GÜNCELLEME ---
   const handleNameUpdate = async (id: string, yeniIsim: string) => {
     const { durum } = await kullaniciIsimGuncelle(id, yeniIsim);
 
@@ -86,6 +84,7 @@ export default function KullanicilarPage() {
     }
   };
 
+  // Content içinde de loading gösterebiliriz ama ana loading Suspense ile gelecek
   if (loading) return <LoadingSpinner />;
 
   return (
@@ -108,5 +107,16 @@ export default function KullanicilarPage() {
 
       <Pagination totalCount={totalCount} />
     </div>
+  );
+}
+
+// --- 3. SARMALAYICI (WRAPPER) BİLEŞEN ---
+// Next.js'in gördüğü ve çalıştırdığı ana bileşen budur.
+export default function KullanicilarPage() {
+  return (
+    // URL parametreleri okunurken sayfa patlamasın diye Suspense ile sarmaladık
+    <Suspense fallback={<LoadingSpinner />}>
+      <KullanicilarContent />
+    </Suspense>
   );
 }
